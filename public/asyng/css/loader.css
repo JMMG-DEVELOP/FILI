@@ -1,0 +1,74 @@
+/* Mayuscula a inputs */
+
+/* Footer siempre abajo */
+
+html,
+body {
+  height: 100%;
+}
+
+.dashboard-main-wrapper {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.dashboard-wrapper {
+  flex: 1;
+  /* Empuja el footer hacia abajo */
+  display: flex;
+  flex-direction: column;
+}
+
+.dashboard-content {
+  flex: 1;
+  /* Ocupa el espacio disponible */
+}
+
+/* Estilos para datatable */
+/* Toolbar principal */
+.dt-toolbar {
+  width: 100%;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+}
+
+/* Botones a la izquierda */
+.dt-toolbar .dt-buttons {
+  flex-shrink: 0;
+}
+
+/* Contenedor del buscador ocupa TODO el espacio restante */
+.dt-toolbar .dataTables_filter {
+  margin-left: 32px;
+  /* mantiene cercanía a botones */
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+}
+
+/* Forzar layout del filtro */
+.dt-toolbar .dataTables_filter label {
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+}
+
+/* Input realmente ancho */
+.dt-toolbar .dataTables_filter input {
+  width: 700px !important;
+  /* 🔥 ahora sí */
+  max-width: 100%;
+  height: 44px;
+  font-size: 16px;
+  padding: 8px 14px;
+}
+
+/* Pantallas grandes */
+@media (min-width: 1200px) {
+  .dt-toolbar .dataTables_filter input {
+    width: 850px;
+    /* 🔥 ocupa la zona roja */
+  }
+}
