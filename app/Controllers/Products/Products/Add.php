@@ -45,11 +45,28 @@ class Add extends BaseController
 
     public function save()
     {
-        if ($this->request->isAJAX()) {
-
-
-
+        if (!$this->request->isAJAX()) {
+            return $this->response
+                ->setStatusCode(403)
+                ->setJSON([
+                    'status' => false,
+                    'message' => 'Acceso no permitido',
+                    'csrfName' => csrf_token(),
+                    'csrfHash' => csrf_hash()
+                ]);
         }
+
+        // 👉 AQUÍ IRÁ TU LÓGICA DE GUARDADO REAL
+
+        return $this->response->setJSON([
+            'status' => true,
+            'message' => 'Producto guardado correctamente',
+            'data' => [
+                'type' => 'add'
+            ],
+            'csrfName' => csrf_token(),
+            'csrfHash' => csrf_hash()
+        ]);
 
     }
 

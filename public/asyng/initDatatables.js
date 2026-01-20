@@ -1,33 +1,4 @@
-// function initProductsTable() {
 
-//   const canViewCost = $('th:contains("Costo")').length > 0;
-
-//   const columns = [
-//     { data: 'code' },
-//     { data: 'description' },
-//     { data: 'section' }
-//   ];
-
-//   if (canViewCost) {
-//     columns.push({ data: 'cost', className: 'text-end' });
-//   }
-
-//   columns.push(
-//     { data: 'price_1', className: 'text-end' },
-//     { data: 'price_2', className: 'text-end' },
-//     { data: 'price_3', className: 'text-end' },
-//     { data: 'stock_s1', className: 'text-end' },
-//     { data: 'stock_s2', className: 'text-end' },
-//     { data: 'edit', orderable: false, searchable: false },
-//     { data: 'delete', orderable: false, searchable: false }
-//   );
-
-//   AppTable({
-//     table: '#productsTable',
-//     ajax: BASE_URL + 'products/products/datatable',
-//     columns: columns,
-//   });
-// }
 
 function initProductsTable() {
 

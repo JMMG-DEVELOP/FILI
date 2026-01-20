@@ -93,27 +93,6 @@ function cancel_open(hide, panelToOpen) {
     $(panelToOpen).slideDown(200);
   });
 }
-// Alert Global
-function showGlobalAlert(message, type = 'warning') {
-
-  const alertBox = $('#globalFormAlert');
-
-  alertBox
-    .removeClass('alert-warning alert-danger alert-success alert-info')
-    .addClass('alert-' + type);
-
-  alertBox.find('.alert-message').text(message);
-
-  alertBox.addClass('show');
-
-  // Scroll automático (recomendado)
-  $('html, body').animate({
-    scrollTop: alertBox.offset().top - 20
-  }, 300);
-}
-function hideGlobalAlert() {
-  $('#globalFormAlert').removeClass('show');
-}
 
 // Validacion de Formulario
 function validateForm(formSelector) {
@@ -122,6 +101,9 @@ function validateForm(formSelector) {
   $(formSelector + ' [required]').each(function () {
     if ($.trim($(this).val()) === '') {
       $(this).addClass('is-invalid');
+      setTimeout(function () {
+        $(this).removeClass('is-invalid');
+      }, 10000);
       valid = false;
     } else {
       $(this).removeClass('is-invalid');
@@ -134,4 +116,72 @@ function validateForm(formSelector) {
 
   return valid;
 }
+
+/**
+ * Convierte texto con separadores a número
+ */
+function toNumber(value) {
+  if (!value) return 0;
+  return parseFloat(value.replace(/\./g, '').replace(',', '.')) || 0;
+}
+
+/**
+ * Formatea número sin decimales (igual que money)
+ */
+function formatMoney(value) {
+  return new Intl.NumberFormat('es-ES', {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0
+  }).format(value);
+}
+function toMoneyNumber(value) {
+  if (!value) return 0;
+
+  return parseFloat(
+    value
+      .toString()
+      .replace(/\./g, '')   // quita separador de miles
+      .replace(',', '.')   // por si algún decimal
+  ) || 0;
+}
+function toPercentNumber(value) {
+  if (!value) return 0;
+
+  return parseFloat(
+    value
+      .toString()
+      .replace('%', '')
+      .replace(',', '.')
+      .trim()
+  ) || 0;
+}
+
+// FUNCIÓN GLOBAL PARA ALERTAS
+function showAlert(message, type = 'warning', timeout = 4000) {
+
+  const $container = $('#global-alert-container');
+
+  // Limpiar alertas previas
+  $container.empty();
+
+  const $alert = $(`
+    <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+      <strong>${message}</strong>
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">×</span>
+      </button>
+    </div>
+  `);
+
+  // Insertar alert
+  $container.append($alert);
+
+  // Auto cerrar
+  if (timeout) {
+    setTimeout(() => {
+      $alert.alert('close');
+    }, timeout);
+  }
+}
+
 

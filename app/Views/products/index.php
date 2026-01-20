@@ -61,7 +61,7 @@ if (can('product_products_view')) {
     </ul>
 
     <div class="tab-content" id="myTabContent3">
-
+      <div id="global-alert-container"></div>
       <!-- PRODUCTOS -->
 
       <div class="tab-pane fade <?= $activeTab === 'products' ? 'active show' : '' ?>" id="home-vertical"
@@ -112,8 +112,8 @@ if (can('product_products_view')) {
 <?= $this->include('interface/other/scripts/datatables'); ?>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.9/jquery.inputmask.min.js"></script>
 
-
 <script src="<?= base_url(); ?>/asyng/products/products/app.js"></script>
+<script src="<?= base_url(); ?>/asyng/products/products/send.js"></script>
 <script src="<?= base_url(); ?>/asyng/products/brands/app.js"></script>
 <script src="<?= base_url(); ?>/asyng/products/section/app.js"></script>
 

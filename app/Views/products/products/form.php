@@ -32,7 +32,7 @@
                 <div class="form-row">
                   <div class="col-md-3 mb-2">
                     <label>Código</label>
-                    <input type="text" class="form-control" name="code" required>
+                    <input type="text" class="form-control" name="code" id="code" required>
                   </div>
 
                   <!-- Descripción -->
@@ -73,13 +73,14 @@
             <!-- ==================== FORMA DE VENTA ==================== -->
             <div class="col-md-2">
               <fieldset class="border p-3 mb-3 h-100">
-                <legend class="w-auto px-2 font-weight-bold">Forma de Venta</legend>
+                <legend class="w-auto px-2 font-weight-bold"></legend>
 
                 <!-- Unidad -->
                 <div class="custom-control custom-radio mb-2">
-                  <input type="radio" class="custom-control-input" id="sales_1" name="tipo_venta" value="1" required>
+                  <input type="radio" class="custom-control-input" id="sales_1" name="tipo_venta" value="1" checked
+                    required>
                   <label class="custom-control-label" for="sales_1">
-                    Venta por <strong>Unidad</strong>
+                    <strong>Uni</strong>
                   </label>
                 </div>
 
@@ -87,7 +88,7 @@
                 <div class="custom-control custom-radio">
                   <input type="radio" class="custom-control-input" id="sales_2" name="tipo_venta" value="2" required>
                   <label class="custom-control-label" for="sales_2">
-                    Venta por <strong>Kilogramo</strong>
+                    <strong>Kg</strong>
                   </label>
                 </div>
               </fieldset>
@@ -111,7 +112,7 @@
 
                 <!-- Stock Fili 2 -->
                 <label>Stock Fili 2</label>
-                <input type="text" class="form-control mb-2" name="stock_2" required>
+                <input type="text" class="form-control mb-2" name="stock_2" readonly>
 
                 <label>Edición</label>
                 <input type="text" class="form-control stock" name="edit_stock_2" required>
@@ -130,7 +131,7 @@
 
                   <!-- Último Costo -->
                   <label>Último costo</label>
-                  <input type="text" class="form-control money" name="end_cost" required>
+                  <input type="text" class="form-control money" name="end_cost">
 
                 </fieldset>
               </div>
@@ -145,27 +146,27 @@
                 <div class="form-row">
                   <div class="col-md-4 mb-2">
                     <label><strong>Precio 1</strong></label>
-                    <input type="text" class="form-control money" name="price_one">
+                    <input type="text" class="form-control money" name="price_one" required>
                   </div>
 
                   <!-- Margen 1 -->
                   <?php if (can('product_margin_view')): ?>
                     <div class="col-md-4 mb-2">
                       <label><strong>Margen</strong></label>
-                      <input type="text" class="form-control money" name="margin_one">
+                      <input type="text" class="form-control money" name="margin_one" required>
                     </div>
 
                     <!-- Porcentaje 1 -->
                     <div class="col-md-2 mb-2">
                       <label>%</label>
-                      <input type="text" class="form-control percent" name="x1">
+                      <input type="text" class="form-control percent" name="x1" required>
                     </div>
                   <?php endif; ?>
 
                   <!-- Cantidad Desde -->
                   <div class="col-md-2 mb-2">
-                    <label>Desde</label>
-                    <input type="text" class="form-control numeric" name="cant_one" readonly>
+                    <label>x</label>
+                    <input type="text" class="form-control numeric" name="cant_one" readonly value="1">
                   </div>
                 </div>
 
@@ -173,27 +174,27 @@
                 <div class="form-row">
                   <div class="col-md-4 mb-2">
                     <label><strong>Precio 2</strong></label>
-                    <input type="text" class="form-control money" name="price_two">
+                    <input type="text" class="form-control money" name="price_two" required>
                   </div>
 
                   <!-- Margen 2 -->
                   <?php if (can('product_margin_view')): ?>
                     <div class="col-md-4 mb-2">
                       <label><strong>Margen</strong></label>
-                      <input type="text" class="form-control money" name="margin_two">
+                      <input type="text" class="form-control money" name="margin_two" required>
                     </div>
 
                     <!-- Porcentaje 2 -->
                     <div class="col-md-2 mb-2">
                       <label>%</label>
-                      <input type="text" class="form-control percent" name="x2">
+                      <input type="text" class="form-control percent" name="x2" required>
                     </div>
                   <?php endif; ?>
 
                   <!-- Cantidad Desde -->
                   <div class="col-md-2 mb-2">
-                    <label>Desde</label>
-                    <input type="text" class="form-control numeric" name="cant_two">
+                    <label>x</label>
+                    <input type="text" class="form-control numeric" name="cant_two" required>
                   </div>
                 </div>
 
@@ -203,27 +204,27 @@
                   <!-- Precio -->
                   <div class="col-md-4 mb-2">
                     <label><strong>Precio 3</strong></label>
-                    <input type="text" class="form-control money" name="price_three">
+                    <input type="text" class="form-control money" name="price_three" required>
                   </div>
 
                   <!-- Margen 3 -->
                   <?php if (can('product_margin_view')): ?>
                     <div class="col-md-4 mb-2">
                       <label><strong>Margen</strong></label>
-                      <input type="text" class="form-control money" name="margin_three">
+                      <input type="text" class="form-control money" name="margin_three" required>
                     </div>
 
                     <!-- Porcentaje 3 -->
                     <div class="col-md-2 mb-2">
                       <label>%</label>
-                      <input type="text" class="form-control percent" name="x3">
+                      <input type="text" class="form-control percent" name="x3" required>
                     </div>
                   <?php endif; ?>
 
                   <!-- Cantidad Desde -->
                   <div class="col-md-2 mb-2">
-                    <label>Desde</label>
-                    <input type="text" class="form-control numeric" name="cant_three">
+                    <label>x</label>
+                    <input type="text" class="form-control numeric" name="cant_three" required>
                   </div>
                 </div>
 
@@ -236,7 +237,7 @@
                 <legend class="w-auto px-2 font-weight-bold">Iva</legend>
                 <label>%</label>
                 <select class="form-control select" name="iva" id="iva" required>
-                  <option value="1">Seleccione</option>
+                  <option value="1">10 %</option>
                   <?php foreach ($ivas as $iva): ?>
                     <option value="<?= esc($iva['id']) ?>">
                       <?= esc($iva['name']) . ' %'; ?>

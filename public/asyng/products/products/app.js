@@ -1,61 +1,183 @@
-function product_add_open() {
-  $.post(
-    BASE_URL + '/products/products/product_open',
-    {
-      [csrfName]: csrfHash
-    },
-    function (response) {
 
-      if (response.status) {
-        open_hide('#products_form', '#products_panel', response.form, function () {
+function calculateFromPrice($priceInput) {
 
-          // ⏳ esperar render real
-          requestAnimationFrame(() => {
-            asyngMoneyMask('#products_form .money');
-            asyngPercentMask('#products_form .percent');
-            asyngNumericStock('#products_form .stock');
+  const name = $priceInput.attr('name'); // price_one
+  const suffix = name.split('_')[1];     // one
 
-            $("#operation_type").val(response.data.type);
-          });
-        });
+  const cost = toNumber($('[name="cost"]').val());
+  const price = toNumber($priceInput.val());
 
-      }
+  if (cost <= 0 || price <= 0) return;
 
-      csrfHash = response.csrfHash;
-    },
-    'json'
-  );
+  // Inputs relacionados
+  const $margin = $('[name="margin_' + suffix + '"]');
+  const $percent = $('[name="x' + suffix.replace('one', '1').replace('two', '2').replace('three', '3') + '"]');
+
+  // ================= MARGEN =================
+  const margin = price - cost;
+  $margin.val(formatMoney(margin > 0 ? margin : 0));
+
+  // ================= PORCENTAJE =================
+  const percent = (margin / cost) * 100;
+  $percent.val(percent > 0 ? percent.toFixed(2) : 0);
+
+  // ================= EFECTO VISUAL =================
+  asyngVisualEffects([$priceInput, $margin, $percent]);
+}
+function calculateFromMargin($marginInput) {
+
+  const name = $marginInput.attr('name');   // margin_one
+  const suffix = name.split('_')[1];        // one
+
+  const cost = toNumber($('[name="cost"]').val());
+  const margin = toNumber($marginInput.val());
+
+  if (cost <= 0 || margin < 0) return;
+
+  // Inputs relacionados
+  const $price = $('[name="price_' + suffix + '"]');
+  const $percent = $('[name="x' + suffix.replace('one', '1').replace('two', '2').replace('three', '3') + '"]');
+
+  // ================= PRECIO =================
+  const price = cost + margin;
+  $price.val(formatMoney(price));
+
+  // ================= PORCENTAJE =================
+  const percent = (margin / cost) * 100;
+  $percent.val(percent > 0 ? percent.toFixed(2) : 0);
+
+  // ================= EFECTO VISUAL =================
+  asyngVisualEffects([$marginInput, $price, $percent]);
+}
+function indexToWord(index) {
+  const map = {
+    '1': 'one',
+    '2': 'two',
+    '3': 'three'
+  };
+  return map[index];
+}
+function calculateFromPercent($percentInput) {
+
+  const name = $percentInput.attr('name'); // x1, x2, x3
+  const index = name.replace('x', '');
+
+  const cost = toMoneyNumber($('[name="cost"]').val());
+  const percent = toPercentNumber($percentInput.val());
+
+  if (cost <= 0 || percent < 0) return;
+
+  const word = indexToWord(index);
+
+  const $margin = $('[name="margin_' + word + '"]');
+  const $price = $('[name="price_' + word + '"]');
+
+  // ================= CÁLCULOS CORRECTOS =================
+  const margin = cost * (percent / 100);
+  const price = cost + margin;
+
+  // ================= ESCRIBIR =================
+  $margin.val(formatMoney(margin));
+  $price.val(formatMoney(price));
+
+  // ================= EFECTO VISUAL =================
+  asyngVisualEffects([$percentInput, $margin, $price]);
+}
+function recalculateFromCost() {
+
+  const cost = toMoneyNumber($('[name="cost"]').val());
+  if (cost <= 0) return;
+
+  const levels = [
+    { price: 'price_one', margin: 'margin_one', percent: 'x1' },
+    { price: 'price_two', margin: 'margin_two', percent: 'x2' },
+    { price: 'price_three', margin: 'margin_three', percent: 'x3' }
+  ];
+
+  let affected = [];
+
+  levels.forEach(level => {
+
+    const $price = $('[name="' + level.price + '"]');
+    const $margin = $('[name="' + level.margin + '"]');
+    const $percent = $('[name="' + level.percent + '"]');
+
+    if (!$price.length) return;
+
+    const priceValue = toMoneyNumber($price.val());
+    if (priceValue <= 0) return;
+
+    // ================= MARGEN =================
+    const margin = priceValue - cost;
+    if (margin < 0) return;
+
+    $margin.val(formatMoney(margin));
+
+    // ================= PORCENTAJE =================
+    const percent = (margin / cost) * 100;
+    $percent.val(percent.toFixed(1));
+
+    affected.push($margin, $percent);
+  });
+
+  if (affected.length) {
+    asyngVisualEffects(affected);
+  }
 }
 
 
-function product_add_save() {
+$(document).on('keydown', '.money[name^="price_"]', function (e) {
 
-}
-
-
-$(document).on('click', '.product_cancel', function (e) {
-  e.preventDefault();
-  cancel_open('#products_form', '#products_panel');
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    calculateFromPrice($(this));
+  }
 });
 
-//Abrir Modal de Registrar Productos
-$(document).on('click', '.product_add', function (e) {
-  e.preventDefault();
-  product_add_open();
+$(document).on('keydown', '.money[name^="margin_"]', function (e) {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    calculateFromMargin($(this));
+  }
 });
 
-$(document).on('click', '.product_send', function (e) {
-  e.preventDefault();
+$(document).on('keydown', '.percent[name^="x"]', function (e) {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    calculateFromPercent($(this));
+  }
+});
+$(document).on('keydown', '[name="cost"]', function (e) {
 
-  hideGlobalAlert();
-  if (!validateForm('#product_form')) {
-    return;
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    recalculateFromCost();
   }
 
-
-  // Si pasa la validación
-  alert('send');
 });
 
+// FORMATEO DE INPUT CODE
+$(document).on('input', '#code', function () {
 
+  let raw = $(this).val();
+
+  raw = raw.trim();
+
+  raw = raw.replace(/^0+/, '');
+
+  if (raw === '') {
+    raw = '0';
+  }
+
+  let formatted;
+
+  if (raw.length <= 7) {
+    formatted = raw.padStart(7, '0');
+  } else {
+
+    formatted = raw;
+  }
+
+  $(this).val(formatted);
+});
 

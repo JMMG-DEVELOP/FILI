@@ -1,24 +1,37 @@
-// ===== LOADER GLOBAL (Opcional) =====
+// ================================
+// LOADER GLOBAL BLINDADO
+// ================================
+let __ASYNG_LOADER_COUNT = 0;
+
 function asyngLoader(show = true) {
+
   if (show) {
-    if ($("#asyng-loader").length === 0) {
+    __ASYNG_LOADER_COUNT++;
+
+    if ($('#asyng-loader').length === 0) {
       $('body').append(`
-                <div id="asyng-loader" style="
-                    position: fixed;
-                    top: 0; left: 0;
-                    width: 100%; height: 100%;
-                    background: rgba(255,255,255,0.7);
-                    z-index: 9999;
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                ">
-                    <div class="spinner-border" role="status"></div>
-                </div>
-            `);
+        <div id="asyng-loader" style="
+          position: fixed;
+          top: 0; left: 0;
+          width: 100%; height: 100%;
+          background: rgba(255,255,255,0.7);
+          z-index: 9999;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        ">
+          <div class="spinner-border text-primary" role="status"></div>
+        </div>
+      `);
     }
+
   } else {
-    $("#asyng-loader").remove();
+    __ASYNG_LOADER_COUNT--;
+
+    if (__ASYNG_LOADER_COUNT <= 0) {
+      __ASYNG_LOADER_COUNT = 0;
+      $('#asyng-loader').remove();
+    }
   }
 }
 
@@ -65,22 +78,20 @@ function asyngFormData(form) {
 // Envio de datos por ajax
 
 function asyngAjaxSend(url, data = {}, useLoader = true) {
-  return new Promise(function (resolve, reject) {
+
+  return new Promise((resolve, reject) => {
 
     if (useLoader) asyngLoader(true);
 
-    // Si data es array → serializeArray → agregar CSRF
+    // CSRF seguro
     if (Array.isArray(data)) {
       data.push({ name: csrfName, value: csrfHash });
-    }
-
-    // Si es objeto normal
-    else if (!(data instanceof FormData)) {
+    } else if (!(data instanceof FormData)) {
       data[csrfName] = csrfHash;
     }
 
     $.ajax({
-      url: baseUrl + "/" + url,
+      url: BASE_URL + "/" + url,
       type: "POST",
       dataType: "json",
       data: data,
@@ -91,7 +102,7 @@ function asyngAjaxSend(url, data = {}, useLoader = true) {
 
       success: function (response) {
 
-        // Actualizar token
+        // Actualizar CSRF
         if (response.csrfName && response.csrfHash) {
           csrfName = response.csrfName;
           csrfHash = response.csrfHash;
@@ -104,13 +115,24 @@ function asyngAjaxSend(url, data = {}, useLoader = true) {
       },
 
       error: function (xhr) {
-        reject(xhr.responseText);
+        console.error('AJAX ERROR:', xhr);
+        reject(xhr);
       },
 
       complete: function () {
         if (useLoader) asyngLoader(false);
       }
     });
+
+  }).catch(err => {
+
+    // 🔐 BLINDAJE FINAL (por si algo rompe antes del complete)
+    asyngLoader(false);
+    throw err;
+
   });
 }
+
+
+
 
