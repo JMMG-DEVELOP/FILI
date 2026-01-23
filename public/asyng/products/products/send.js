@@ -43,27 +43,83 @@ $(document).on('click', '.product_add', function (e) {
   e.preventDefault();
   product_add_open();
 });
-
 $(document).on('click', '.product_send', async function (e) {
   e.preventDefault();
 
-  // if (!validateForm('#product_form')) {
-  //   showAlert('Verifique los campos del formulario', 'warning');
-  //   return;
-  // }
+  // 1️⃣ Validar formulario
+  if (!validateForm('#product_form')) {
+    return;
+  }
 
-  try {
-    const data = asyngFormData('#product_form');
-    const response = await asyngAjaxSend('products/products/product_save', data);
+  // 2️⃣ Obtener datos del form (array)
+  const dataArray = asyngFormData('#product_form');
 
-    if (response.status) {
-      showAlert('Producto guardado correctamente', 'success');
-    } else {
-      showAlert(response.message || 'Error al guardar', 'danger');
+  // 3️⃣ Convertir array → objeto (OPCIÓN PRO)
+  const formData = Object.fromEntries(
+    dataArray.map(item => [item.name, item.value])
+  );
+
+  // 4️⃣ Determinar operación
+  if (formData.operation_type === 'add') {
+    try {
+      const response = await asyngAjaxSend(
+        'products/products/product_save',
+        dataArray // ⚠️ seguimos enviando el array
+      );
+
+      if (!response.status && response.error === 'code_exists') {
+        showAlert(response.message, 'danger');
+        return;
+      }
+
+      if (!response.status) {
+        showAlert(
+          response.message || 'Error al guardar el producto',
+          'danger'
+        );
+        return;
+      }
+
+      // ✅ Éxito
+      showAlert(response.message, 'success');
+
+    } catch (err) {
+      console.error(err);
+      showAlert('Error de comunicación con el servidor', 'danger');
     }
-
-  } catch (err) {
-    showAlert('Error de comunicación con el servidor', 'danger');
   }
 });
+
+
+// $(document).on('click', '.product_send', async function (e) {
+//   e.preventDefault();
+
+//   if (!validateForm('#product_form')) {
+//     return;
+//   }
+//   const data = asyngFormData('#product_form');
+//   if (data.operation_type === 'add') {
+//     try {
+
+//       const response = await asyngAjaxSend('products/products/product_save', data);
+
+//       if (!response.status && response.error === 'code_exists') {
+//         showAlert(response.message, 'danger');
+//         return;
+//       } else
+
+//         if (!response.status) {
+//           showAlert(response.message || 'Error al guardar el producto', 'danger');
+//           return;
+//         } else {
+//           showAlert(response.message, 'success');
+//         }
+
+//     } catch (err) {
+//       showAlert('Error de comunicación con el servidor', 'danger');
+//     }
+//   }
+
+// });
+
 

@@ -159,25 +159,46 @@ $(document).on('keydown', '[name="cost"]', function (e) {
 // FORMATEO DE INPUT CODE
 $(document).on('input', '#code', function () {
 
-  let raw = $(this).val();
+  let raw = $(this).val().trim();
 
-  raw = raw.trim();
-
+  // Eliminar ceros a la izquierda
   raw = raw.replace(/^0+/, '');
 
+  // Evitar vacío
   if (raw === '') {
     raw = '0';
   }
 
-  let formatted;
+  // Rellenar hasta 7 dígitos
+  const formatted = raw.length <= 7
+    ? raw.padStart(7, '0')
+    : raw;
 
-  if (raw.length <= 7) {
-    formatted = raw.padStart(7, '0');
-  } else {
+  // 🔑 Asignar al input
+  $(this).val(formatted);
+});
 
-    formatted = raw;
+$(document).on('keydown', '#code', async function (e) {
+
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    let data = {
+      code: $('#code').val()
+    };
+
+    const response = await asyngAjaxSend('products/products/product_save_verify', data);
+
+    if (!response.status && response.error === 'code_exists') {
+      showAlert(response.message, 'danger');
+      return;
+    } else if (!response.status && response.error === 'code_empty') {
+      showAlert(response.message, 'danger');
+    }
+    else if (response.status) {
+      showAlert(response.message, 'success');
+    }
+
   }
 
-  $(this).val(formatted);
 });
 

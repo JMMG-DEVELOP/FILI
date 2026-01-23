@@ -66,7 +66,6 @@ function asyngInfo(msg) {
 function asyngFormData(form) {
   let formData = $(form).serializeArray();
 
-  // Insertar CSRF correctamente
   formData.push({
     name: csrfName,
     value: csrfHash

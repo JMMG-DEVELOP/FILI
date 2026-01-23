@@ -41,6 +41,8 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
         // Product Add
         $routes->post('products/product_open', 'Products\Products\Add::open');
         $routes->post('products/product_save', 'Products\Products\Add::save');
+        $routes->post('products/product_save_verify', 'Products\Products\Add::code_verify');
+
 
 
         // Brands Datatable

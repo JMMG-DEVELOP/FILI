@@ -45,7 +45,7 @@
                   <div class="col-md-2 mb-2">
                     <label>Sección</label>
                     <select class="form-control select" name="section" id="sections" required>
-                      <option value="1">Seleccione</option>
+                      <option value="">Seleccione</option>
                       <?php foreach ($sections as $section): ?>
                         <option value="<?= esc($section['id']) ?>">
                           <?= esc($section['name']) ?>
@@ -58,7 +58,7 @@
                   <div class="col-md-2 mb-2">
                     <label>Marca</label>
                     <select class="form-control select" name="brand" id="brands" required>
-                      <option value="1">Seleccione</option>
+                      <option value="">Seleccione</option>
                       <?php foreach ($brands as $brand): ?>
                         <option value="<?= esc($brand['id']) ?>">
                           <?= esc($brand['name']) ?>
@@ -131,7 +131,7 @@
 
                   <!-- Último Costo -->
                   <label>Último costo</label>
-                  <input type="text" class="form-control money" name="end_cost">
+                  <input type="text" class="form-control money" name="other_cost">
 
                 </fieldset>
               </div>

@@ -111,7 +111,7 @@ function validateForm(formSelector) {
   });
 
   if (!valid) {
-    showGlobalAlert('Complete los campos obligatorios.', 'warning');
+    showAlert('Complete los campos obligatorios.', 'warning');
   }
 
   return valid;

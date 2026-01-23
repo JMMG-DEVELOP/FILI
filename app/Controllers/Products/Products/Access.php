@@ -24,4 +24,9 @@ class Access extends BaseController
         }
     }
 
+    public function product_details()
+    {
+
+    }
+
 }
