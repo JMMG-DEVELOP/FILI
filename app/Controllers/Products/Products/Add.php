@@ -4,10 +4,15 @@ namespace App\Controllers\Products\Products;
 use App\Controllers\BaseController;
 
 use App\Models\Products\Products\ProductModel;
+use App\Models\Products\Products\IvaModel;
 use App\Models\Products\Brands\BrandsModel;
 use App\Models\Products\Section\SectionModel;
-use App\Models\Products\Products\ProductIvaModel;
-use App\Libraries\Products;
+use App\Services\ProductService;
+
+
+
+
+use App\Libraries\ProductsFormatter;
 
 
 class Add extends BaseController
@@ -16,8 +21,7 @@ class Add extends BaseController
     {
         $brandsModel = new BrandsModel();
         $sectionModel = new SectionModel();
-        $ivaModel = new ProductIvaModel();
-
+        $ivaModel = new IvaModel();
         // Obtener datos activos (ajusta filtros si hace falta)
         $brands = $brandsModel->findAll();
         $sections = $sectionModel->findAll();
@@ -44,7 +48,9 @@ class Add extends BaseController
 
     public function save()
     {
-        $prepare = new Products();
+        $productFormatter = new ProductsFormatter();
+        $productService = new ProductService();
+
 
         if (!$this->request->isAJAX()) {
             return $this->response
@@ -60,8 +66,7 @@ class Add extends BaseController
         $post = $this->request->getPost();
 
         // 1️⃣ Validar código
-        $validation = $this->validate_code($post['code'] ?? null);
-
+        $validation = $productService->validate_code($post['code'] ?? null);
         if ($validation['status'] === false) {
             return $this->response->setJSON(
                 array_merge($validation, [
@@ -71,26 +76,35 @@ class Add extends BaseController
             );
         }
 
-        // 2️⃣ 👉 AQUÍ recién va el proceso de guardado real
-        // $productModel->insert(...);
-        $data = $prepare->prepare_table_prices($post);
+        // 2️⃣ 👉 Save Process 
+        $formatter = $productFormatter->tables_formatters($post);
 
-        return $this->response->setJSON([
-            'status' => true,
-            'message' => 'Producto guardado correctamente',
-            'data' => $data,
-            'csrfName' => csrf_token(),
-            'csrfHash' => csrf_hash()
-        ]);
+        if ($productService->save($formatter)) {
+            return $this->response->setJSON([
+                'status' => true,
+                'message' => 'Producto guardado correctamente',
+                'csrfName' => csrf_token(),
+                'csrfHash' => csrf_hash()
+            ]);
+        } else {
+            return $this->response->setJSON([
+                'status' => false,
+                'message' => 'Error al Guardar Producto',
+                'csrfName' => csrf_token(),
+                'csrfHash' => csrf_hash()
+            ]);
+        }
+
     }
 
     public function code_verify()
     {
+        $productService = new ProductService();
         if (!$this->request->isAJAX()) {
             return $this->response->setStatusCode(403);
         }
 
-        $result = $this->validate_code(
+        $result = $productService->validate_code(
             $this->request->getPost('code')
         );
 
@@ -102,31 +116,30 @@ class Add extends BaseController
         );
     }
 
-    private function validate_code($code)
-    {
-        if (!$code) {
-            return [
-                'status' => false,
-                'error' => 'code_empty',
-                'message' => 'Código vacío'
-            ];
-        }
+    // {
+    //     if (!$code) {
+    //         return [
+    //             'status' => false,
+    //             'error' => 'code_empty',
+    //             'message' => 'Código vacío'
+    //         ];
+    //     }
 
-        $productModel = new ProductModel();
+    //     $productModel = new ProductModel();
 
-        if ($productModel->getByCode($code)) {
-            return [
-                'status' => false,
-                'error' => 'code_exists',
-                'message' => 'El código ya existe'
-            ];
-        }
+    //     if ($productModel->getByCode($code)) {
+    //         return [
+    //             'status' => false,
+    //             'error' => 'code_exists',
+    //             'message' => 'El código ya existe'
+    //         ];
+    //     }
 
-        return [
-            'status' => true,
-            'message' => 'Código disponible',
-        ];
-    }
+    //     return [
+    //         'status' => true,
+    //         'message' => 'Código disponible',
+    //     ];
+    // }
 
 
 }

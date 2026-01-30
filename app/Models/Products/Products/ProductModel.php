@@ -23,6 +23,15 @@ class ProductModel extends Model
 
     ];
 
+    public function add(array $data)
+    {
+        if ($this->insert($data) === false) {
+            return false;
+        }
+
+        return $this->getInsertID();
+    }
+
     public function getByCode(string $productCode)
     {
         $db = $this->db;

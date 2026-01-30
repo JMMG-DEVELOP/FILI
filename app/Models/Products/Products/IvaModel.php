@@ -4,7 +4,7 @@ namespace App\Models\Products\Products;
 
 use CodeIgniter\Model;
 
-class ProductIvaModel extends Model
+class IvaModel extends Model
 {
   protected $table = 'products_iva';
   protected $primaryKey = 'id';

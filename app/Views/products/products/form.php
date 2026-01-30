@@ -38,14 +38,14 @@
                   <!-- Descripción -->
                   <div class="col-md-5 mb-2">
                     <label>Descripción</label>
-                    <input type="text" class="form-control" name="description" required>
+                    <input type="text" class="form-control" name="description" require value="TEST PRODUCT">
                   </div>
 
                   <!-- Sección -->
                   <div class="col-md-2 mb-2">
                     <label>Sección</label>
                     <select class="form-control select" name="section" id="sections" required>
-                      <option value="">Seleccione</option>
+                      <option value="1">Seleccione</option>
                       <?php foreach ($sections as $section): ?>
                         <option value="<?= esc($section['id']) ?>">
                           <?= esc($section['name']) ?>
@@ -58,7 +58,7 @@
                   <div class="col-md-2 mb-2">
                     <label>Marca</label>
                     <select class="form-control select" name="brand" id="brands" required>
-                      <option value="">Seleccione</option>
+                      <option value="1">Seleccione</option>
                       <?php foreach ($brands as $brand): ?>
                         <option value="<?= esc($brand['id']) ?>">
                           <?= esc($brand['name']) ?>
@@ -108,14 +108,14 @@
                 <input type="text" class="form-control mb-2" name="stock_1" readonly>
 
                 <label>Edición</label>
-                <input type="text" class="form-control stock mb-2" name="edit_stock_1" required>
+                <input type="text" class="form-control stock mb-2" name="edit_stock_1" required value="3">
 
                 <!-- Stock Fili 2 -->
                 <label>Stock Fili 2</label>
                 <input type="text" class="form-control mb-2" name="stock_2" readonly>
 
                 <label>Edición</label>
-                <input type="text" class="form-control stock" name="edit_stock_2" required>
+                <input type="text" class="form-control stock" name="edit_stock_2" required value="1">
               </fieldset>
             </div>
 
@@ -127,11 +127,11 @@
 
                   <!-- Costo -->
                   <label>Costo</label>
-                  <input type="text" class="form-control money mb-2" name="cost" required>
+                  <input type="text" class="form-control money mb-2" name="cost" required value="5000">
 
                   <!-- Último Costo -->
                   <label>Último costo</label>
-                  <input type="text" class="form-control money" name="other_cost">
+                  <input type="text" class="form-control money" name="other_cost" value="5000">
 
                 </fieldset>
               </div>
@@ -146,20 +146,20 @@
                 <div class="form-row">
                   <div class="col-md-4 mb-2">
                     <label><strong>Precio 1</strong></label>
-                    <input type="text" class="form-control money" name="price_one" required>
+                    <input type="text" class="form-control money" name="price_one" required value="8000">
                   </div>
 
                   <!-- Margen 1 -->
                   <?php if (can('product_margin_view')): ?>
                     <div class="col-md-4 mb-2">
                       <label><strong>Margen</strong></label>
-                      <input type="text" class="form-control money" name="margin_one" required>
+                      <input type="text" class="form-control money" name="margin_one" required value="3000">
                     </div>
 
                     <!-- Porcentaje 1 -->
                     <div class="col-md-2 mb-2">
                       <label>%</label>
-                      <input type="text" class="form-control percent" name="x1" required>
+                      <input type="text" class="form-control percent" name="x1" required value="20">
                     </div>
                   <?php endif; ?>
 
@@ -174,27 +174,27 @@
                 <div class="form-row">
                   <div class="col-md-4 mb-2">
                     <label><strong>Precio 2</strong></label>
-                    <input type="text" class="form-control money" name="price_two" required>
+                    <input type="text" class="form-control money" name="price_two" required value="7500">
                   </div>
 
                   <!-- Margen 2 -->
                   <?php if (can('product_margin_view')): ?>
                     <div class="col-md-4 mb-2">
                       <label><strong>Margen</strong></label>
-                      <input type="text" class="form-control money" name="margin_two" required>
+                      <input type="text" class="form-control money" name="margin_two" required value="2500">
                     </div>
 
                     <!-- Porcentaje 2 -->
                     <div class="col-md-2 mb-2">
                       <label>%</label>
-                      <input type="text" class="form-control percent" name="x2" required>
+                      <input type="text" class="form-control percent" name="x2" required value="25">
                     </div>
                   <?php endif; ?>
 
                   <!-- Cantidad Desde -->
                   <div class="col-md-2 mb-2">
                     <label>x</label>
-                    <input type="text" class="form-control numeric" name="cant_two" required>
+                    <input type="text" class="form-control numeric" name="cant_two" required value="33">
                   </div>
                 </div>
 
@@ -204,27 +204,27 @@
                   <!-- Precio -->
                   <div class="col-md-4 mb-2">
                     <label><strong>Precio 3</strong></label>
-                    <input type="text" class="form-control money" name="price_three" required>
+                    <input type="text" class="form-control money" name="price_three" required value="7000">
                   </div>
 
                   <!-- Margen 3 -->
                   <?php if (can('product_margin_view')): ?>
                     <div class="col-md-4 mb-2">
                       <label><strong>Margen</strong></label>
-                      <input type="text" class="form-control money" name="margin_three" required>
+                      <input type="text" class="form-control money" name="margin_three" required value="2000">
                     </div>
 
                     <!-- Porcentaje 3 -->
                     <div class="col-md-2 mb-2">
                       <label>%</label>
-                      <input type="text" class="form-control percent" name="x3" required>
+                      <input type="text" class="form-control percent" name="x3" required value="18">
                     </div>
                   <?php endif; ?>
 
                   <!-- Cantidad Desde -->
                   <div class="col-md-2 mb-2">
                     <label>x</label>
-                    <input type="text" class="form-control numeric" name="cant_three" required>
+                    <input type="text" class="form-control numeric" name="cant_three" required value="3">
                   </div>
                 </div>
 

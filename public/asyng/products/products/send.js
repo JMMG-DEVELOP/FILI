@@ -28,98 +28,77 @@ function product_add_open() {
 }
 
 
-function product_add_save() {
+async function product_add_save(dataArray) {
+
+  try {
+    const response = await asyngAjaxSend(
+      'products/products/product_save',
+      dataArray
+    );
+
+    if (!response.status && response.error === 'code_exists') {
+      showAlert(response.message, 'danger');
+      return;
+    }
+
+    if (!response.status) {
+      showAlert(
+        response.message || 'Error al guardar el producto',
+        'danger'
+      );
+      return;
+    }
+
+    if (response.status) {
+      cancel_open('#products_form', '#products_panel');
+
+      showAlert(
+        response.message, 'danger'
+      );
+
+      return;
+    }
+
+
+  } catch (err) {
+    console.error(err);
+    showAlert('Error de comunicación con el servidor', 'danger');
+  } finally {
+    $btn.prop('disabled', false);
+  }
 
 }
-
-
-$(document).on('click', '.product_cancel', function (e) {
-  e.preventDefault();
-  cancel_open('#products_form', '#products_panel');
-});
 
 //Abrir Modal de Registrar Productos
 $(document).on('click', '.product_add', function (e) {
   e.preventDefault();
   product_add_open();
 });
+
 $(document).on('click', '.product_send', async function (e) {
   e.preventDefault();
 
-  // 1️⃣ Validar formulario
+  const $btn = $(this);
+
+  if ($btn.prop('disabled')) return;
+  $btn.prop('disabled', true);
+
   if (!validateForm('#product_form')) {
+    $btn.prop('disabled', false);
     return;
   }
 
-  // 2️⃣ Obtener datos del form (array)
   const dataArray = asyngFormData('#product_form');
 
-  // 3️⃣ Convertir array → objeto (OPCIÓN PRO)
   const formData = Object.fromEntries(
     dataArray.map(item => [item.name, item.value])
   );
 
-  // 4️⃣ Determinar operación
   if (formData.operation_type === 'add') {
-    try {
-      const response = await asyngAjaxSend(
-        'products/products/product_save',
-        dataArray // ⚠️ seguimos enviando el array
-      );
 
-      if (!response.status && response.error === 'code_exists') {
-        showAlert(response.message, 'danger');
-        return;
-      }
-
-      if (!response.status) {
-        showAlert(
-          response.message || 'Error al guardar el producto',
-          'danger'
-        );
-        return;
-      }
-
-      // ✅ Éxito
-      showAlert(response.message, 'success');
-
-    } catch (err) {
-      console.error(err);
-      showAlert('Error de comunicación con el servidor', 'danger');
-    }
+    product_add_save(dataArray);
+  } else {
+    $btn.prop('disabled', false);
   }
 });
-
-
-// $(document).on('click', '.product_send', async function (e) {
-//   e.preventDefault();
-
-//   if (!validateForm('#product_form')) {
-//     return;
-//   }
-//   const data = asyngFormData('#product_form');
-//   if (data.operation_type === 'add') {
-//     try {
-
-//       const response = await asyngAjaxSend('products/products/product_save', data);
-
-//       if (!response.status && response.error === 'code_exists') {
-//         showAlert(response.message, 'danger');
-//         return;
-//       } else
-
-//         if (!response.status) {
-//           showAlert(response.message || 'Error al guardar el producto', 'danger');
-//           return;
-//         } else {
-//           showAlert(response.message, 'success');
-//         }
-
-//     } catch (err) {
-//       showAlert('Error de comunicación con el servidor', 'danger');
-//     }
-//   }
-
-// });
-
 

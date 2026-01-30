@@ -18,14 +18,6 @@ if (can('product_products_view')) {
 }
 ?>
 
-<!-- <div id="globalFormAlert" class="alert alert-warning alert-dismissible fade" role="alert">
-  <strong>Atención!</strong>
-  <span class="alert-message"></span>
-  <a href="#" class="close" data-dismiss="alert" aria-label="Close">
-    <span aria-hidden="true">×</span>
-  </a>
-</div> -->
-
 
 <!-- Panel Sidebar -->
 <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 mb-5">
@@ -111,6 +103,7 @@ if (can('product_products_view')) {
 <?= $this->section('other_script'); ?>
 <?= $this->include('interface/other/scripts/datatables'); ?>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.9/jquery.inputmask.min.js"></script>
+<script src="<?= base_url(); ?>/asyng/products/products/process.js"></script>
 
 <script src="<?= base_url(); ?>/asyng/products/products/app.js"></script>
 <script src="<?= base_url(); ?>/asyng/products/products/send.js"></script>

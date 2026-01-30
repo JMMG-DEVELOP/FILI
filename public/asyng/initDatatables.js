@@ -85,7 +85,7 @@ function initProductsTable() {
         input.value = val;
       }
 
-      // FUNCION AL PRESIONAR
+
     },
 
     onEnterEmpty: () => {

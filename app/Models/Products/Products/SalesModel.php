@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Models\Products;
+namespace App\Models\Products\Products;
 
 use CodeIgniter\Model;
 
 class SalesModel extends Model
 {
-    protected $table      = 'products_sales';
+    protected $table = 'products_sales';
     protected $primaryKey = 'id';
     protected $returnType = 'array';
 
@@ -14,5 +14,5 @@ class SalesModel extends Model
         'name'
     ];
 
-    
+
 }
