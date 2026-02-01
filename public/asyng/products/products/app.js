@@ -191,17 +191,6 @@ $(document).on('keydown', '#code', async function (e) {
     };
 
     code_verify(data);
-    // const response = await asyngAjaxSend('products/products/product_save_verify', data);
-
-    // if (!response.status && response.error === 'code_exists') {
-    //   showAlert(response.message, 'danger');
-    //   return;
-    // } else if (!response.status && response.error === 'code_empty') {
-    //   showAlert(response.message, 'danger');
-    // }
-    // else if (response.status) {
-    //   showAlert(response.message, 'success');
-    // }
 
   }
 

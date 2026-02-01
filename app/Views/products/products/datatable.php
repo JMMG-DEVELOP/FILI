@@ -8,8 +8,14 @@ $canEditProduct = in_array(
   'product_product_edit',
   session()->get('permissions') ?? []
 ) || in_array('*', session()->get('permissions') ?? []);
+
 $canDeleteProduct = in_array(
   'product_product_delete',
+  session()->get('permissions') ?? []
+) || in_array('*', session()->get('permissions') ?? []);
+
+$canAddProduct = in_array(
+  'product_product_add',
   session()->get('permissions') ?? []
 ) || in_array('*', session()->get('permissions') ?? []);
 ?>
@@ -17,6 +23,8 @@ $canDeleteProduct = in_array(
   const CAN_VIEW_COST = <?= $canViewCost ? 'true' : 'false' ?>;
   const CAN_EDIT_PRODUCT = <?= $canEditProduct ? 'true' : 'false' ?>;
   const CAN_DELETE_PRODUCT = <?= $canDeleteProduct ? 'true' : 'false' ?>;
+  const CAN_ADD_PRODUCT = <?= $canAddProduct ? 'true' : 'false' ?>;
+
 </script>
 
 <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">

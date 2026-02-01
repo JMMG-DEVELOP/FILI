@@ -1,4 +1,4 @@
-function product_add_open() {
+function product_add_open(code = '') {
   $.post(
     BASE_URL + '/products/products/product_open',
     {
@@ -16,6 +16,44 @@ function product_add_open() {
             asyngNumericStock('#products_form .stock');
 
             $("#operation_type").val(response.data.type);
+
+            if (code) {
+              $('#products_form #code').val(code);
+              $('#products_form #description').focus();
+            }
+          });
+        });
+
+      }
+
+      csrfHash = response.csrfHash;
+    },
+    'json'
+  );
+}
+function product_edit_open(code = '') {
+  $.post(
+    BASE_URL + '/products/products/product_edit_open',
+    {
+      [csrfName]: csrfHash,
+      code: code,
+    },
+    function (response) {
+
+      if (response.status) {
+        open_hide('#products_form', '#products_panel', response.form, function () {
+
+          requestAnimationFrame(() => {
+            asyngMoneyMask('#products_form .money');
+            asyngPercentMask('#products_form .percent');
+            asyngNumericStock('#products_form .stock');
+
+            $("#operation_type").val(response.data.type);
+
+            let product = response.data.product;
+            asyng_product_form(product);
+
+
           });
         });
 
@@ -53,7 +91,7 @@ async function product_add_save(dataArray) {
       cancel_open('#products_form', '#products_panel');
 
       showAlert(
-        response.message, 'danger'
+        response.message, 'success'
       );
 
       return;

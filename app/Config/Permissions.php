@@ -38,6 +38,11 @@ class Permissions extends BaseConfig
             'product_section_add',
             'product_section_edit',
             'product_section_delete',
+
+            // Stock de Productos
+            'product_stock_view',
+            'product_stock_edit',
+
         ],
 
         // ADMIN

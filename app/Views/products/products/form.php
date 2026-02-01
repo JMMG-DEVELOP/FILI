@@ -38,14 +38,14 @@
                   <!-- Descripción -->
                   <div class="col-md-5 mb-2">
                     <label>Descripción</label>
-                    <input type="text" class="form-control" name="description" require value="TEST PRODUCT">
+                    <input type="text" class="form-control" name="description" id="description" require>
                   </div>
 
                   <!-- Sección -->
                   <div class="col-md-2 mb-2">
                     <label>Sección</label>
                     <select class="form-control select" name="section" id="sections" required>
-                      <option value="1">Seleccione</option>
+                      <option value="">Seleccione</option>
                       <?php foreach ($sections as $section): ?>
                         <option value="<?= esc($section['id']) ?>">
                           <?= esc($section['name']) ?>
@@ -58,7 +58,7 @@
                   <div class="col-md-2 mb-2">
                     <label>Marca</label>
                     <select class="form-control select" name="brand" id="brands" required>
-                      <option value="1">Seleccione</option>
+                      <option value="">Seleccione</option>
                       <?php foreach ($brands as $brand): ?>
                         <option value="<?= esc($brand['id']) ?>">
                           <?= esc($brand['name']) ?>
@@ -99,26 +99,28 @@
           <div class="row">
 
             <!-- ==================== STOCK ==================== -->
-            <div class="col-md-2">
-              <fieldset class="border p-3 mb-3 h-100">
-                <legend class="w-auto px-2 font-weight-bold">Stock</legend>
+            <?php if (can('product_stock_view')): ?>
+              <div class="col-md-2">
+                <fieldset class="border p-3 mb-3 h-100">
+                  <legend class="w-auto px-2 font-weight-bold">Stock</legend>
 
-                <!-- Stock Fili Central -->
-                <label>Stock Fili</label>
-                <input type="text" class="form-control mb-2" name="stock_1" readonly>
-
-                <label>Edición</label>
-                <input type="text" class="form-control stock mb-2" name="edit_stock_1" required value="3">
-
-                <!-- Stock Fili 2 -->
-                <label>Stock Fili 2</label>
-                <input type="text" class="form-control mb-2" name="stock_2" readonly>
-
-                <label>Edición</label>
-                <input type="text" class="form-control stock" name="edit_stock_2" required value="1">
-              </fieldset>
-            </div>
-
+                  <!-- Stock Fili Central -->
+                  <label>Stock Fili</label>
+                  <input type="text" class="form-control mb-2" name="stock_1" id="stock_1" readonly>
+                  <?php if (can('product_stock_edit')): ?>
+                    <label>Edición</label>
+                    <input type="text" class="form-control stock mb-2" name="edit_stock_1" required>
+                  <?php endif; ?>
+                  <!-- Stock Fili 2 -->
+                  <label>Stock Fili 2</label>
+                  <input type="text" class="form-control mb-2" name="stock_2" id="stock_2" readonly>
+                  <?php if (can('product_stock_edit')): ?>
+                    <label>Edición</label>
+                    <input type="text" class="form-control stock" name="edit_stock_2" required>
+                  <?php endif; ?>
+                </fieldset>
+              </div>
+            <?php endif; ?>
             <!-- ==================== COSTOS ==================== -->
             <?php if (can('product_cost_view')): ?>
               <div class="col-md-2">
@@ -127,11 +129,11 @@
 
                   <!-- Costo -->
                   <label>Costo</label>
-                  <input type="text" class="form-control money mb-2" name="cost" required value="5000">
+                  <input type="text" class="form-control money mb-2" name="cost" id="cost" required value="5000">
 
                   <!-- Último Costo -->
                   <label>Último costo</label>
-                  <input type="text" class="form-control money" name="other_cost" value="5000">
+                  <input type="text" class="form-control money" name="other_cost" id="other_cost" value="5000">
 
                 </fieldset>
               </div>

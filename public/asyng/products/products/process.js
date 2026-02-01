@@ -130,11 +130,29 @@ async function code_verify(data) {
 
   if (!response.status && response.error === 'code_exists') {
     showAlert(response.message, 'danger');
-    return;
+    return response.error;
   } else if (!response.status && response.error === 'code_empty') {
     showAlert(response.message, 'danger');
+    return response.error;
   }
   else if (response.status) {
     showAlert(response.message, 'success');
+    return response.error;
   }
+}
+
+function asyng_product_form(product) {
+  $('#products_form #code').val(product.code);
+  $('#products_form #description').val(product.description);
+  $('#products_form #sections').val(product.section_id).trigger('change.select2');
+  $('#products_form #brands').val(product.brand_id).trigger('change');
+  $('#products_form #stock_1').val(product.stock[1]);
+  $('#products_form #stock_2').val(product.stock[2]);
+  $('#products_form #cost').val(product.cost);
+  $('#products_form #other_cost').val(product.other_cost);
+
+
+
+
+  $('#products_form #iva').val(product.iva_id).trigger('change');
 }

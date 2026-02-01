@@ -64,13 +64,14 @@ class ProductService
       return [
         'status' => false,
         'error' => 'code_exists',
-        'message' => 'El código ya existe'
+        'message' => 'El código ya esta Registrado'
       ];
     }
 
     return [
       'status' => true,
-      'message' => 'Código disponible',
+      'error' => 'false',
+      'message' => 'Código NO Registrado',
     ];
   }
 }

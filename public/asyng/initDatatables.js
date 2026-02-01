@@ -5,7 +5,7 @@ function initProductsTable() {
   const canViewCost = CAN_VIEW_COST;
   const canEditProduct = CAN_EDIT_PRODUCT;
   const canDeleteProduct = CAN_DELETE_PRODUCT;
-
+  const canAddProduct = CAN_ADD_PRODUCT;
 
   // Formateadores
   const formatMoney = new Intl.NumberFormat('es-ES', {
@@ -78,18 +78,34 @@ function initProductsTable() {
     ajax: BASE_URL + 'products/products/datatable',
     columns: columns,
 
-    onEnter: function (value, table, input) {
+    onEnter: async function (value, table, input) {
       let val = value.trim();
       if (val.length <= 5) {
         val = val.padStart(7, '0');
         input.value = val;
       }
 
+      let data = {
+        code: val
+      };
+
+      const verify = await code_verify(data);
+
+      if (canEditProduct) {
+        if (verify === 'code_exists') {
+          product_edit_open(val);
+        }
+      } else
+        if (canAddProduct) {
+          if (verify === 'false') {
+            product_add_open(val);
+          }
+        }
 
     },
 
     onEnterEmpty: () => {
-      alert('vacio');
+
     },
 
     onEscape: (table, input) => {
