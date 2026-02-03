@@ -39,7 +39,7 @@ class ProductsFormatter
       'status' => 1,
       'section' => $var['section'],
       'brand' => $var['brand'],
-      'sales' => $var['tipo_venta'],
+      'sales' => $var['sales'],
       'iva' => $var['iva'],
     ];
   }

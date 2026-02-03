@@ -1,54 +1,48 @@
 
 function calculateFromPrice($priceInput) {
 
-  const name = $priceInput.attr('name'); // price_one
-  const suffix = name.split('_')[1];     // one
+  const name = $priceInput.attr('name');
+  const suffix = name.split('_')[1];
 
-  const cost = toNumber($('[name="cost"]').val());
-  const price = toNumber($priceInput.val());
+  const cost = toMoneyNumber($('[name="cost"]').val());
+  const price = toMoneyNumber($priceInput.val());
 
   if (cost <= 0 || price <= 0) return;
 
-  // Inputs relacionados
   const $margin = $('[name="margin_' + suffix + '"]');
   const $percent = $('[name="x' + suffix.replace('one', '1').replace('two', '2').replace('three', '3') + '"]');
 
-  // ================= MARGEN =================
   const margin = price - cost;
-  $margin.val(formatMoney(margin > 0 ? margin : 0));
-
-  // ================= PORCENTAJE =================
   const percent = (margin / cost) * 100;
-  $percent.val(percent > 0 ? percent.toFixed(2) : 0);
 
-  // ================= EFECTO VISUAL =================
+  $margin.val(margin).trigger('input');
+  $percent.val(percent.toFixed(1)).trigger('input');
+
   asyngVisualEffects([$priceInput, $margin, $percent]);
 }
+
 function calculateFromMargin($marginInput) {
 
-  const name = $marginInput.attr('name');   // margin_one
-  const suffix = name.split('_')[1];        // one
+  const name = $marginInput.attr('name');
+  const suffix = name.split('_')[1];
 
-  const cost = toNumber($('[name="cost"]').val());
-  const margin = toNumber($marginInput.val());
+  const cost = toMoneyNumber($('[name="cost"]').val());
+  const margin = toMoneyNumber($marginInput.val());
 
   if (cost <= 0 || margin < 0) return;
 
-  // Inputs relacionados
   const $price = $('[name="price_' + suffix + '"]');
   const $percent = $('[name="x' + suffix.replace('one', '1').replace('two', '2').replace('three', '3') + '"]');
 
-  // ================= PRECIO =================
   const price = cost + margin;
-  $price.val(formatMoney(price));
-
-  // ================= PORCENTAJE =================
   const percent = (margin / cost) * 100;
-  $percent.val(percent > 0 ? percent.toFixed(2) : 0);
 
-  // ================= EFECTO VISUAL =================
+  $price.val(price).trigger('input');
+  $percent.val(percent.toFixed(1)).trigger('input');
+
   asyngVisualEffects([$marginInput, $price, $percent]);
 }
+
 function indexToWord(index) {
   const map = {
     '1': 'one',
@@ -59,9 +53,7 @@ function indexToWord(index) {
 }
 function calculateFromPercent($percentInput) {
 
-  const name = $percentInput.attr('name'); // x1, x2, x3
-  const index = name.replace('x', '');
-
+  const index = $percentInput.attr('name').replace('x', '');
   const cost = toMoneyNumber($('[name="cost"]').val());
   const percent = toPercentNumber($percentInput.val());
 
@@ -69,20 +61,15 @@ function calculateFromPercent($percentInput) {
 
   const word = indexToWord(index);
 
-  const $margin = $('[name="margin_' + word + '"]');
-  const $price = $('[name="price_' + word + '"]');
-
-  // ================= CÁLCULOS CORRECTOS =================
   const margin = cost * (percent / 100);
   const price = cost + margin;
 
-  // ================= ESCRIBIR =================
-  $margin.val(formatMoney(margin));
-  $price.val(formatMoney(price));
+  $('[name="margin_' + word + '"]').val(margin).trigger('input');
+  $('[name="price_' + word + '"]').val(price).trigger('input');
 
-  // ================= EFECTO VISUAL =================
-  asyngVisualEffects([$percentInput, $margin, $price]);
+  asyngVisualEffects([$percentInput]);
 }
+
 function recalculateFromCost() {
 
   const cost = toMoneyNumber($('[name="cost"]').val());
@@ -111,11 +98,12 @@ function recalculateFromCost() {
     const margin = priceValue - cost;
     if (margin < 0) return;
 
-    $margin.val(formatMoney(margin));
+    // 👉 ESCRIBIR NÚMERO LIMPIO
+    $margin.val(margin).trigger('input');
 
     // ================= PORCENTAJE =================
     const percent = (margin / cost) * 100;
-    $percent.val(percent.toFixed(1));
+    $percent.val(percent.toFixed(1)).trigger('input');
 
     affected.push($margin, $percent);
   });
@@ -124,6 +112,7 @@ function recalculateFromCost() {
     asyngVisualEffects(affected);
   }
 }
+
 
 async function code_verify(data) {
   const response = await asyngAjaxSend('products/products/product_save_verify', data);
@@ -146,13 +135,24 @@ function asyng_product_form(product) {
   $('#products_form #description').val(product.description);
   $('#products_form #sections').val(product.section_id).trigger('change.select2');
   $('#products_form #brands').val(product.brand_id).trigger('change');
+  $('#products_form #sales').val(product.sales_id).trigger('change');
+
   $('#products_form #stock_1').val(product.stock[1]);
+  $('#products_form #edit_stock_1').val(0);
+
   $('#products_form #stock_2').val(product.stock[2]);
+  $('#products_form #edit_stock_2').val(0);
+
   $('#products_form #cost').val(product.cost);
   $('#products_form #other_cost').val(product.other_cost);
+  $('#products_form #price_one').val(product.prices.price_one);
+  $('#products_form #price_two').val(product.prices.price_two);
 
-
-
+  $('#products_form #price_three').val(product.prices.price_three);
+  recalculateFromCost()
+  $('#products_form #cant_one').val(product.cant_one);
+  $('#products_form #cant_two').val(product.cant_two);
+  $('#products_form #cant_three').val(product.cant_three);
 
   $('#products_form #iva').val(product.iva_id).trigger('change');
 }

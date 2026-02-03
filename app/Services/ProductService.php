@@ -47,6 +47,83 @@ class ProductService
 
     }
   }
+  public function edit(array $data): bool
+  {
+    $db = db_connect();
+    $db->transBegin();
+
+    try {
+
+      $code = $data['products']['code'];
+
+      // 1️⃣ PRODUCT
+      $productModel = new ProductModel();
+      $productModel
+        ->where('code', $code)
+        ->set($data['products'])
+        ->update();
+
+      // 2️⃣ PRICES
+      $priceModel = new PricesModel();
+      $existsPrice = $priceModel->where('product', $code)->first();
+
+      if ($existsPrice) {
+        $priceModel
+          ->where('product', $code)
+          ->set($data['prices'])
+          ->update();
+      } else {
+        $priceModel->insert($data['prices']);
+      }
+
+      // 3️⃣ COSTS
+      $costModel = new CostModel();
+      $existsCost = $costModel->where('product', $code)->first();
+
+      if ($existsCost) {
+        $costModel
+          ->where('product', $code)
+          ->set($data['costs'])
+          ->update();
+      } else {
+        $costModel->insert($data['costs']);
+      }
+
+      // 4️⃣ STOCK (por sucursal)
+      if (!empty($data['stock'])) {
+        $stockModel = new StockModel();
+
+        foreach ($data['stock'] as $row) {
+
+          $existsStock = $stockModel
+            ->where('product', $code)
+            ->where('sucursal', $row['sucursal'])
+            ->first();
+
+          if ($existsStock) {
+            $stockModel
+              ->where('product', $code)
+              ->where('sucursal', $row['sucursal'])
+              ->set(['stock' => $row['stock']])
+              ->update();
+          } else {
+            $stockModel->insert($row);
+          }
+        }
+      }
+
+      $db->transCommit();
+      return true;
+
+    } catch (\Throwable $e) {
+
+      $db->transRollback();
+      log_message('error', $e->getMessage());
+      throw new \CodeIgniter\Database\Exceptions\DatabaseException(
+        'Error al editar producto'
+      );
+    }
+  }
 
   public function validate_code($code)
   {

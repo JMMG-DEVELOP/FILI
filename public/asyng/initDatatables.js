@@ -208,5 +208,12 @@ $(document).ready(function () {
 
 });
 
+$(document).on('click', '.product_edit', function (e) {
+  e.preventDefault();
+
+  const code = $(this).data('id');
+
+  product_edit_open(code);
+});
 
 

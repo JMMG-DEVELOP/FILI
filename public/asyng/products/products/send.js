@@ -106,6 +106,46 @@ async function product_add_save(dataArray) {
   }
 
 }
+async function product_edit_save(dataArray) {
+
+  try {
+    const response = await asyngAjaxSend(
+      'products/products/product_edit_save',
+      dataArray
+    );
+
+    if (!response.status && response.error === 'code_exists') {
+      showAlert(response.message, 'danger');
+      return;
+    }
+
+    if (!response.status) {
+      showAlert(
+        response.message || 'Error al editar el producto',
+        'danger'
+      );
+      return;
+    }
+
+    if (response.status) {
+      cancel_open('#products_form', '#products_panel');
+
+      showAlert(
+        response.message, 'success'
+      );
+
+      return;
+    }
+
+
+  } catch (err) {
+    console.error(err);
+    showAlert('Error de comunicación con el servidor', 'danger');
+  } finally {
+    $btn.prop('disabled', false);
+  }
+
+}
 
 //Abrir Modal de Registrar Productos
 $(document).on('click', '.product_add', function (e) {
@@ -135,6 +175,9 @@ $(document).on('click', '.product_send', async function (e) {
   if (formData.operation_type === 'add') {
 
     product_add_save(dataArray);
+  } else if (formData.operation_type === 'edit') {
+
+    product_edit_save(dataArray);
   } else {
     $btn.prop('disabled', false);
   }

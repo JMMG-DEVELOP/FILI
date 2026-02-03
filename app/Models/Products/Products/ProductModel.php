@@ -51,6 +51,10 @@ class ProductModel extends Model
                 'p.brand AS brand_id',
                 'b.name AS brand',
 
+                // SALES
+                'sl.id AS sales_id',
+                'sl.name AS sales',
+
                 // IVA
                 'p.iva AS iva_id',
                 'i.name AS iva',
@@ -62,10 +66,16 @@ class ProductModel extends Model
                 // PRECIOS
                 'COALESCE(pr.price_one, 0) AS price_one',
                 'COALESCE(pr.price_two, 0) AS price_two',
-                'COALESCE(pr.price_three, 0) AS price_three'
+                'COALESCE(pr.price_three, 0) AS price_three',
+
+                // CANTIDADES
+                'COALESCE(pr.cant_one, 0) AS cant_one',
+                'COALESCE(pr.cant_two, 0) AS cant_two',
+                'COALESCE(pr.cant_three, 0) AS cant_three'
             ])
             ->join('products_section s', 's.id = p.section', 'left')
             ->join('products_brands b', 'b.id = p.brand', 'left')
+            ->join('products_sales sl', 'sl.id = p.sales', 'left')
             ->join('products_iva i', 'i.id = p.iva', 'left')
             ->join('products_prices pr', 'pr.product = p.code', 'left')
             ->join('products_cost pc', 'pc.product = p.code', 'left')

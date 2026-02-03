@@ -44,6 +44,7 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
         $routes->post('products/product_save_verify', 'Products\Products\Add::code_verify');
         // Product Edit
         $routes->post('products/product_edit_open', 'Products\Products\Edit::open');
+        $routes->post('products/product_edit_save', 'Products\Products\Edit::save');
 
 
 

@@ -7,6 +7,8 @@ use App\Models\Products\Products\ProductModel;
 use App\Models\Products\Products\IvaModel;
 use App\Models\Products\Brands\BrandsModel;
 use App\Models\Products\Section\SectionModel;
+use App\Models\Products\Products\SalesModel;
+
 use App\Services\ProductService;
 
 
@@ -23,10 +25,13 @@ class Edit extends BaseController
         $sectionModel = new SectionModel();
         $ivaModel = new IvaModel();
         $productModel = new ProductModel();
+        $salesModel = new SalesModel();
+
         // Obtener datos activos (ajusta filtros si hace falta)
         $brands = $brandsModel->findAll();
         $sections = $sectionModel->findAll();
         $iva = $ivaModel->findAll();
+        $sales = $salesModel->findAll();
 
         if ($this->request->isAJAX()) {
             $post = $this->request->getPost();
@@ -35,7 +40,8 @@ class Edit extends BaseController
                 'title' => 'Editar Producto',
                 'brands' => $brands,
                 'sections' => $sections,
-                'ivas' => $iva
+                'ivas' => $iva,
+                'sales' => $sales
             ];
 
             $form_html = view('Products/products/form', $form);
@@ -73,31 +79,20 @@ class Edit extends BaseController
 
         $post = $this->request->getPost();
 
-        // 1️⃣ Validar código
-        $validation = $productService->validate_code($post['code'] ?? null);
-        if ($validation['status'] === false) {
-            return $this->response->setJSON(
-                array_merge($validation, [
-                    'csrfName' => csrf_token(),
-                    'csrfHash' => csrf_hash()
-                ])
-            );
-        }
-
         // 2️⃣ 👉 Save Process 
         $formatter = $productFormatter->tables_formatters($post);
 
-        if ($productService->save($formatter)) {
+        if ($productService->edit($formatter)) {
             return $this->response->setJSON([
                 'status' => true,
-                'message' => 'Producto guardado correctamente',
+                'message' => 'Producto editado correctamente',
                 'csrfName' => csrf_token(),
                 'csrfHash' => csrf_hash()
             ]);
         } else {
             return $this->response->setJSON([
                 'status' => false,
-                'message' => 'Error al Guardar Producto',
+                'message' => 'Error al Editar Producto',
                 'csrfName' => csrf_token(),
                 'csrfHash' => csrf_hash()
             ]);

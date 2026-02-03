@@ -7,6 +7,8 @@ use App\Models\Products\Products\ProductModel;
 use App\Models\Products\Products\IvaModel;
 use App\Models\Products\Brands\BrandsModel;
 use App\Models\Products\Section\SectionModel;
+use App\Models\Products\Products\SalesModel;
+
 use App\Services\ProductService;
 
 
@@ -22,16 +24,18 @@ class Add extends BaseController
         $brandsModel = new BrandsModel();
         $sectionModel = new SectionModel();
         $ivaModel = new IvaModel();
+        $salesModel = new SalesModel();
         // Obtener datos activos (ajusta filtros si hace falta)
         $brands = $brandsModel->findAll();
         $sections = $sectionModel->findAll();
         $iva = $ivaModel->findAll();
-
+        $sales = $salesModel->findAll();
         $form = [
             'title' => 'Nuevo Producto',
             'brands' => $brands,
             'sections' => $sections,
-            'ivas' => $iva
+            'ivas' => $iva,
+            'sales' => $sales
         ];
 
         $form_html = view('Products/products/form', $form);
