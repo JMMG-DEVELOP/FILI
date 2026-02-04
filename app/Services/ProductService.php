@@ -101,16 +101,34 @@ class ProductService
             ->first();
 
           if ($existsStock) {
-            $stockModel
-              ->where('product', $code)
-              ->where('sucursal', $row['sucursal'])
-              ->set(['stock' => $row['stock']])
-              ->update();
+
+            $newStock = (int) $row['stock'];
+
+            if ($newStock !== 0) {
+
+              $currentStock = (int) $existsStock['stock'];
+              $totalStock = $currentStock + $newStock;
+
+              // 👉 evitar stock negativo
+              if ($totalStock < 0) {
+                $totalStock = 0;
+              }
+
+              $stockModel
+                ->where('product', $code)
+                ->where('sucursal', $row['sucursal'])
+                ->set(['stock' => $totalStock])
+                ->update();
+            }
+
           } else {
+
+            // 👉 si no existe registro, se inserta tal cual
             $stockModel->insert($row);
           }
         }
       }
+
 
       $db->transCommit();
       return true;
