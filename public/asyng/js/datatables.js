@@ -2,7 +2,7 @@ window.AppTable = function (config) {
 
   const defaults = {
     table: null,
-    pageLength: 7,
+    pageLength: 8,
     responsive: true,
     serverSide: true,
     processing: true,

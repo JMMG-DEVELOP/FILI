@@ -133,6 +133,7 @@ async function product_edit_save(dataArray) {
       showAlert(
         response.message, 'success'
       );
+      $('#productsTable').DataTable().ajax.reload(null, false);
 
       return;
     }

@@ -43,38 +43,24 @@ class Permissions extends BaseConfig
             'product_stock_view',
             'product_stock_edit',
 
+            // Imprimir Codigos de Barra
+            'product_code_print',
+
+            //
+            //  BOX
+            //
+            'box_access', //Acceder por menu y route
+
         ],
 
         // ADMIN
         2 => [
-            //  Productos
-            'products_access',
 
-            'product_products_view',
-            'product_product_add',
-            'product_product_edit',
-            // 'product_product_delete',
-
-            // Costos de Productos
-            'product_cost_view',
-
-            // Margen de Productos
-            'product_margin_view',
-
-            // Marcas de Productos
-            'product_brands_view',
-            'product_brand_add',
-
-            // Seccion de Productos
-            'product_sections_view',
-            'product_section_add',
-
-            // '*',
         ],
 
         // VISOR
         3 => [
-            'view_sucursales',
+
         ],
 
         // BOX

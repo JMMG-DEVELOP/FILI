@@ -67,5 +67,16 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
 
     });
 
+    // ==========================
+    // BOX
+    // Requiere permiso:box_access
+    // ==========================
+    $routes->group('box', ['filter' => 'permission:box_access'], function ($routes) {
+
+        $routes->get('/', 'Box\Access::index');
+
+
+    });
+
 });
 

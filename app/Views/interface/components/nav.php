@@ -6,23 +6,19 @@
 
   <li class="connection-list">
     <div class="row">
-
-      <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12 ">
-        <?php if (can('products_access')): ?>
+      <?php if (can('products_access')): ?>
+        <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12 ">
           <a href="<?= base_url('products'); ?>" class="connection-item"><img
               src="<?= base_url(); ?>/assets/images/github.png" alt=""> <span> Productos</span></a>
-
-        <?php endif; ?>
-
-      </div>
-      <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12 ">
-        <?php if (can('access_customers')): ?>
-          <a href="#" class="connection-item"><img src="<?= base_url(); ?>/assets/images/github.png" alt=""> <span>
-              Clientes</span></a>
-
-        <?php endif; ?>
-
-      </div>
+        </div>
+      <?php endif; ?>
+      <?php if (can('box_access')): ?>
+        <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12 ">
+          <a href="<?= base_url('box'); ?>" class="connection-item"><img src="<?= base_url(); ?>/assets/images/github.png"
+              alt=""> <span>
+              Caja</span></a>
+        </div>
+      <?php endif; ?>
 
 
     </div>
