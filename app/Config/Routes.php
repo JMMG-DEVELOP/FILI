@@ -75,6 +75,8 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
 
         $routes->get('/', 'Box\Access::index');
 
+        $routes->post('process/search', 'Box\Process::search');
+
 
     });
 

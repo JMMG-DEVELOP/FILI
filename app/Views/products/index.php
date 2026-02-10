@@ -111,6 +111,6 @@ if (can('product_products_view')) {
 <script src="<?= base_url(); ?>/asyng/products/section/app.js"></script>
 
 
-<script src="<?= base_url(); ?>/asyng/initDatatables.js"></script>
+<script src="<?= base_url(); ?>/asyng/products/initDatatables.js"></script>
 
 <?= $this->endSection(); ?>

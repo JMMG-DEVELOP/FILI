@@ -3,8 +3,8 @@
 namespace App\Controllers\Auth;
 
 use App\Controllers\BaseController;
-use App\Models\Auth\UsersModel; 
-use App\Models\Auth\UsersSucursals; 
+use App\Models\Auth\UsersModel;
+use App\Models\Auth\UsersSucursals;
 use Config\Permissions;
 
 class Login extends BaseController
@@ -31,12 +31,12 @@ class Login extends BaseController
         $post = $this->request->getPost(['username', 'password']);
 
         $user = $userModel->login($post['username'], $post['password']);
-         
+
         if ($user === null) {
-           return redirect()->back()->withInput()->with('errors', 'Credenciales Incorrectos');
- 
+            return redirect()->back()->withInput()->with('errors', 'Credenciales Incorrectos');
+
         }
-        
+
         // Cargamos config
         $permissionsConfig = new Permissions();
 
@@ -48,12 +48,12 @@ class Login extends BaseController
 
         $session = session();
         session()->set([
-            'logged'   => true,
-            'id'       => $user['id'],
-            'user'     => $user['user'],
+            'logged' => true,
+            'id' => $user['id'],
+            'user' => $user['user'],
             'category' => $user['category'],
             'permissions' => $permissions,
-             'sucursal' => $sucursales,
+            'sucursal' => $sucursales,
         ]);
 
         return redirect()->to(base_url('dashboard'));

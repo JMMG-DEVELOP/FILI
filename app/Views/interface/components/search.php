@@ -1,6 +1,13 @@
-<li class="nav-item d-flex flex-grow-1 mx-3">
-  <div id="custom-search" class="top-search-bar w-800">
-    <input class="form-control form-control-lg" style="width:700px" type="text" placeholder="Codigo.. Busqueda .." id="search">
+<div id="custom-search" class="top-search-bar col-md-12">
+
+  <div class="input-group input-group-lg shadow-sm">
+
+    <span class="input-group-text bg-white border-end-0">
+      <i class="fas fa-chess-board"></i>
+    </span>
+
+    <input type="text" id="search" class="form-control" placeholder="Código… Búsqueda…" autofocus>
 
   </div>
-</li>
+
+</div>

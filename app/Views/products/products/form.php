@@ -120,11 +120,11 @@
 
                   <!-- Costo -->
                   <label>Costo</label>
-                  <input type="text" class="form-control money mb-2" name="cost" id="cost" required value="5000">
+                  <input type="text" class="form-control money mb-2" name="cost" id="cost" required>
 
                   <!-- Último Costo -->
                   <label>Último costo</label>
-                  <input type="text" class="form-control money" name="other_cost" id="other_cost" value="5000">
+                  <input type="text" class="form-control money" name="other_cost" id="other_cost">
 
                 </fieldset>
               </div>

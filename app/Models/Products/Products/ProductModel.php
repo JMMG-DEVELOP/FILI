@@ -130,9 +130,105 @@ class ProductModel extends Model
         return $product;
     }
 
+    public function getBySearch(string $search)
+    {
+        $db = $this->db;
+
+        $search = trim($search);
+
+        if ($search === '') {
+            return [];
+        }
+
+        /**
+         * 1️⃣ PRODUCTOS (limit 4)
+         */
+        $products = $db->table('products p')
+            ->select([
+                'p.code',
+                'p.description',
+                'COALESCE(pr.price_one, 0) AS price_one'
+            ])
+            ->join('products_prices pr', 'pr.product = p.code', 'left')
+            ->groupStart()
+            ->like('p.code', $search)
+            ->orLike('p.description', $search)
+            ->groupEnd()
+            ->orderBy(
+                "CASE 
+                WHEN p.code = " . $db->escape($search) . " THEN 0
+                ELSE 1
+            END",
+                'ASC',
+                false
+            )
+            ->orderBy('p.description', 'ASC')
+            ->limit(4)
+            ->get()
+            ->getResultArray();
+
+        if (!$products) {
+            return [];
+        }
+
+        /**
+         * 2️⃣ OBTENER CÓDIGOS
+         */
+        $codes = array_column($products, 'code');
+
+        /**
+         * 3️⃣ TODAS LAS SUCURSALES
+         */
+        $branches = $db->table('sucursals')
+            ->select('id')
+            ->get()
+            ->getResultArray();
+
+        $stockBase = [];
+        foreach ($branches as $b) {
+            $stockBase[$b['id']] = 0;
+        }
+
+        /**
+         * 4️⃣ STOCK REAL POR SUCURSAL
+         */
+        $stockRows = $db->table('products_stock')
+            ->select('product, sucursal, SUM(stock) AS stock')
+            ->whereIn('product', $codes)
+            ->groupBy(['product', 'sucursal'])
+            ->get()
+            ->getResultArray();
+
+        /**
+         * 5️⃣ REESTRUCTURAR
+         */
+        $stockMap = [];
+
+        foreach ($stockRows as $row) {
+            $stockMap[$row['product']][$row['sucursal']] = (float) $row['stock'];
+        }
+
+        /**
+         * 6️⃣ ASIGNAR STOCK A CADA PRODUCTO
+         */
+        foreach ($products as &$product) {
+
+            $stock = $stockBase; // base en 0
+
+            if (isset($stockMap[$product['code']])) {
+                foreach ($stockMap[$product['code']] as $sucursal => $qty) {
+                    $stock[$sucursal] = $qty;
+                }
+            }
+
+            $product['stock'] = $stock;
+        }
+
+        return $products;
+    }
 
 
-    // public function getByCode(string $productCode)
+
     // {
     //     $db = $this->db;
 

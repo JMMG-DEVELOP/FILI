@@ -184,4 +184,78 @@ function showAlert(message, type = 'warning', timeout = 4000) {
   }
 }
 
+function asyng_show_view({
+  id,
+  html,
+  effect = 'fade',
+  time = 150
+}) {
 
+  let $div = $('#' + id);
+
+  if (effect === 'slide') {
+
+    $div.slideUp(time, function () {
+      $div.html(html).slideDown(time);
+    });
+
+  } else {
+
+    $div.fadeOut(time, function () {
+      $div.html(html).fadeIn(time);
+    });
+
+  }
+
+}
+
+function asyng_hide_view({
+  id,
+  effect = 'fade',
+  time = 150,
+  clear = false   // limpiar contenido al cerrar
+}) {
+
+  let $div = $('#' + id);
+
+  if (!$div.length) return;
+
+  if (effect === 'slide') {
+
+    $div.slideUp(time, function () {
+
+      if (clear) $div.html('');
+
+    });
+
+  } else if (effect === 'scale') {
+
+    $div.animate(
+      { opacity: 0 },
+      {
+        duration: time,
+        step: function () {
+          $(this).css('transform', 'scale(0.98)');
+        },
+        complete: function () {
+
+          $(this).hide();
+
+          if (clear) $(this).html('');
+
+        }
+      }
+    );
+
+  } else {
+
+    // fade default
+    $div.fadeOut(time, function () {
+
+      if (clear) $div.html('');
+
+    });
+
+  }
+
+}
