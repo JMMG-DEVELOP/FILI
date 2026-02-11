@@ -49,11 +49,11 @@ class ProductsFormatter
     return [
       'price_one' => $this->cleanMoney($var['price_one'] ?? 0),
       'price_two' => $this->cleanMoney($var['price_two'] ?? 0),
-      'price_three' => $this->cleanMoney($var['price_three'] ?? 0),
+      'price_card' => $this->cleanMoney($var['price_card'] ?? 0),
 
-      'cant_one' => (int) ($var['cant_one'] ?? 0),
+      // 'cant_one' => (int) ($var['cant_one'] ?? 0),
       'cant_two' => (int) ($var['cant_two'] ?? 0),
-      'cant_three' => (int) ($var['cant_three'] ?? 0),
+      // 'cant_three' => (int) ($var['cant_three'] ?? 0),
 
       'product' => $var['code'],
     ];

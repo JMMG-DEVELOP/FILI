@@ -66,9 +66,37 @@ window.AppTable = function (config) {
       { extend: 'csv', text: 'CSV' },
       { extend: 'excel', text: 'Excel' },
       { extend: 'pdf', text: 'PDF' },
+      {
+        text: 'JPG',
+        action: function (e, dt, node, config) {
+
+          // Tomar la tabla dinámica desde cfg
+          let tableEl = document.querySelector(cfg.table);
+
+          // Si quieres capturar TODO el datatable (toolbar + paginación)
+          // usa esta línea en vez de la de arriba:
+          // let tableEl = document.querySelector(cfg.table).closest('.dataTables_wrapper');
+
+          html2canvas(tableEl, {
+            scale: 2,
+            useCORS: true
+          }).then(canvas => {
+
+            let link = document.createElement('a');
+            link.download = 'tabla.jpg';
+            link.href = canvas.toDataURL('image/jpeg', 1.0);
+            link.click();
+
+          });
+
+        }
+      },
       { extend: 'print', text: 'Imprimir' },
-      { extend: 'colvis', text: 'Columnas' }
+      { extend: 'colvis', text: 'Columnas' },
+
+
     ],
+
     language: {
       search: "",
       info: "Mostrando _START_ a _END_ de _TOTAL_ registros",

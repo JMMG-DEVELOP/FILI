@@ -12,6 +12,9 @@
 <script src="<?= base_url(); ?>/assets/vendor/bootstrap/js/bootstrap.bundle.js"></script>
 <script src="<?= base_url(); ?>/assets/vendor/slimscroll/jquery.slimscroll.js"></script>
 <script src="<?= base_url(); ?>/assets/libs/js/main-js.js"></script>
+
 <script src="<?= base_url(); ?>/asyng/js/loader.js"></script>
 
 <script src="<?= base_url(); ?>/asyng/js/ajax.js"></script>
+<!-- HTML CANVAS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>

@@ -95,22 +95,47 @@
                 <fieldset class="border p-3 mb-3 h-100">
                   <legend class="w-auto px-2 font-weight-bold">Stock</legend>
 
-                  <!-- Stock Fili Central -->
-                  <label>Stock Fili</label>
-                  <input type="text" class="form-control mb-2" name="stock_1" id="stock_1" readonly>
-                  <?php if (can('product_stock_edit')): ?>
-                    <label>Edición</label>
-                    <input type="text" class="form-control stock mb-2" name="edit_stock_1" id="edit_stock_1" required>
-                  <?php endif; ?>
-                  <!-- Stock Fili 2 -->
-                  <label>Stock Fili 2</label>
-                  <input type="text" class="form-control mb-2" name="stock_2" id="stock_2" readonly>
-                  <?php if (can('product_stock_edit')): ?>
-                    <label>Edición</label>
-                    <input type="text" class="form-control stock" name="edit_stock_2" id="edit_stock_2" required>
-                  <?php endif; ?>
+                  <!-- FILA 1 -->
+                  <div class="form-row align-items-end mb-2">
+
+                    <!-- Stock Fili -->
+                    <div class="col">
+                      <label>Stock Fili</label>
+                      <input type="text" class="form-control" name="stock_1" id="stock_1" readonly>
+                    </div>
+
+                    <?php if (can('product_stock_edit')): ?>
+                      <!-- Edición Fili -->
+                      <div class="col">
+                        <label></label>
+                        <input type="text" class="form-control stock" name="edit_stock_1" id="edit_stock_1" required>
+                      </div>
+                    <?php endif; ?>
+
+                  </div>
+
+                  <!-- FILA 2 -->
+                  <div class="form-row align-items-end">
+
+                    <!-- Stock Fili 2 -->
+                    <div class="col">
+                      <label>Stock Fili 2</label>
+                      <input type="text" class="form-control" name="stock_2" id="stock_2" readonly>
+                    </div>
+
+                    <?php if (can('product_stock_edit')): ?>
+                      <!-- Edición Fili 2 -->
+                      <div class="col">
+                        <label></label>
+                        <input type="text" class="form-control stock" name="edit_stock_2" id="edit_stock_2" required>
+                      </div>
+                    <?php endif; ?>
+
+                  </div>
+
                 </fieldset>
               </div>
+
             <?php endif; ?>
             <!-- ==================== COSTOS ==================== -->
             <?php if (can('product_cost_view')): ?>
@@ -186,7 +211,7 @@
 
                   <!-- Cantidad Desde -->
                   <div class="col-md-2 mb-2">
-                    <label>x</label>
+                    <label>Cant</label>
                     <input type="text" class="form-control numeric" name="cant_two" id="cant_two" required>
                   </div>
                 </div>
@@ -196,29 +221,32 @@
 
                   <!-- Precio -->
                   <div class="col-md-4 mb-2">
-                    <label><strong>Precio 3</strong></label>
-                    <input type="text" class="form-control money" name="price_three" id="price_three" required>
+                    <label><strong>Precio Card</strong></label>
+                    <input type="text" class="form-control money" name="price_three" id="price_three" hidden>
+                    <input type="text" class="form-control money" name="price_card" id="price_card" required>
+
                   </div>
 
                   <!-- Margen 3 -->
                   <?php if (can('product_margin_view')): ?>
-                    <div class="col-md-4 mb-2">
+                    <div class="col-md-3 mb-2">
                       <label><strong>Margen</strong></label>
-                      <input type="text" class="form-control money" name="margin_three" required>
+                      <input type="text" class="form-control money" name="margin_card" required>
                     </div>
 
                     <!-- Porcentaje 3 -->
                     <div class="col-md-2 mb-2">
                       <label>%</label>
-                      <input type="text" class="form-control percent" name="x3" required value="18">
+                      <input type="text" class="form-control percent" name="xcard" required value="18">
                     </div>
+
+                    <div class="col-md-3 mb-2">
+                      <label><strong>Descuento</strong></label>
+                      <input type="text" class="form-control money" name="discount_card" required>
+                    </div>
+
                   <?php endif; ?>
 
-                  <!-- Cantidad Desde -->
-                  <div class="col-md-2 mb-2">
-                    <label>x</label>
-                    <input type="text" class="form-control numeric" name="cant_three" id="cant_three" required>
-                  </div>
                 </div>
 
               </fieldset>

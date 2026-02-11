@@ -66,12 +66,12 @@ class ProductModel extends Model
                 // PRECIOS
                 'COALESCE(pr.price_one, 0) AS price_one',
                 'COALESCE(pr.price_two, 0) AS price_two',
-                'COALESCE(pr.price_three, 0) AS price_three',
+                'COALESCE(pr.price_card, 0) AS price_card',
 
                 // CANTIDADES
-                'COALESCE(pr.cant_one, 0) AS cant_one',
+                // 'COALESCE(pr.cant_one, 0) AS cant_one',
                 'COALESCE(pr.cant_two, 0) AS cant_two',
-                'COALESCE(pr.cant_three, 0) AS cant_three'
+                // 'COALESCE(pr.cant_three, 0) AS cant_three'
             ])
             ->join('products_section s', 's.id = p.section', 'left')
             ->join('products_brands b', 'b.id = p.brand', 'left')
@@ -115,13 +115,13 @@ class ProductModel extends Model
         $product['prices'] = [
             'price_one' => (int) $product['price_one'],
             'price_two' => (int) $product['price_two'],
-            'price_three' => (int) $product['price_three'],
+            'price_card' => (int) $product['price_card'],
         ];
 
         unset(
             $product['price_one'],
             $product['price_two'],
-            $product['price_three']
+            $product['price_card']
         );
 
         // 5️⃣ Agregar stock completo y limpio

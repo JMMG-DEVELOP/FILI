@@ -50,7 +50,7 @@ function asyngPercentMask(selector = ".percent") {
     groupSeparator: "",
     autoGroup: false,
     digits: 1,
-    digitsOptional: false, // siempre muestra un decimal (00.0)
+    digitsOptional: true,
     rightAlign: false,
     allowMinus: false,
     placeholder: "",

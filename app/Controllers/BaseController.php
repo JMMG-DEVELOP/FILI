@@ -20,6 +20,22 @@ use Psr\Log\LoggerInterface;
  */
 abstract class BaseController extends Controller
 {
+    protected function validAjax()
+    {
+        if (!$this->request->isAJAX()) {
+
+            return $this->response
+                ->setStatusCode(403)
+                ->setJSON([
+                    'status' => false,
+                    'message' => 'ERROR 403',
+                    'csrfName' => csrf_token(),
+                    'csrfHash' => csrf_hash()
+                ]);
+        }
+
+        return null;
+    }
     /**
      * Be sure to declare properties for any property fetch you initialized.
      * The creation of dynamic property is deprecated in PHP 8.2.

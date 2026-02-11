@@ -53,7 +53,7 @@ $canAddProduct = in_array(
 
               <th>PRECIO 1</th>
               <th>PRECIO 2</th>
-              <th>PRECIO 3</th>
+              <th>PRECIO CARD</th>
 
               <th>FILI CENTRO</th>
               <th>FILI 2</th>
