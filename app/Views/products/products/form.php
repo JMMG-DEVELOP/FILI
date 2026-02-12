@@ -22,6 +22,8 @@
 
           <div class="row">
             <input type="text" name="operation_type" id="operation_type" hidden>
+            <input type="text" name="card_percent" id="card_percent" value=" <?= $card_percent ?>" hidden>
+
 
             <!-- ==================== DESCRIPCIÓN ==================== -->
             <div class="col-md-12">
@@ -177,7 +179,7 @@
                     <!-- Porcentaje 1 -->
                     <div class="col-md-2 mb-2">
                       <label>%</label>
-                      <input type="text" class="form-control percent" name="x1" required>
+                      <input type="text" class="form-control percent" name="x1" id="x1" required>
                     </div>
                   <?php endif; ?>
 
@@ -231,18 +233,18 @@
                   <?php if (can('product_margin_view')): ?>
                     <div class="col-md-3 mb-2">
                       <label><strong>Margen</strong></label>
-                      <input type="text" class="form-control money" name="margin_card" required>
+                      <input type="text" class="form-control money" name="margin_card" id="margin_card" required>
                     </div>
 
                     <!-- Porcentaje 3 -->
                     <div class="col-md-2 mb-2">
                       <label>%</label>
-                      <input type="text" class="form-control percent" name="xcard" required value="18">
+                      <input type="text" class="form-control percent" name="xcard" id="xcard" required>
                     </div>
 
                     <div class="col-md-3 mb-2">
                       <label><strong>Descuento</strong></label>
-                      <input type="text" class="form-control money" name="discount_card" required>
+                      <input type="text" class="form-control money" name="discount_card" id="discount_card" required>
                     </div>
 
                   <?php endif; ?>

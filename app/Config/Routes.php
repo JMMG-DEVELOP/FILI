@@ -39,12 +39,12 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
             'Products\Products\Datatable::datatable'
         );
         // Product Add
-        $routes->post('products/product_open', 'Products\Products\Add::open');
-        $routes->post('products/product_save', 'Products\Products\Add::save');
+        $routes->post('products/product_open', 'Products\Products\Add::open', ['filter' => 'ajax']);
+        $routes->post('products/product_save', 'Products\Products\Add::save', ['filter' => 'ajax']);
         $routes->post('products/product_save_verify', 'Products\Products\Add::code_verify');
         // Product Edit
-        $routes->post('products/product_edit_open', 'Products\Products\Edit::open');
-        $routes->post('products/product_edit_save', 'Products\Products\Edit::save');
+        $routes->post('products/product_edit_open', 'Products\Products\Edit::open', ['filter' => 'ajax']);
+        $routes->post('products/product_edit_save', 'Products\Products\Edit::save', ['filter' => 'ajax']);
 
 
 
@@ -54,7 +54,7 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
             'Products\Brands\Datatable::datatable'
         );
         // Brands Add
-        $routes->post('brands/brand_open', 'Products\Brands\Add::open');
+        $routes->post('brands/brand_open', 'Products\Brands\Add::open', ['filter' => 'ajax']);
 
         // Section Datatable
         $routes->post(
@@ -62,7 +62,7 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
             'Products\Section\Datatable::datatable'
         );
         // Section Add
-        $routes->post('section/section_open', 'Products\Section\Add::open');
+        $routes->post('section/section_open', 'Products\Section\Add::open', ['filter' => 'ajax']);
 
 
     });
@@ -75,7 +75,7 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
 
         $routes->get('/', 'Box\Access::index');
 
-        $routes->post('process/search', 'Box\Process::search');
+        $routes->post('process/search', 'Box\Process::search', ['filter' => 'ajax']);
 
 
     });

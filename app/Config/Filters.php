@@ -37,6 +37,7 @@ class Filters extends BaseFilters
         'auth' => \App\Filters\AuthFilter::class,
         'home' => \App\Filters\HomeFilter::class,
         'permission' => \App\Filters\PermissionFilter::class,
+        'ajax' => \App\Filters\AjaxFilter::class,
     ];
 
     /**

@@ -3,16 +3,8 @@ namespace App\Controllers\Products\Products;
 
 use App\Controllers\BaseController;
 
-use App\Models\Products\Products\ProductModel;
-use App\Models\Products\Products\IvaModel;
-use App\Models\Products\Brands\BrandsModel;
-use App\Models\Products\Section\SectionModel;
-use App\Models\Products\Products\SalesModel;
-
 use App\Services\ProductService;
-
-
-
+use App\Services\OpenForm;
 
 use App\Libraries\ProductsFormatter;
 
@@ -21,23 +13,8 @@ class Add extends BaseController
 {
     public function open()
     {
-        $brandsModel = new BrandsModel();
-        $sectionModel = new SectionModel();
-        $ivaModel = new IvaModel();
-        $salesModel = new SalesModel();
-        // Obtener datos activos (ajusta filtros si hace falta)
-        $brands = $brandsModel->findAll();
-        $sections = $sectionModel->findAll();
-        $iva = $ivaModel->findAll();
-        $sales = $salesModel->findAll();
-        $form = [
-            'title' => 'Nuevo Producto',
-            'brands' => $brands,
-            'sections' => $sections,
-            'ivas' => $iva,
-            'sales' => $sales
-        ];
-
+        $open = new OpenForm();
+        $form = $open->form_products('Nuevo Producto');
         $form_html = view('Products/products/form', $form);
 
         return $this->response->setJSON([
@@ -54,18 +31,6 @@ class Add extends BaseController
     {
         $productFormatter = new ProductsFormatter();
         $productService = new ProductService();
-
-
-        if (!$this->request->isAJAX()) {
-            return $this->response
-                ->setStatusCode(403)
-                ->setJSON([
-                    'status' => false,
-                    'message' => 'ERROR 403',
-                    'csrfName' => csrf_token(),
-                    'csrfHash' => csrf_hash()
-                ]);
-        }
 
         $post = $this->request->getPost();
 
@@ -104,9 +69,6 @@ class Add extends BaseController
     public function code_verify()
     {
         $productService = new ProductService();
-        if (!$this->request->isAJAX()) {
-            return $this->response->setStatusCode(403);
-        }
 
         $result = $productService->validate_code(
             $this->request->getPost('code')
@@ -119,31 +81,6 @@ class Add extends BaseController
             ])
         );
     }
-
-    // {
-    //     if (!$code) {
-    //         return [
-    //             'status' => false,
-    //             'error' => 'code_empty',
-    //             'message' => 'Código vacío'
-    //         ];
-    //     }
-
-    //     $productModel = new ProductModel();
-
-    //     if ($productModel->getByCode($code)) {
-    //         return [
-    //             'status' => false,
-    //             'error' => 'code_exists',
-    //             'message' => 'El código ya existe'
-    //         ];
-    //     }
-
-    //     return [
-    //         'status' => true,
-    //         'message' => 'Código disponible',
-    //     ];
-    // }
 
 
 }
