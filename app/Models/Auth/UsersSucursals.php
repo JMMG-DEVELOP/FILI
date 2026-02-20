@@ -6,7 +6,7 @@ use CodeIgniter\Model;
 
 class UsersSucursals extends Model
 {
-    protected $table      = 'users_sucursals';
+    protected $table = 'users_sucursals';
     protected $primaryKey = 'id';
     protected $returnType = 'array';
 
@@ -18,12 +18,15 @@ class UsersSucursals extends Model
     public function details($user)
     {
         return $this->select([
-            'sucursal',
+            'users_sucursals.sucursal',
+            'sucursals.name AS sucursal_name'
         ])
-        ->where('user', $user)
-        ->findAll();
-
+            ->join('sucursals', 'sucursals.id = users_sucursals.sucursal')
+            ->where('users_sucursals.user', $user)
+            ->findAll();
     }
+
+
 
 
 }

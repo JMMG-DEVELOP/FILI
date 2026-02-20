@@ -4,9 +4,9 @@ namespace App\Controllers\Box;
 use App\Controllers\BaseController;
 use App\Models\Products\Products\ProductModel;
 
-class Process extends BaseController
+class Controller extends BaseController
 {
-  public function search()
+  public function product_search()
   {
 
     if ($this->request->isAJAX()) {
@@ -15,7 +15,7 @@ class Process extends BaseController
       $result = [
         'result' => $productModel->getBySearch($value)
       ];
-      $html = view('Box/Product/search_table', $result);
+      $html = view('Box/components/product_search_table', $result);
 
 
       return $this->response->setJSON([

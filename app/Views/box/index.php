@@ -6,35 +6,47 @@
   </div>
 </div>
 <div class="row">
-
-  <div class="col-md-6 mb-6">
+  <!-- CONTROLLER FACTURACION -->
+  <div class="col-md-5 mb-5">
     <div class="card">
-      <div class="card-header">
+      <div class="card-header bg-light">
+        <?= $this->include('box/controller/function'); ?>
 
         <?= $this->include('interface/components/search'); ?>
         <div id="search_panel"></div>
-        <div id="money_panel"></div>
-        <div id="invoice_panel"></div>
-        <div id="product_panel"></div>
+
+        <div id="product_panel">
+          <?= $this->include('box/controller/product'); ?>
+        </div>
 
       </div>
       <div class="card-body">
-
+        <div id="sucursal_panel">
+          <?= $this->include('box/controller/sucursal'); ?>
+        </div>
+        <div id="customer_panel">
+          <?= $this->include('box/controller/customer'); ?>
+        </div>
+        <div id="payment_panel">
+          <?= $this->include('box/controller/payment'); ?>
+        </div>
+        <div id="product_panel"></div>
       </div>
     </div>
   </div>
 
-  <div class="col-md-6 mb-6">
+  <!-- CARD FACTURACION -->
+  <div class="col-md-7 mb-7">
     <div class="card">
       <div class="card-header">
-        <h4 class="d-flex justify-content-between align-items-center mb-0">
-          <span class="text-muted">Facturas</span>
-          <span class="badge badge-secondary badge-pill" id="row_invoice">12</span>
-        </h4>
+
+        <?= $this->include('box/components/total_cart'); ?>
+
+
       </div>
       <div class="card-body">
 
-
+        <?= $this->include('box/controller/cart'); ?>
 
       </div>
     </div>
@@ -50,7 +62,7 @@
 <?= $this->endSection(); ?>
 
 <?= $this->section('other_script'); ?>
-
+<script src="<?= base_url(); ?>/asyng/js/soundManager.js"></script>
 <script src="<?= base_url(); ?>/asyng/box/process.js"></script>
 <script src="<?= base_url(); ?>/asyng/box/app.js"></script>
 <script src="<?= base_url(); ?>/asyng/box/send.js"></script>

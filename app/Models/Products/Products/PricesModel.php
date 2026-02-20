@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models\Products\Products;
 
 use CodeIgniter\Model;
@@ -13,10 +12,8 @@ class PricesModel extends Model
     protected $allowedFields = [
         'price_one',
         'price_two',
-        'price_three',
-        'cant_one',
+        'price_card',
         'cant_two',
-        'cant_three',
         'product'
     ];
 

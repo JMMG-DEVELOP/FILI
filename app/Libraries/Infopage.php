@@ -2,6 +2,7 @@
 
 namespace App\Libraries;
 use App\Models\Auth\UsersModel;
+use App\Models\Auth\UsersSucursals;
 
 
 class Infopage
@@ -9,6 +10,8 @@ class Infopage
   public function infopage(array $info): array
   {
     $usersModel = new UsersModel();
+    $userSucursal = new UsersSucursals();
+    $sucursal = $userSucursal->details(session()->get('id'));
     $user = $usersModel->details(session()->get('id'));
 
     // Base obligatoria del layout
@@ -19,6 +22,7 @@ class Infopage
       'user_id' => $user['id'] ?? null,
       'user_name' => $user['name'] ?? null,
       'user_user' => $user['user'] ?? null,
+      'sucursal' => $sucursal
     ];
 
     // 🔥 MERGE: mantiene todo lo que venga del controlador
@@ -31,7 +35,7 @@ class Infopage
     return match ($category) {
 
       '1' => 'dashboard/index',
-      '2' => 'dashboard/index',
+      '2' => 'dashboard/box',
       '3' => 'box',
       '4' => 'box',
 

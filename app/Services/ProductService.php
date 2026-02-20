@@ -11,42 +11,92 @@ use CodeIgniter\Database\Exceptions\DatabaseException;
 
 class ProductService
 {
-  public function save(array $data): bool
+  public function add(array $data): array
   {
     $db = db_connect();
     $db->transBegin();
 
     try {
 
-      // 1️⃣ PRODUCT
+      // ================= PRODUCT =================
       $productModel = new ProductModel();
-      $productModel->insert($data['products']);
 
-      // 2️⃣ PRICES
+      if (!$productModel->insert($data['products'])) {
+        return [
+          'status' => false,
+          'message' => $productModel->errors()
+            ? implode(', ', $productModel->errors())
+            : 'Error al insertar producto'
+        ];
+      }
+
+      // ================= PRICES =================
       $priceModel = new PricesModel();
-      $priceModel->insert($data['prices']);
 
-      // 3️⃣ COSTS
+      if (!$priceModel->insert($data['prices'])) {
+        return [
+          'status' => false,
+          'message' => $priceModel->errors()
+            ? implode(', ', $priceModel->errors())
+            : 'Error al insertar precios'
+        ];
+      }
+
+      // ================= COSTS =================
       $costModel = new CostModel();
-      $costModel->insert($data['costs']);
 
-      // 4️⃣ STOCK (batch)
+      if (!$costModel->insert($data['costs'])) {
+        return [
+          'status' => false,
+          'message' => $costModel->errors()
+            ? implode(', ', $costModel->errors())
+            : 'Error al insertar costos'
+        ];
+      }
+
+      // ================= STOCK =================
       if (!empty($data['stock'])) {
         $stockModel = new StockModel();
-        $stockModel->insertBatch($data['stock']);
+
+        if (!$stockModel->insertBatch($data['stock'])) {
+          return [
+            'status' => false,
+            'message' => 'Error al insertar stock'
+          ];
+        }
+      }
+
+      // ================= COMMIT =================
+      if ($db->transStatus() === false) {
+        $db->transRollback();
+
+        return [
+          'status' => false,
+          'message' => 'Error en la transacción'
+        ];
       }
 
       $db->transCommit();
-      return true;
+
+      return [
+        'status' => true,
+        'message' => 'Producto registrado correctamente'
+      ];
 
     } catch (\Throwable $e) {
 
       $db->transRollback();
-      log_message('error', $e->getMessage());
-      throw new DatabaseException('Error al guardar producto');
 
+      log_message('error', $e->getMessage());
+
+      return [
+        'status' => false,
+        'message' => 'Exception: ' . $e->getMessage()
+      ];
     }
   }
+
+
   public function edit(array $data): bool
   {
     $db = db_connect();

@@ -22,7 +22,7 @@
 
           <div class="row">
             <input type="text" name="operation_type" id="operation_type" hidden>
-            <input type="text" name="card_percent" id="card_percent" value=" <?= $card_percent ?>" hidden>
+            <input type="text" name="card_percent" id="card_percent_cant" value=" <?= $card_percent ?>" hidden>
 
 
             <!-- ==================== DESCRIPCIÓN ==================== -->
@@ -183,11 +183,7 @@
                     </div>
                   <?php endif; ?>
 
-                  <!-- Cantidad Desde -->
-                  <div class="col-md-2 mb-2">
-                    <label>x</label>
-                    <input type="text" class="form-control numeric" name="cant_one" id="cant_one" value="1" readonly>
-                  </div>
+
                 </div>
 
                 <!-- Precio 2 -->
@@ -224,7 +220,7 @@
                   <!-- Precio -->
                   <div class="col-md-4 mb-2">
                     <label><strong>Precio Card</strong></label>
-                    <input type="text" class="form-control money" name="price_three" id="price_three" hidden>
+                    <!-- <input type="text" class="form-control money" name="price_three" id="price_three" hidden> -->
                     <input type="text" class="form-control money" name="price_card" id="price_card" required>
 
                   </div>
@@ -234,12 +230,6 @@
                     <div class="col-md-3 mb-2">
                       <label><strong>Margen</strong></label>
                       <input type="text" class="form-control money" name="margin_card" id="margin_card" required>
-                    </div>
-
-                    <!-- Porcentaje 3 -->
-                    <div class="col-md-2 mb-2">
-                      <label>%</label>
-                      <input type="text" class="form-control percent" name="xcard" id="xcard" required>
                     </div>
 
                     <div class="col-md-3 mb-2">

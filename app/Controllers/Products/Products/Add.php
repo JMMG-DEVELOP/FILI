@@ -34,37 +34,32 @@ class Add extends BaseController
 
         $post = $this->request->getPost();
 
-        // 1️⃣ Validar código
+        // ================= VALIDAR CODE =================
         $validation = $productService->validate_code($post['code'] ?? null);
+
         if ($validation['status'] === false) {
-            return $this->response->setJSON(
-                array_merge($validation, [
-                    'csrfName' => csrf_token(),
-                    'csrfHash' => csrf_hash()
-                ])
-            );
-        }
-
-        // 2️⃣ 👉 Save Process 
-        $formatter = $productFormatter->tables_formatters($post);
-
-        if ($productService->save($formatter)) {
-            return $this->response->setJSON([
-                'status' => true,
-                'message' => 'Producto guardado correctamente',
-                'csrfName' => csrf_token(),
-                'csrfHash' => csrf_hash()
-            ]);
-        } else {
             return $this->response->setJSON([
                 'status' => false,
-                'message' => 'Error al Guardar Producto',
+                'message' => $validation['message'],
                 'csrfName' => csrf_token(),
                 'csrfHash' => csrf_hash()
             ]);
         }
 
+        // ================= FORMAT =================
+        $formatter = $productFormatter->tables_formatters($post);
+
+        // ================= SAVE =================
+        $result = $productService->add($formatter);
+
+        return $this->response->setJSON([
+            'status' => $result['status'],
+            'message' => $result['message'],
+            'csrfName' => csrf_token(),
+            'csrfHash' => csrf_hash()
+        ]);
     }
+
 
     public function code_verify()
     {

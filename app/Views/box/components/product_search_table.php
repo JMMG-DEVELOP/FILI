@@ -1,4 +1,4 @@
-<div class="card-body">
+<div class="col-md-12">
 
   <table class="table table-hover table-striped table-bordered">
 
@@ -60,8 +60,7 @@
             <!-- Botón agregar -->
             <td class="text-center">
 
-              <button class="btn btn-sm btn-primary add-product" data-code="<?= esc($detail['code']) ?>"
-                data-description="<?= esc($detail['description']) ?>" data-price="<?= esc($detail['price_one']) ?>">
+              <button class="btn btn-sm btn-primary add_product_cart_search" data-code="<?= esc($detail['code']) ?>">
                 <i class="fas fa-plus"></i>
               </button>
 
@@ -84,4 +83,9 @@
 
   </table>
 
+  <div class="border-top pt-4 text-center">
+    <button type="button" class="btn btn-outline-danger product_search_cancel">
+      X
+    </button>
+  </div>
 </div>

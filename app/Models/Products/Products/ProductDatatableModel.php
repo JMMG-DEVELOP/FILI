@@ -16,7 +16,7 @@ class ProductDatatableModel extends BaseDatatableModel
         'COALESCE(pc.cost, 0) AS cost',
         'COALESCE(pp.price_one, 0) AS price_1',
         'COALESCE(pp.price_two, 0) AS price_2',
-        'COALESCE(pp.price_card, 0) AS price_3',
+        'COALESCE(pp.price_card, 0) AS price_card',
         'COALESCE(ps1.stock, 0) AS stock_s1',
         'COALESCE(ps2.stock, 0) AS stock_s2',
     ];

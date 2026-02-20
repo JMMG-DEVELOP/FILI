@@ -20,7 +20,7 @@ class Edit extends BaseController
         if ($this->request->isAJAX()) {
             $post = $this->request->getPost();
             $product = $productModel->getByCode($post['code']);
-            $form = $open->form_products('Nuevo Producto');
+            $form = $open->form_products('Edición de  Producto');
             $form_html = view('Products/products/form', $form);
 
 
@@ -55,7 +55,8 @@ class Edit extends BaseController
                 'status' => true,
                 'message' => 'Producto editado correctamente',
                 'csrfName' => csrf_token(),
-                'csrfHash' => csrf_hash()
+                'csrfHash' => csrf_hash(),
+                'formatter' => $formatter
             ]);
         } else {
             return $this->response->setJSON([

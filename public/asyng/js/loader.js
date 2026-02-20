@@ -165,7 +165,7 @@ function showAlert(message, type = 'warning', timeout = 4000) {
   $container.empty();
 
   const $alert = $(`
-    <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+    <div class="alert alert-${type} alert-dismissible fade show text-center" role="alert">
       <strong>${message}</strong>
       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
         <span aria-hidden="true">×</span>
@@ -258,4 +258,15 @@ function asyng_hide_view({
 
   }
 
+}
+function formatMoneyText(selector = ".money") {
+  $(selector).each(function () {
+    let value = $(this).text().replace(/\D/g, '');
+
+    if (!value) return;
+
+    let formatted = value.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+
+    $(this).text(formatted);
+  });
 }

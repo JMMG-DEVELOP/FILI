@@ -1,25 +1,35 @@
 
-// function calculateFromPrice($priceInput) {
+function calculatePriceCard() {
+  // Inputs base
+  const costValue = toMoneyNumber($('[name="cost"]').val());
+  const priceOne = toMoneyNumber($('[name="price_one"]').val());
+  const percentExtra = toMoneyNumber($('#card_percent_cant').val());
 
-//   const name = $priceInput.attr('name');
-//   const suffix = name.split('_')[1];
+  if (costValue <= 0 || priceOne <= 0) return;
 
-//   const cost = toMoneyNumber($('[name="cost"]').val());
-//   const price = toMoneyNumber($priceInput.val());
+  // 1️⃣ Calcular price_card sumando % a price_one
+  const priceCard = priceOne + (priceOne * percentExtra / 100);
 
-//   if (cost <= 0 || price <= 0) return;
+  // 2️⃣ Calcular margin_card desde costo
+  const marginCard = priceCard - costValue;
 
-//   const $margin = $('[name="margin_' + suffix + '"]');
-//   const $percent = $('[name="x' + suffix.replace('one', '1').replace('two', '2').replace('three', '3') + '"]');
+  // 3️⃣ Calcular discount (diferencia contra price_one)
+  const discount = priceCard - priceOne;
 
-//   const margin = price - cost;
-//   const percent = (margin / cost) * 100;
+  // 4️⃣ Escribir valores
+  $('[name="price_card"]').val(priceCard.toFixed(0)).trigger('input');
+  $('[name="margin_card"]').val(marginCard.toFixed(0)).trigger('input');
+  $('[name="discount_card"]').val(discount.toFixed(0)).trigger('input');
 
-//   $margin.val(margin).trigger('input');
-//   $percent.val(percent.toFixed(1)).trigger('input');
+  // 5️⃣ Efecto visual
+  asyngVisualEffects([
+    $('#card_percent_cant'),
+    $('[name="price_card"]'),
+    $('[name="margin_card"]'),
+    $('[name="discount_card"]')
+  ]);
 
-//   asyngVisualEffects([$priceInput, $margin, $percent]);
-// }
+}
 function calculateFromPrice($priceInput) {
 
   const name = $priceInput.attr('name');
@@ -43,68 +53,10 @@ function calculateFromPrice($priceInput) {
   $percent.val(percent.toFixed(1)).trigger('input');
 
   asyngVisualEffects([$priceInput, $margin, $percent]);
+  calculatePriceCard();
 
-  /* ===========================
-     🔵 LÓGICA TARJETA
-     =========================== */
-
-  // Solo cuando sea x1
-  if ($percent.attr('id') === 'x1') {
-
-    const cardPercent = toMoneyNumber($('#card_percent').val());
-    const percentBase = percent;
-
-    if (cardPercent < 0) return;
-
-    // % TOTAL
-    const totalPercent = percentBase + cardPercent;
-
-    // Precio tarjeta
-    const priceCard = cost + (cost * totalPercent / 100);
-
-    // Margen tarjeta
-    const marginCard = priceCard - cost;
-
-    // Monto del % adicional
-    const discountCard = cost * cardPercent / 100;
-
-    // Escribir valores
-    $('#xcard').val(totalPercent.toFixed(1)).trigger('input');      // 👈 NUEVO
-    $('#price_card').val(priceCard.toFixed(0)).trigger('input');
-    $('#margin_card').val(marginCard.toFixed(0)).trigger('input');
-    $('#discount_card').val(discountCard.toFixed(0)).trigger('input');
-
-    asyngVisualEffects([
-      $('#xcard'),
-      $('#price_card'),
-      $('#margin_card'),
-      $('#discount_card')
-    ]);
-  }
 }
 
-
-// function calculateFromMargin($marginInput) {
-
-//   const name = $marginInput.attr('name');
-//   const suffix = name.split('_')[1];
-
-//   const cost = toMoneyNumber($('[name="cost"]').val());
-//   const margin = toMoneyNumber($marginInput.val());
-
-//   if (cost <= 0 || margin < 0) return;
-
-//   const $price = $('[name="price_' + suffix + '"]');
-//   const $percent = $('[name="x' + suffix.replace('one', '1').replace('two', '2').replace('three', '3') + '"]');
-
-//   const price = cost + margin;
-//   const percent = (margin / cost) * 100;
-
-//   $price.val(price).trigger('input');
-//   $percent.val(percent.toFixed(1)).trigger('input');
-
-//   asyngVisualEffects([$marginInput, $price, $percent]);
-// }
 function calculateFromMargin($marginInput) {
 
   const name = $marginInput.attr('name');
@@ -125,36 +77,8 @@ function calculateFromMargin($marginInput) {
   $percent.val(percent.toFixed(1)).trigger('input');
 
   asyngVisualEffects([$marginInput, $price, $percent]);
-
-  /* ===========================
-     🔵 LÓGICA TARJETA (NUEVO)
-     =========================== */
-
-  if ($percent.attr('id') === 'x1') {
-
-    const cardPercent = toMoneyNumber($('#card_percent').val());
-    if (cardPercent < 0) return;
-
-    const totalPercent = percent + cardPercent;
-
-    const priceCard = cost + (cost * totalPercent / 100);
-    const marginCard = priceCard - cost;
-    const discountCard = cost * cardPercent / 100;
-
-    $('#xcard').val(totalPercent.toFixed(1)).trigger('input');
-    $('#price_card').val(priceCard.toFixed(0)).trigger('input');
-    $('#margin_card').val(marginCard.toFixed(0)).trigger('input');
-    $('#discount_card').val(discountCard.toFixed(0)).trigger('input');
-
-    asyngVisualEffects([
-      $('#xcard'),
-      $('#price_card'),
-      $('#margin_card'),
-      $('#discount_card')
-    ]);
-  }
+  calculatePriceCard();
 }
-
 
 function indexToWord(index) {
   const map = {
@@ -164,24 +88,6 @@ function indexToWord(index) {
   };
   return map[index];
 }
-// function calculateFromPercent($percentInput) {
-
-//   const index = $percentInput.attr('name').replace('x', '');
-//   const cost = toMoneyNumber($('[name="cost"]').val());
-//   const percent = toPercentNumber($percentInput.val());
-
-//   if (cost <= 0 || percent < 0) return;
-
-//   const word = indexToWord(index);
-
-//   const margin = cost * (percent / 100);
-//   const price = cost + margin;
-
-//   $('[name="margin_' + word + '"]').val(margin).trigger('input');
-//   $('[name="price_' + word + '"]').val(price).trigger('input');
-
-//   asyngVisualEffects([$percentInput]);
-// }
 function calculateFromPercent($percentInput) {
 
   const index = $percentInput.attr('name').replace('x', '');
@@ -199,79 +105,9 @@ function calculateFromPercent($percentInput) {
   $('[name="price_' + word + '"]').val(price).trigger('input');
 
   asyngVisualEffects([$percentInput]);
-
-  /* ===========================
-     🔵 LÓGICA TARJETA (NUEVO)
-     =========================== */
-
-  if ($percentInput.attr('id') === 'x1') {
-
-    const cardPercent = toMoneyNumber($('#card_percent').val());
-    if (cardPercent < 0) return;
-
-    const totalPercent = percent + cardPercent;
-
-    const priceCard = cost + (cost * totalPercent / 100);
-    const marginCard = priceCard - cost;
-    const discountCard = cost * cardPercent / 100;
-
-    $('#xcard').val(totalPercent.toFixed(1)).trigger('input');
-    $('#price_card').val(priceCard.toFixed(0)).trigger('input');
-    $('#margin_card').val(marginCard.toFixed(0)).trigger('input');
-    $('#discount_card').val(discountCard.toFixed(0)).trigger('input');
-
-    asyngVisualEffects([
-      $('#xcard'),
-      $('#price_card'),
-      $('#margin_card'),
-      $('#discount_card')
-    ]);
-  }
+  calculatePriceCard();
 }
 
-
-// function recalculateFromCost() {
-
-//   const cost = toMoneyNumber($('[name="cost"]').val());
-//   if (cost <= 0) return;
-
-//   const levels = [
-//     { price: 'price_one', margin: 'margin_one', percent: 'x1' },
-//     { price: 'price_two', margin: 'margin_two', percent: 'x2' },
-//     { price: 'price_three', margin: 'margin_three', percent: 'x3' }
-//   ];
-
-//   let affected = [];
-
-//   levels.forEach(level => {
-
-//     const $price = $('[name="' + level.price + '"]');
-//     const $margin = $('[name="' + level.margin + '"]');
-//     const $percent = $('[name="' + level.percent + '"]');
-
-//     if (!$price.length) return;
-
-//     const priceValue = toMoneyNumber($price.val());
-//     if (priceValue <= 0) return;
-
-//     // ================= MARGEN =================
-//     const margin = priceValue - cost;
-//     if (margin < 0) return;
-
-//     // 👉 ESCRIBIR NÚMERO LIMPIO
-//     $margin.val(margin).trigger('input');
-
-//     // ================= PORCENTAJE =================
-//     const percent = (margin / cost) * 100;
-//     $percent.val(percent.toFixed(1)).trigger('input');
-
-//     affected.push($margin, $percent);
-//   });
-
-//   if (affected.length) {
-//     asyngVisualEffects(affected);
-//   }
-// }
 function recalculateFromCost() {
 
   const cost = toMoneyNumber($('[name="cost"]').val());
@@ -296,48 +132,24 @@ function recalculateFromCost() {
     const priceValue = toMoneyNumber($price.val());
     if (priceValue <= 0) return;
 
+    // ================= MARGEN =================
     const margin = priceValue - cost;
     if (margin < 0) return;
 
+    // 👉 ESCRIBIR NÚMERO LIMPIO
     $margin.val(margin).trigger('input');
 
+    // ================= PORCENTAJE =================
     const percent = (margin / cost) * 100;
     $percent.val(percent.toFixed(1)).trigger('input');
 
     affected.push($margin, $percent);
-
-    /* ===========================
-       🔵 LÓGICA TARJETA (NUEVO)
-       =========================== */
-
-    if (level.percent === 'x1') {
-
-      const cardPercent = toMoneyNumber($('#card_percent').val());
-      if (cardPercent < 0) return;
-
-      const totalPercent = percent + cardPercent;
-
-      const priceCard = cost + (cost * totalPercent / 100);
-      const marginCard = priceCard - cost;
-      const discountCard = cost * cardPercent / 100;
-
-      $('#xcard').val(totalPercent.toFixed(1)).trigger('input');
-      $('#price_card').val(priceCard.toFixed(0)).trigger('input');
-      $('#margin_card').val(marginCard.toFixed(0)).trigger('input');
-      $('#discount_card').val(discountCard.toFixed(0)).trigger('input');
-
-      affected.push(
-        $('#xcard'),
-        $('#price_card'),
-        $('#margin_card'),
-        $('#discount_card')
-      );
-    }
   });
 
   if (affected.length) {
     asyngVisualEffects(affected);
   }
+  calculatePriceCard();
 }
 
 

@@ -1,7 +1,5 @@
 <div class="card-body">
-
   <table class="table table-hover table-striped table-bordered">
-
     <thead>
       <tr>
         <th>#</th>
@@ -42,5 +40,4 @@
     </tbody>
 
   </table>
-
 </div>

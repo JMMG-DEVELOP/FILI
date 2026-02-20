@@ -43,8 +43,8 @@ class Login extends BaseController
         // Obtenemos permisos según categoría
         $permissions = $permissionsConfig->details[$user['category']] ?? [];
 
-        $sucursal = $userSucursal->details($user['id']);
-        $sucursales = array_column($sucursal, 'sucursal');
+        // $sucursal = $userSucursal->details($user['id']);
+        // $sucursales = array_column($sucursal, 'sucursal');
 
         $session = session();
         session()->set([
@@ -53,7 +53,6 @@ class Login extends BaseController
             'user' => $user['user'],
             'category' => $user['category'],
             'permissions' => $permissions,
-            'sucursal' => $sucursales,
         ]);
 
         return redirect()->to(base_url('dashboard'));

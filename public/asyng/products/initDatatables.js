@@ -35,7 +35,7 @@ function initProductsTable() {
   columns = columns.concat([
     { data: 'price_1' },
     { data: 'price_2' },
-    { data: 'price_3' },
+    { data: 'price_card' },
     { data: 'stock_s1' },
     { data: 'stock_s2' },
     // { data: 'edit', orderable: false, searchable: false },
