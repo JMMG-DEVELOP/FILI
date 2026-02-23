@@ -1,5 +1,3 @@
-<!-- <fieldset class="border rounded p-3 mb-3 bg-transparent"> -->
-
 <div class="col-md-12">
 
   <div class="form-row mt-3">
@@ -31,12 +29,10 @@
         <input type="text" class="form-control money" name="precio_card" id="price_card">
       </div>
       <div class="col-md-1 mb-2 mt-3">
-        <button type="submit" class="btn btn-primary product_send">
+        <button type="submit" class="btn btn-primary product_send_cart">
           <i class="fas fa-check"> </i>
         </button>
       </div>
     </div>
   </div>
 </div>
-
-<!-- </fieldset> -->

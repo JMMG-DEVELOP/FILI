@@ -1,4 +1,19 @@
 
+//Cerrar todos los deslizamientos o tablas 
+
+function searh_panel_close() {
+  asyng_hide_view({
+    id: 'product_search_panel',
+    effect: 'fade',
+    clear: true
+  });
+  asyng_hide_view({
+    id: 'customer_search_panel',
+    effect: 'fade',
+    clear: true
+  });
+
+}
 async function product_search(values) {
 
   try {
@@ -9,7 +24,7 @@ async function product_search(values) {
 
     if (response.status) {
       asyng_show_view({
-        id: 'search_panel',
+        id: 'product_search_panel',
         html: response.html,
         effect: 'fade'
       });
@@ -240,39 +255,7 @@ function resetInputs() {
   $('#search').val('').focus();
 }
 // Detectar Cambios en Boleta
-// function handleQuantityChange(input) {
 
-//   let row = input.closest('tr');
-
-//   let stock = parseFloat(row.data('stock'));
-//   let priceOne = parseFloat(row.data('price-one'));
-//   let priceTwo = parseFloat(row.data('price-two'));
-//   let cantTwo = parseFloat(row.data('cant-two'));
-
-//   let cant = parseFloat(input.val());
-
-//   if (!cant || cant <= 0) cant = 1;
-
-//   let price;
-
-//   if (cantTwo == 0 || cant < cantTwo) {
-//     price = priceOne;
-//   } else {
-//     price = priceTwo;
-//   }
-
-//   let total = cant * price;
-
-//   row.find('.row-price')
-//     .text(formatMoney(price))
-//     .data('price', price);
-
-//   row.find('.row-total')
-//     .text(formatMoney(total))
-//     .data('total', total);
-
-//   updateGrandTotal();
-// }
 function handleQuantityChange(input) {
 
   let row = input.closest('tr');
@@ -285,11 +268,6 @@ function handleQuantityChange(input) {
   let payment = Number($('#payment').val());
   let percent = Number($('#card_percent').val());
   if (!cant || cant <= 0) cant = 1;
-
-  if (cant > stock) {
-    input.val(stock);
-    cant = stock;
-  }
 
   let finalPrice;
 
@@ -340,7 +318,6 @@ function handleDirectSale(response) {
 
   resetInputs();
 }
-
 
 
 // Agregar de manera Verificada
@@ -403,7 +380,32 @@ async function invoice_add_product_card(code) {
   } catch (err) {
     console.error(err);
     showAlert('Error de comunicación con el servidor', 'danger');
-  } finally {
-    // $btn.prop('disabled', false);
+  }
+}
+
+
+// **********CUSTOMER 
+async function customer_search(value) {
+  try {
+    const response = await asyngAjaxSend(
+      'box/controller/customer_search',
+      { value: value }
+    );
+
+    if (!response.status) {
+      showAlert('error', 'warning')
+    } else {
+      asyng_show_view({
+        id: 'customer_search_panel',
+        html: response.html,
+        effect: 'fade'
+      });
+    }
+
+
+
+  } catch (err) {
+    console.error(err);
+    showAlert('Error de comunicación con el servidor', 'danger');
   }
 }

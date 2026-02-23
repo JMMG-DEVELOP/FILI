@@ -15,12 +15,12 @@
     <!-- Nombre / Denominación -->
     <div class="col-md-9 mb-2">
       <label>Nombre / Denominación</label>
-      <input type="text" class="form-control" name="client_name" id="client_name"
+      <input type="text" class="form-control" name="customer_name" id="customer_name"
         placeholder="Ingrese nombre o razón social">
     </div>
 
   </div>
 
-  <div id="customer_search"></div>
+  <div id="customer_search_panel"></div>
 
 </fieldset>

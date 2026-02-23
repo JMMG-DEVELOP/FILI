@@ -59,13 +59,9 @@ $(document).on('keydown', '#search', async function (e) {
 
 });
 
-$(document).on('click', '.product_search_cancel', function () {
+$(document).on('click', '.search_cancel', function () {
 
-  asyng_hide_view({
-    id: 'search_panel',
-    effect: 'fade',
-    clear: true
-  });
+  searh_panel_close()
   $("#search").focus();
 
   return;
@@ -100,11 +96,7 @@ $(document).on('keydown', function (e) {
   // CTRL + x → Cerrar Busquedas
   if (e.ctrlKey && e.key.toLowerCase() === 'x') {
     e.preventDefault(); // evita pegar (paste)
-    asyng_hide_view({
-      id: 'search_panel',
-      effect: 'fade',
-      clear: true
-    });
+    searh_panel_close()
     $("#search").focus();
 
     return;
@@ -166,7 +158,7 @@ $(document).on('keydown', '.row-cant', function (e) {
 $(document).on('change', '#payment', function () {
   recalculatePricesByPaymentType();
 });
-$(document).on('click', '.product_send', function (e) {
+$(document).on('click', '.product_send_cart', function (e) {
   e.preventDefault();
 
   // Obtenemos el producto completo que guardamos en el modal
@@ -197,6 +189,50 @@ $(document).on('click', '.product_send', function (e) {
 
   // Limpiamos inputs
   $('#product_cant').val(1);
+});
+$(document).on('blur', '.row-cant', function () {
+
+  let value = $(this).val().trim();
+
+  if (value === '' || parseFloat(value) < 1) {
+    $(this).val(1);
+  }
+
+});
+
+// ***** CUSTOMER
+
+$(document).on('keydown', '#ruc_ci', function (e) {
+
+  // Detectar SHIFT
+  if (e.key === 'Shift' && !e.repeat) {
+    e.preventDefault();
+    let value = $(this).val().trim();
+    customer_search(value);
+  }
+
+});
+
+$(document).on('keydown', '#customer_name', function (e) {
+
+  // Detectar SHIFT
+  if (e.key === 'Shift' && !e.repeat) {
+    e.preventDefault();
+    let value = $(this).val().trim();
+    customer_search(value);
+  }
+
+});
+
+$(document).on('click', '.add_customer_form', function () {
+
+  let ci = $(this).data('ci');
+  let name = $(this).data('name');
+
+  $('#ruc_ci').val(ci);
+  $('#customer_name').val(name);
+  $('#search').focus();
+  searh_panel_close();
 });
 //Ocultar panel Products verificado
 $("#product_panel").hide();

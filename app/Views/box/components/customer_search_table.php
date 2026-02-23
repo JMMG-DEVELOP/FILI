@@ -38,11 +38,10 @@
           <!-- Botón agregar -->
           <td class="text-center">
 
-            <button class="btn btn-sm btn-primary add-product" data-ruc="<?= esc($detail['ruc']) ?>"
-              data-name="<?= esc($detail['name']) ?>" data-correo="<?= esc($detail['correo']) ?>">
+            <button class="btn btn-sm btn-primary add_customer_form" data-ci="<?= esc($detail['ci']) ?>"
+              data-name="<?= esc($detail['name']) ?>">
               <i class="fas fa-plus"></i>
             </button>
-
           </td>
 
         </tr>
@@ -64,7 +63,7 @@
 
 </div>
 <div class="border-top pt-4 text-center">
-  <button type="button" class="btn btn-outline-danger product_search_cancel">
+  <button type="button" class="btn btn-outline-danger search_cancel">
     X
   </button>
 </div>

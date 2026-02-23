@@ -77,6 +77,8 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
 
         $routes->post('controller/product_search', 'Box\Controller::product_search', ['filter' => 'ajax']);
 
+        $routes->post('controller/customer_search', 'Box\Controller::customer_search', ['filter' => 'ajax']);
+
 
         // Invoice
         $routes->post('invoice/product_add', 'Box\Invoice::product_add', ['filter' => 'ajax']);

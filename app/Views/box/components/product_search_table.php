@@ -84,7 +84,7 @@
   </table>
 
   <div class="border-top pt-4 text-center">
-    <button type="button" class="btn btn-outline-danger product_search_cancel">
+    <button type="button" class="btn btn-outline-danger search_cancel">
       X
     </button>
   </div>
