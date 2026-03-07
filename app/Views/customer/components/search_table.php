@@ -62,8 +62,12 @@
 </table>
 
 </div>
-<div class="border-top pt-4 text-center">
-  <button type="button" class="btn btn-outline-danger search_cancel">
-    X
+<div class="border-top pt-4 text-right">
+  <button type="button" class="btn btn-outline-light add_new_customer">
+    Agregar Nuevo
+  </button>
+
+  <button type="button" class="btn btn-outline-danger customer_search_cancel">
+    <i class="fas fa-times"></i>
   </button>
 </div>

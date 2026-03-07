@@ -60,7 +60,7 @@
             <!-- Botón agregar -->
             <td class="text-center">
 
-              <button class="btn btn-sm btn-primary add_product_cart_search" data-code="<?= esc($detail['code']) ?>">
+              <button class="btn btn-sm btn-primary product_search_add_cart" data-code="<?= esc($detail['code']) ?>">
                 <i class="fas fa-plus"></i>
               </button>
 
@@ -83,9 +83,10 @@
 
   </table>
 
-  <div class="border-top pt-4 text-center">
-    <button type="button" class="btn btn-outline-danger search_cancel">
-      X
+
+  <div class="border-top pt-4 text-right">
+    <button type="button" class="btn btn-outline-danger product_search_table_hide">
+      <i class="fas fa-times"></i>
     </button>
   </div>
 </div>

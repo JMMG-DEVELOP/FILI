@@ -75,14 +75,35 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
 
         $routes->get('/', 'Box\Access::index');
 
-        $routes->post('controller/product_search', 'Box\Controller::product_search', ['filter' => 'ajax']);
+        $routes->post('process/controller_panel_load', 'Box\Process::controller_panel_load', ['filter' => 'ajax']);
 
-        $routes->post('controller/customer_search', 'Box\Controller::customer_search', ['filter' => 'ajax']);
+        $routes->post('process/payment_panel_load', 'Box\Process::payment_panel_load', ['filter' => 'ajax']);
+
+
+        $routes->post('controller/product_search', 'Box\Controller::product_search', ['filter' => 'ajax']);
+        $routes->post('controller/product_form', 'Box\Controller::product_form', ['filter' => 'ajax']);
+
+        //Customer
+
+        $routes->post('controller/customer_search', 'Customer\Process::search', ['filter' => 'ajax']);
+
+        $routes->post('controller/customer_form', 'Customer\Add::open', ['filter' => 'ajax']);
+        $routes->post('controller/customer_add', 'Customer\Add::save');
 
 
         // Invoice
         $routes->post('invoice/product_add', 'Box\Invoice::product_add', ['filter' => 'ajax']);
 
+
+
+    });
+
+    // ==========================
+    // CUSTOMER
+    // Requiere permiso:customer_access
+    // ==========================
+    $routes->group('customer', ['filter' => 'permission:box_access'], function ($routes) {
+        $routes->post('process/customer_panel_load', 'Customer\Process::customer_panel_load', ['filter' => 'ajax']);
 
 
     });

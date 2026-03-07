@@ -4,15 +4,14 @@ namespace App\Models\Products\Products;
 
 use CodeIgniter\Model;
 
-class CardPercentModel extends Model
+class PercentModel extends Model
 {
-  protected $table = 'card_percent';
+  protected $table = 'percent';
   protected $primaryKey = 'id';
   protected $returnType = 'array';
 
   protected $allowedFields = [
     'cant',
-    'name',
   ];
 
 

@@ -10,28 +10,19 @@
   <div class="col-md-5 mb-5">
     <div class="card">
       <div class="card-header bg-light">
-        <?= $this->include('box/controller/function'); ?>
-
-        <?= $this->include('interface/components/search'); ?>
-        <div id="product_search_panel"></div>
-
-        <div id="product_panel">
-          <?= $this->include('box/controller/product'); ?>
-        </div>
-
+        <div id="controller_panel"></div>
       </div>
+
       <div class="card-body">
+        <div id="payment_panel">
+        </div>
+        <div id="customer_panel"></div>
+
         <div id="sucursal_panel">
           <?= $this->include('box/controller/sucursal'); ?>
         </div>
-        <div id="customer_panel">
-          <?= $this->include('box/controller/customer'); ?>
-        </div>
-        <div id="payment_panel">
-          <?= $this->include('box/controller/payment'); ?>
-        </div>
-        <div id="product_panel"></div>
       </div>
+
     </div>
   </div>
 
@@ -63,8 +54,21 @@
 
 <?= $this->section('other_script'); ?>
 <script src="<?= base_url(); ?>/asyng/js/soundManager.js"></script>
-<script src="<?= base_url(); ?>/asyng/box/process.js"></script>
-<script src="<?= base_url(); ?>/asyng/box/app.js"></script>
-<script src="<?= base_url(); ?>/asyng/box/send.js"></script>
+<!-- Process -->
+<script src="<?= base_url(); ?>/asyng/box/process/app.js"></script>
+<script src="<?= base_url(); ?>/asyng/box/process/cart.js"></script>
+<script src="<?= base_url(); ?>/asyng/box/process/product.js"></script>
+
+
+
+<!-- Apps -->
+<script src="<?= base_url(); ?>/asyng/box/app/app.js"></script>
+<script src="<?= base_url(); ?>/asyng/box/app/product.js"></script>
+
+
+
+<!-- <script src="<?php // base_url(); ?>/asyng/box/process.js"></script>
+<script src="<?php // base_url(); ?>/asyng/box/send.js"></script>
+<script src="<?php // base_url(); ?>/asyng/box/app.js"></script> -->
 
 <?= $this->endSection(); ?>

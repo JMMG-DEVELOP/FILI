@@ -6,7 +6,7 @@ use App\Models\Products\Products\IvaModel;
 use App\Models\Products\Brands\BrandsModel;
 use App\Models\Products\Section\SectionModel;
 use App\Models\Products\Products\SalesModel;
-use App\Models\Products\Products\CardPercentModel;
+use App\Models\Products\Products\PercentModel;
 
 class OpenForm
 {
@@ -17,7 +17,7 @@ class OpenForm
     $sectionModel = new SectionModel();
     $ivaModel = new IvaModel();
     $salesModel = new SalesModel();
-    $cardPercentModel = new CardPercentModel();
+    $cardPercentModel = new PercentModel();
     return [
       'title' => $title,
       'brands' => $brandsModel->findAll(),

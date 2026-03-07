@@ -4,9 +4,9 @@ namespace App\Models\Box;
 
 use CodeIgniter\Model;
 
-class CardPercentModel extends Model
+class PercentModel extends Model
 {
-  protected $table = 'card_percent';
+  protected $table = 'percent';
   protected $primaryKey = 'id';
   protected $returnType = 'array';
 

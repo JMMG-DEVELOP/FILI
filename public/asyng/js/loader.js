@@ -188,7 +188,8 @@ function asyng_show_view({
   id,
   html,
   effect = 'fade',
-  time = 150
+  time = 150,
+  callback = null
 }) {
 
   let $div = $('#' + id);
@@ -196,17 +197,20 @@ function asyng_show_view({
   if (effect === 'slide') {
 
     $div.slideUp(time, function () {
-      $div.html(html).slideDown(time);
+      $div.html(html).slideDown(time, function () {
+        if (callback) callback();
+      });
     });
 
   } else {
 
     $div.fadeOut(time, function () {
-      $div.html(html).fadeIn(time);
+      $div.html(html).fadeIn(time, function () {
+        if (callback) callback();
+      });
     });
 
   }
-
 }
 
 function asyng_hide_view({
