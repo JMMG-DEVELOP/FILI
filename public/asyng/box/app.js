@@ -164,7 +164,7 @@
 // });
 
 // $(document).on('input', '.row-cant', function () {
-//   handleQuantityChange($(this));
+// handleQuantityChange($(this));
 // });
 // $(document).on('click', '.add_product_cart_search', function () {
 
@@ -528,7 +528,7 @@ $(document).on('click', '.remove-item', function () {
 
   $("#search").focus()
 
-})
+});
 
 /* enter cantidad */
 

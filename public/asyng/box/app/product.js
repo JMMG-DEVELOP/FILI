@@ -5,7 +5,6 @@ $(document).on('keydown', '#search', async function (e) {
   let data = { value: value }
 
   /* SHIFT → buscador */
-
   if (e.key === 'Shift' && !e.repeat) {
 
     e.preventDefault()
@@ -28,7 +27,6 @@ $(document).on('keydown', '#search', async function (e) {
   }
 
   /* ENTER */
-
   if (e.key === 'Enter' && !e.repeat) {
 
     e.preventDefault()
@@ -47,9 +45,27 @@ $(document).on('keydown', '#search', async function (e) {
 
     $(this).val(formatted)
 
-    invoice_add_product_card(formatted)
+    product_add_cart(formatted)
 
   }
+
+  // Operacion al Precionar , COMA
+  if (e.key === ',') {
+
+    e.preventDefault();
+
+    let val = value.replace(/,$/, '');
+    if (val === '' || isNaN(value)) {
+      showAlert('COLOCAR VALOR CORRECTO', 'warning');
+      $('#search').select();
+      return;
+    } else {
+      $('#other_name').slideDown(200).focus();
+
+    }
+
+  }
+
 
 });
 
@@ -65,12 +81,12 @@ $(document).on('click', '.product_search_table_hide', function () {
 
 });
 
-add_product_cart_search
-
 $(document).on('click', '.product_search_add_cart', function () {
 
   const code = $(this).data('code')
 
   product_add_cart(code)
 
-})
+});
+
+

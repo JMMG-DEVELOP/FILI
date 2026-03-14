@@ -58,12 +58,17 @@
 <script src="<?= base_url(); ?>/asyng/box/process/app.js"></script>
 <script src="<?= base_url(); ?>/asyng/box/process/cart.js"></script>
 <script src="<?= base_url(); ?>/asyng/box/process/product.js"></script>
+<script src="<?= base_url(); ?>/asyng/box/process/customer.js"></script>
+
 
 
 
 <!-- Apps -->
 <script src="<?= base_url(); ?>/asyng/box/app/app.js"></script>
+<script src="<?= base_url(); ?>/asyng/box/app/cart.js"></script>
 <script src="<?= base_url(); ?>/asyng/box/app/product.js"></script>
+<script src="<?= base_url(); ?>/asyng/box/app/customer.js"></script>
+
 
 
 

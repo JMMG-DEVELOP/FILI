@@ -51,6 +51,11 @@ class Permissions extends BaseConfig
             //
             'box_access', //Acceder por menu y route
 
+            //
+            //  CUSTOMER
+            //
+            'customer_access', //Acceder por menu y route
+
         ],
 
         // ADMIN

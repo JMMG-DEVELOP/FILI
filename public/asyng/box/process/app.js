@@ -1,3 +1,7 @@
+
+/*************
+ * PANELES LOAD
+ */
 async function controller_panel_load() {
   try {
 
@@ -10,9 +14,13 @@ async function controller_panel_load() {
       asyng_show_view({
         id: 'controller_panel',
         html: response.html,
-        effect: 'fade'
-      });
+        effect: 'fade',
+        callback: function () {
+          $('#product_price_input').hide();
+          $('#other_name').hide();
 
+        }
+      });
     }
 
   } catch (err) {
@@ -92,6 +100,45 @@ async function panels_load() {
   } catch (err) {
 
     showAlert('Error loading panels', err);
+
+  }
+
+}
+
+
+/*************
+ * TOGLES PAYMENT
+ */
+function toggleSales() {
+
+  const salesType = Number($('#sales').val());
+
+  if (salesType === 2) {
+
+    $('#sales_percent').show();
+    $('#payment').closest('.mb-2').hide();
+    $('#payment_percent').hide();
+
+  } else {
+
+    $('#sales_percent').hide();
+    $('#payment').closest('.mb-2').show();
+
+  }
+
+}
+
+function togglePayment() {
+
+  const paymentType = Number($('#payment').val());
+
+  if ([2, 4].includes(paymentType)) {
+
+    $('#payment_percent').show();
+
+  } else {
+
+    $('#payment_percent').hide();
 
   }
 

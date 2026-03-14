@@ -9,5 +9,10 @@
     <input type="text" id="search" class="form-control" placeholder="Código… Búsqueda…" autofocus>
 
   </div>
+  <div class="input-group input-group-lg shadow-sm mt-2">
+    <input type="text" id="other_name" class="form-control" placeholder="Nombre para Venta directa de producto"
+      autofocus>
+  </div>
+
 
 </div>

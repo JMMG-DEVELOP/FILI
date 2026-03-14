@@ -102,8 +102,8 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
     // CUSTOMER
     // Requiere permiso:customer_access
     // ==========================
-    $routes->group('customer', ['filter' => 'permission:box_access'], function ($routes) {
-        $routes->post('process/customer_panel_load', 'Customer\Process::customer_panel_load', ['filter' => 'ajax']);
+    $routes->group('customer', ['filter' => 'permission:customer_access'], function ($routes) {
+        $routes->post('process/customer_panel_load', 'Customer\Process::customer_panel_load');
 
 
     });

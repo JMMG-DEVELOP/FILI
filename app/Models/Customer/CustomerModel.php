@@ -39,42 +39,31 @@ class CustomerModel extends Model
   public function add(array $data): array
   {
     try {
-
+      // Validaciones
       if (empty($data['ci'])) {
-        return [
-          'status' => false,
-          'message' => 'CI o RUC es obligatorio'
-        ];
+        return ['status' => false, 'message' => 'CI o RUC es obligatorio'];
       }
 
-      if ($this->find($data['ci'])) {
-        return [
-          'status' => false,
-          'message' => 'El cliente ya existe'
-        ];
+      // Verificar si existe
+      if ($this->where('ci', $data['ci'])->first()) {
+        return ['status' => false, 'message' => 'El cliente ya existe'];
       }
 
-      if (!$this->insert($data)) {
-        return [
-          'status' => false,
-          'message' => 'Error al guardar el cliente'
-        ];
+      // Insertar cliente
+      $insert = $this->insert($data);
+      if (!$insert) {
+        return ['status' => false, 'message' => 'Error al guardar el cliente'];
       }
 
       return [
         'status' => true,
         'message' => 'Cliente creado correctamente',
-        'data' => $this->find($data['ci'])
+        'data' => $this->where('ci', $data['ci'])->first()
       ];
 
     } catch (\Exception $e) {
-
       log_message('error', $e->getMessage());
-
-      return [
-        'status' => false,
-        'message' => 'Error interno del servidor'
-      ];
+      return ['status' => false, 'message' => 'Error interno del servidor'];
     }
   }
 }

@@ -32,7 +32,7 @@
 </div>
 
 <div class="border-top pt-4 text-right">
-  <button type="button" class="btn btn-primary product_send_cart">
+  <button type="button" class="btn btn-primary product_form_send_cart">
     <i class="fas fa-check"></i>
   </button>
   <button type="button" class="btn btn-outline-danger product_form_cancel">

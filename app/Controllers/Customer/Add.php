@@ -21,13 +21,8 @@ class Add extends BaseController
 
   public function save()
   {
-    $customerModel = new CustomerModel();
-
-    // Obtener POST
     $post = $this->request->getPost();
-
-    // Obtener ID de sesión
-    $userId = session()->get('id'); // o 'user_id' según cómo lo guardaste
+    $userId = session()->get('id');
 
     if (!$userId) {
       return $this->response->setJSON([
@@ -38,7 +33,6 @@ class Add extends BaseController
       ]);
     }
 
-    // Construir data correctamente
     $data = [
       'ci' => trim($post['ci'] ?? ''),
       'name' => trim($post['name'] ?? ''),
@@ -47,13 +41,13 @@ class Add extends BaseController
       'user' => $userId
     ];
 
-    // Guardar
+    $customerModel = new CustomerModel();
     $result = $customerModel->add($data);
 
     return $this->response->setJSON([
       'status' => $result['status'],
       'message' => $result['message'],
-      'data' => $data,
+      'data' => $result['data'] ?? null,
       'csrfName' => csrf_token(),
       'csrfHash' => csrf_hash()
     ]);
