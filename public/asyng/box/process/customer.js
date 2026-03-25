@@ -1,24 +1,4 @@
-// async function customer_load(value = '') {
-//   try {
-//     const response = await asyngAjaxSend(
-//       'box/controller/customer_load', { ci: value || '' }
-//     );
 
-//     if (!response.status) {
-//       showAlert('ERROR', 'warning')
-//     } else {
-//       asyng_show_view({
-//         id: 'customer_panel',
-//         html: response.html,
-//         effect: 'fade'
-//       });
-//     }
-
-//   } catch (err) {
-//     console.error(err);
-//     showAlert('Error de comunicación con el servidor customer_load', 'danger');
-//   }
-// }
 async function customer_search(value) {
   try {
     const response = await asyngAjaxSend(

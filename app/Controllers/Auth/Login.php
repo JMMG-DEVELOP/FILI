@@ -43,9 +43,6 @@ class Login extends BaseController
         // Obtenemos permisos según categoría
         $permissions = $permissionsConfig->details[$user['category']] ?? [];
 
-        // $sucursal = $userSucursal->details($user['id']);
-        // $sucursales = array_column($sucursal, 'sucursal');
-
         $session = session();
         session()->set([
             'logged' => true,

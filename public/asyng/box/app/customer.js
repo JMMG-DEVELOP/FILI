@@ -20,8 +20,8 @@ $(document).on('keydown', '#customer_name', function (e) {
 
 });
 
-$(document).on('click', '.add_customer_form', function () {
-
+$(document).on('click', '.add_customer_form', function (e) {
+  e.preventDefault();
   let ci = $(this).data('ci');
   let name = $(this).data('name');
 

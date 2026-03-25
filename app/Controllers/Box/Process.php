@@ -2,6 +2,9 @@
 namespace App\Controllers\Box;
 
 use App\Controllers\BaseController;
+use App\Models\Auth\UsersSucursals;
+use App\Models\Box\UserBoxModel;
+
 use App\Libraries\InfoBox;
 
 class Process extends BaseController
@@ -46,4 +49,42 @@ class Process extends BaseController
       'csrfHash' => csrf_hash()
     ]);
   }
+  public function expedition_point_load()
+  {
+    // Instanciar modelos
+    $userSucursal = new UsersSucursals();
+    // $userBox = new UserBoxModel();
+
+    $data = [
+      'sucursal' => $userSucursal->details(session()->get('id')),
+      'user' => session()->get('id')
+      // 'point' => $userBox->getUserExpeditionGrouped(session()->get('id'))
+    ];
+
+    $html = view('Box/controller/expedition_point', $data);
+
+    return $this->response->setJSON([
+      'status' => true,
+      'html' => $html,
+      'csrfName' => csrf_token(),
+      'csrfHash' => csrf_hash()
+    ]);
+  }
+
+  public function expedition_point_select()
+  {
+    $userBox = new UserBoxModel();
+    $user = $this->request->getPost('user');
+    $sucursal = $this->request->getPost('sucursal');
+
+    $values = $userBox->getUserExpedition($user, $sucursal);
+
+    return $this->response->setJSON([
+      'status' => true,
+      'values' => $values,
+      'csrfName' => csrf_token(),
+      'csrfHash' => csrf_hash()
+    ]);
+  }
+
 }

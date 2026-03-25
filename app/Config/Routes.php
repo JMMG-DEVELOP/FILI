@@ -79,6 +79,9 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
 
         $routes->post('process/payment_panel_load', 'Box\Process::payment_panel_load', ['filter' => 'ajax']);
 
+        $routes->post('process/expedition_point_load', 'Box\Process::expedition_point_load', ['filter' => 'ajax']);
+
+        $routes->post('process/expedition_point_select', 'Box\Process::expedition_point_select', ['filter' => 'ajax']);
 
         $routes->post('controller/product_search', 'Box\Controller::product_search', ['filter' => 'ajax']);
         $routes->post('controller/product_form', 'Box\Controller::product_form', ['filter' => 'ajax']);

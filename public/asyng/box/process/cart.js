@@ -8,11 +8,19 @@ function saveCart() {
     let row = $(this);
 
     cart.push({
-      id: row.data('id'),
-      code: row.data('code'),
+      id: row.attr('data-id'),
+      code: row.attr('data-code'),
       description: row.find('td:eq(2)').text(),
       cant: row.find('.row-cant').val(),
-      price: row.find('.row-price').data('price')
+
+      price_one: row.attr('data-price-one'),
+      price_two: row.attr('data-price-two'),
+      cant_two: row.attr('data-cant-two'),
+
+      cost: row.attr('data-cost'),
+      iva: row.attr('data-iva'),
+
+      price: row.find('.row-price').attr('data-price')
     });
 
   });
@@ -27,11 +35,24 @@ function loadCart() {
 
   cart.forEach(item => {
 
-    createRow({
+    let product = {
       id: item.id,
       code: item.code,
-      description: item.description
-    }, item.cant, item.price);
+      description: item.description,
+      stock: 0,
+
+      price_one: parseFloat(item.price_one) || 0,
+      price_two: parseFloat(item.price_two) || 0,
+      cant_two: parseFloat(item.cant_two) || 0,
+
+      cost: parseFloat(item.cost) || 0,
+      iva: parseFloat(item.iva) || 0
+    };
+
+    let cant = parseFloat(item.cant) || 1;
+    let price = parseFloat(item.price) || product.price_one;
+
+    createRow(product, cant, price);
 
   });
 
@@ -91,6 +112,8 @@ function updateGrandTotal() {
   });
 
   $('#grand_total').text(formatMoney(total));
+  // format = setChange(total);
+  // $('#grand_total').text(format);
 }
 // Contar cantidad de lineas del carrito
 function updateCartCount() {
@@ -167,10 +190,13 @@ function createRow(product, cant, price) {
     <tr data-id="${product.id}"
         data-code="${product.code}"
         data-stock="${product.stock}"
-        data-price-one="${price}"
+        data-price-one="${product.price_one}"
+        data-price-two="${product.price_two ?? 0}"
+        data-cant-two="${product.cant_two ?? 0}"
         data-cost="${product.cost ?? 0}"
         data-iva="${product.iva ?? 0}">
       <td>${product.code}</td>
+
       <td>
         <input type="number"
                class="form-control form-control-sm row-cant"
@@ -178,15 +204,21 @@ function createRow(product, cant, price) {
                min="1"
                style="width:80px">
       </td>
+
       <td>${product.description}</td>
+
       <td class="row-price"
-          data-base-price="${price}"
+          data-base-price="${product.price_one}"
+          data-price-two="${product.price_two ?? 0}"
+          data-cant-two="${product.cant_two ?? 0}"
           data-price="${price}">
           ${formatMoney(price)}
       </td>
+
       <td class="row-total" data-total="${total}">
         ${formatMoney(total)}
       </td>
+
       <td class="text-center">
         <button class="btn btn-sm btn-danger remove-item">
           <i class="fas fa-trash"></i>
@@ -195,10 +227,8 @@ function createRow(product, cant, price) {
     </tr>
   `;
 
-  // Insertamos arriba
   $('#cart_invoice tbody').prepend(row);
 
-  // Actualizamos contador y totales
   updateCartCount();
   updateGrandTotal();
   saveCart();
@@ -312,7 +342,8 @@ function cant_row_validate(row, input, value, cant) {
   // Obtenemos el producto y precio base de la fila
   let product = {
     price_one: parseFloat(row.find('.row-price').data('base-price')) || 0,
-    cant_two: 0 // si tu lógica de price_two no aplica aquí
+    price_two: parseFloat(row.find('.row-price').data('price-two')) || 0,
+    cant_two: parseFloat(row.find('.row-price').data('cant-two')) || 0
   };
 
   // recalculamos precio y total para esta fila
@@ -332,6 +363,7 @@ function cant_row_validate(row, input, value, cant) {
   updateGrandTotal();
   updateCartCount();
   saveCart();
+  formatInputs();
 }
 
 // Adicion al carrito directamente con coma
@@ -352,5 +384,8 @@ function product_add_cart_direct() {
   };
   let cant = getCant();
   let price = $('#search').val();
-  createRow(product, cant, price)
+  createRow(product, cant, price);
+  formatInputs();
 }
+
+// PAGO DE CARRITO

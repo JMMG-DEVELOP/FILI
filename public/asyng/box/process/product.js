@@ -53,8 +53,7 @@ async function product_add_cart(value) {
           let price = getPrice(product, cant, percent);
 
           await addOrUpdateRowCart(product, cant, price, percent);
-          $('#product_price_input').val('').hide();
-          $('#search').val('').focus();
+          formatInputs();
           break;
 
         case 2:

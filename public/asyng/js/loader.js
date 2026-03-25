@@ -263,14 +263,22 @@ function asyng_hide_view({
   }
 
 }
-function formatMoneyText(selector = ".money") {
+function formatMoneyText(selector = ".moneyText") {
   $(selector).each(function () {
-    let value = $(this).text().replace(/\D/g, '');
 
-    if (!value) return;
+    let raw = $(this).text().replace(/\./g, '').replace(/\D/g, '');
 
-    let formatted = value.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    let num = Number(raw) || 0; // 🔥 clave
+
+    let formatted = new Intl.NumberFormat('es-PY').format(num);
 
     $(this).text(formatted);
   });
+}
+function setChange(value) {
+  let num = Number(value) || 0;
+
+  $('#change').text(
+    new Intl.NumberFormat('es-PY').format(num)
+  );
 }

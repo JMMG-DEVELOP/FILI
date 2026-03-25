@@ -2,6 +2,10 @@ $(document).ready(function () {
 
   panels_load();
   loadCart();
+  asyngMoneyMask();
+  $('#display_escape').hide();
+  $('#display_other_pay').hide();
+
 
 });
 
@@ -20,21 +24,24 @@ $(document).on('keydown', '#product_cant', async function (e) {
 $(document).on('change', '#sales', function () {
   toggleSales();
   updateCartPercent();
+  $('#search').focus();
 });
 
 $(document).on('change', '#sales_percent', function () {
   updateCartPercent();
+  $('#search').focus();
 });
 
 $(document).on('change', '#payment', function () {
 
   togglePayment();
   updateCartPercent();
-
+  $('#search').focus();
 });
 
 $(document).on('change', '#payment_percent', function () {
   updateCartPercent();
+  $('#search').focus();
 });
 
 
@@ -118,8 +125,7 @@ $(document).on('keydown', function (e) {
 
   // CTRL + P → Precio Directo
   if (e.ctrlKey && e.key.toLowerCase() === 'p') {
-    e.preventDefault(); // evita imprimir (print)
-
+    e.preventDefault();
     $('#product_price_input').slideDown(200).focus();
 
   }
@@ -154,13 +160,21 @@ $(document).on('keydown', function (e) {
 
     $('#add_card').focus();
   }
+  // Detectar ALT + C cambiar a credito
+  if (e.altKey && e.key.toLowerCase() === 'c') {
+    e.preventDefault();
+    $('#sales').val('2').trigger('change');
+    $('#ruc_ci').select().focus();
+  }
 
+  if (e.altKey && e.key.toLowerCase() === 'l') {
+    e.preventDefault();
+    cancelAll();
+  }
   // Presionar Escape y Cerrar Venta
   if (e.key === 'Escape') {
     e.preventDefault();
-
-    SoundManager.payment();
-    // alert('Cerrar Venta');
+    sales_send_display();
   }
 
 });

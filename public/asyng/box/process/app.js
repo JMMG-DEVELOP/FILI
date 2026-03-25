@@ -89,6 +89,34 @@ async function customer_panel_load(value = '') {
 
 }
 
+async function expedition_point_load() {
+  try {
+
+    const response = await asyngAjaxSend(
+      'box/process/expedition_point_load'
+    );
+
+    if (response.status) {
+
+      asyng_show_view({
+        id: 'expedition_point_panel',
+        html: response.html,
+        effect: 'fade',
+        callback: () => {
+          expedition_point_values();
+        }
+      });
+
+    }
+
+  } catch (err) {
+
+    console.error(err);
+    showAlert('Error de comunicación con el servidor expedition_point_load', 'danger');
+
+  }
+}
+
 async function panels_load() {
 
   try {
@@ -96,6 +124,7 @@ async function panels_load() {
     await controller_panel_load();
     await payment_panel_load();
     await customer_panel_load();
+    await expedition_point_load()
 
   } catch (err) {
 
@@ -113,14 +142,17 @@ function toggleSales() {
 
   const salesType = Number($('#sales').val());
 
-  if (salesType === 2) {
+  if (salesType === 2 || salesType === 3) {
 
-    $('#sales_percent').show();
+    if (salesType === 3) {
+      $('#sales_percent').hide();
+    } else {
+      $('#sales_percent').show();
+    }
     $('#payment').closest('.mb-2').hide();
     $('#payment_percent').hide();
 
   } else {
-
     $('#sales_percent').hide();
     $('#payment').closest('.mb-2').show();
 
@@ -142,4 +174,31 @@ function togglePayment() {
 
   }
 
+}
+
+function formatInputs() {
+  $('#product_price_input').val('').hide();
+  $('#display_escape').hide();
+  $('#display_other_pay').hide();
+  $('#product_cant').val(1);
+
+  $('#cash_payment').val('');
+  $('#change').text('VUELTO');
+
+  $('#search').val('').focus();
+
+}
+
+function cancelAll() {
+
+  $('#cart_invoice tbody').empty();
+  $('#search').focus();
+  $('#display_escape').hide();
+  $('#display_other_pay').hide();
+
+
+  updateCartCount();
+  updateGrandTotal();
+  saveCart();
+  SoundManager.warning();
 }
