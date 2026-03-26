@@ -45,4 +45,9 @@ class Invoice extends BaseController
 
 
   }
+
+  public function sales_send()
+  {
+
+  }
 }

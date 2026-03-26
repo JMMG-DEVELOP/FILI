@@ -22,7 +22,77 @@ function sales_send_display() {
 
 
 }
+function sales_cart_data() {
 
+  let items = [];
+
+  let total_price = 0;
+  let total_cost = 0;
+
+  let iva_10 = 0;
+  let iva_5 = 0;
+  let iva_exenta = 0;
+
+  $('#cart_invoice tbody tr').each(function () {
+
+    let row = $(this);
+
+    let cant = parseFloat(row.find('.row-cant').val()) || 0;
+    let price = parseFloat(row.find('.row-price').data('price')) || 0;
+    let cost = parseFloat(row.data('cost')) || 0;
+    let iva = parseInt(row.data('iva')) || 0;
+
+    let total = parseFloat(row.find('.row-total').data('total')) || (cant * price);
+    let totalCost = cant * cost;
+
+    // 🔹 ACUMULADORES
+    total_price += total;
+    total_cost += totalCost;
+
+    // 🔹 CALCULO IVA (Paraguay)
+    if (iva === 10) {
+      iva_10 += total / 11; // base imponible IVA 10%
+    } else if (iva === 5) {
+      iva_5 += total / 21; // base imponible IVA 5%
+    } else {
+      iva_exenta += total;
+    }
+
+    // 🔹 ITEM
+    items.push({
+      product_id: row.data('id'),
+      code: row.data('code'),
+      cant: cant,
+      unit_price: price,
+      unit_cost: cost,
+      total_price: total,
+      total_cost: totalCost,
+      iva: iva
+    });
+
+  });
+
+  return {
+    items: items,
+
+    totals: {
+      total_price: total_price,
+      total_cost: total_cost,
+      total_margin: total_price - total_cost
+    },
+
+    iva: {
+      iva_10: iva_10,
+      iva_5: iva_5,
+      exenta: iva_exenta
+    }
+  };
+}
+
+function sales_cash_payment() {
+  let data = sales_send_data();
+  console.log(data);
+}
 function sales_send_verify() {
   let payment = $('#cash_payment').inputmask('unmaskedvalue');
   let change = parseFloat(
@@ -30,7 +100,9 @@ function sales_send_verify() {
   ) || 0;
   const paymentType = Number($('#payment').val());
 
-  let sales = Number($('#sales').val());;
+  const receipt = Number($('#receipt_type').val());
+
+  let sales = Number($('#sales').val());
 
   if ([1].includes(sales)) {
     if ([2, 3, 4].includes(paymentType)) {
@@ -43,8 +115,8 @@ function sales_send_verify() {
         return;
       } else {
         if (change >= 0) {
-          // Venta directa
-          alert(change);
+          sales_cash_payment();
+
         } else if (change < 0) {
           // Saldoo en credito
           change = Math.abs(change);
@@ -63,9 +135,26 @@ function sales_send_verify() {
   }
 
 }
-function prepare_table_sales() {
 
-}
-function sales_send_direct() {
+function sales_send_data() {
+  const payment = asyngFormData('#form_payment');
+  const customer = asyngFormData('#form_customer');
+  const point = asyngFormData('#form_expedition_point');
+  const receipt = Number($('#receipt_type').val());
+  const cart = sales_cart_data();
+  const change = parseFloat(
+    $('#change').text().replace(/\./g, '').replace(',', '.')
+  ) || 0;
+  const cash = $('#cash_payment').inputmask('unmaskedvalue');
 
+  let data = {
+    payment: payment,
+    customer: customer,
+    point: point,
+    receipt: receipt,
+    cart: cart,
+    change: Math.abs(change),
+    cash: cash
+  }
+  return data;
 }

@@ -127,9 +127,7 @@ async function panels_load() {
     await expedition_point_load()
 
   } catch (err) {
-
     showAlert('Error loading panels', err);
-
   }
 
 }
@@ -189,13 +187,15 @@ function formatInputs() {
 
 }
 
-function cancelAll() {
+async function cancelAll() {
 
   $('#cart_invoice tbody').empty();
   $('#search').focus();
   $('#display_escape').hide();
   $('#display_other_pay').hide();
 
+  await customer_panel_load();
+  await payment_panel_load();
 
   updateCartCount();
   updateGrandTotal();
