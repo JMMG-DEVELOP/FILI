@@ -32,7 +32,7 @@ class CustomerModel extends Model
 
   public function search_ci($ci)
   {
-    return $this->select('ci, name')
+    return $this->select('id, ci, name')
       ->where('ci', $ci)
       ->first();
   }

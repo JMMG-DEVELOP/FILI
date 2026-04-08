@@ -88,10 +88,23 @@ function sales_cart_data() {
     }
   };
 }
+async function sales_cash_payment() {
 
-function sales_cash_payment() {
-  let data = sales_send_data();
-  console.log(data);
+  try {
+    let data = sales_send_data();
+
+    const response = await asyngAjaxSend('box/sales/sales_cash_payment', data);
+
+    console.log(response.data);
+
+    // if (response.status) {
+    //   alert('GUARDADO, REVISA BD');
+    // }
+
+  } catch (err) {
+    console.error(err);
+    showAlert('Error de comunicación con el servidor sales_cash_payment', 'danger');
+  }
 }
 function sales_send_verify() {
   let payment = $('#cash_payment').inputmask('unmaskedvalue');

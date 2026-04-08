@@ -57,8 +57,8 @@ class Process extends BaseController
 
     $data = [
       'sucursal' => $userSucursal->details(session()->get('id')),
-      'user' => session()->get('id')
-      // 'point' => $userBox->getUserExpeditionGrouped(session()->get('id'))
+      'user' => session()->get('id'),
+      'session' => session()->get('session')
     ];
 
     $html = view('Box/controller/expedition_point', $data);

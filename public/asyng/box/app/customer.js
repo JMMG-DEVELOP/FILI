@@ -6,6 +6,10 @@ $(document).on('keydown', '#ruc_ci', function (e) {
     let value = $(this).val().trim();
     customer_search(value);
   }
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    $('#search').focus();
+  }
 
 });
 
@@ -16,6 +20,10 @@ $(document).on('keydown', '#customer_name', function (e) {
     e.preventDefault();
     let value = $(this).val().trim();
     customer_search(value);
+  }
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    $('#search').focus();
   }
 
 });

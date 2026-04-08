@@ -21,6 +21,8 @@
       </div>
 
     </div>
+    <input type="text" class="form-control" name="customer_id" id="customer_id" placeholder="RUC o CI"
+      value="<?= esc($result['id']) ?>" hidden>
 
     <div id="customer_search_panel"></div>
   </fieldset>

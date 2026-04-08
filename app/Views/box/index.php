@@ -59,13 +59,12 @@
 <script src="<?= base_url(); ?>/asyng/js/soundManager.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.9/jquery.inputmask.min.js"></script>
 <!-- Process -->
+<script src="<?= base_url(); ?>/asyng/box/process/sales.js"></script>
 <script src="<?= base_url(); ?>/asyng/box/process/app.js"></script>
 <script src="<?= base_url(); ?>/asyng/box/process/cart.js"></script>
 <script src="<?= base_url(); ?>/asyng/box/process/product.js"></script>
 <script src="<?= base_url(); ?>/asyng/box/process/customer.js"></script>
 <script src="<?= base_url(); ?>/asyng/box/process/point.js"></script>
-<script src="<?= base_url(); ?>/asyng/box/process/sales.js"></script>
-
 
 
 
@@ -75,6 +74,7 @@
 <script src="<?= base_url(); ?>/asyng/box/app/product.js"></script>
 <script src="<?= base_url(); ?>/asyng/box/app/customer.js"></script>
 <script src="<?= base_url(); ?>/asyng/box/app/point.js"></script>
+<script src="<?= base_url(); ?>/asyng/box/app/sales.js"></script>
 
 
 

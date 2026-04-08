@@ -131,40 +131,64 @@ $(document).on('keydown', function (e) {
   }
 
   // CTRL + B → Tipo de Venta
-  if (e.ctrlKey && e.key.toLowerCase() === 'b') {
+  if (e.altKey && e.key.toLowerCase() === 'b') {
     e.preventDefault(); // evita pegar (paste)
 
     $('#sales').focus().select2('open');
   }
 
-  // CTRL + x → Cerrar Busquedas
-  if (e.ctrlKey && e.key.toLowerCase() === 'x') {
-    e.preventDefault(); // evita pegar (paste)
-    searh_panel_close()
-    $("#search").focus();
-
-    return;
-  }
-
-  // CTRL + T → Focus en Cantidad
-  if (e.ctrlKey && e.key.toLowerCase() === 'y') {
+  // ALT + T → Focus en Cantidad
+  if (e.altKey && e.key.toLowerCase() === 't') {
     e.preventDefault();
 
     $('#product_cant').focus();
     $('#product_cant').select();
   }
 
-  // CTRL + A → fOCUS EN TIPO DE ADICION A CARRITO
-  if (e.ctrlKey && e.key.toLowerCase() === 'a') {
+  // ALT + F → fACTURACION EN CLIENTE
+  if (e.altKey && e.key.toLowerCase() === 'f') {
     e.preventDefault();
 
-    $('#add_card').focus();
+    $('#customer_name').focus().select();
   }
+
   // Detectar ALT + C cambiar a credito
   if (e.altKey && e.key.toLowerCase() === 'c') {
     e.preventDefault();
     $('#sales').val('2').trigger('change');
     $('#ruc_ci').select().focus();
+  }
+  // Detectar ALT + C cambiar a CONTADO
+  if (e.altKey && e.key.toLowerCase() === 'z') {
+    e.preventDefault();
+    $('#sales').val('1').trigger('change');
+    $('#search').select().focus();
+  }
+  if (e.altKey && e.key.toLowerCase() === 'd') {
+    e.preventDefault();
+    $('#sales').val('3').trigger('change');
+    $('#search').select().focus();
+  }
+  // CAMBIAR TIPO DE PAGO
+  if (e.altKey && e.key.toLowerCase() === '1') {
+    e.preventDefault();
+    $('#payment').val('1').trigger('change');
+    $('#search').select().focus();
+  }
+  if (e.altKey && e.key.toLowerCase() === '2') {
+    e.preventDefault();
+    $('#payment').val('2').trigger('change');
+    $('#search').select().focus();
+  }
+  if (e.altKey && e.key.toLowerCase() === '3') {
+    e.preventDefault();
+    $('#payment').val('3').trigger('change');
+    $('#search').select().focus();
+  }
+  if (e.altKey && e.key.toLowerCase() === '4') {
+    e.preventDefault();
+    $('#payment').val('4').trigger('change');
+    $('#search').select().focus();
   }
 
   if (e.altKey && e.key.toLowerCase() === 'l') {

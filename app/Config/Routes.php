@@ -98,6 +98,9 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
         $routes->post('invoice/product_add', 'Box\Invoice::product_add', ['filter' => 'ajax']);
 
 
+        // SALES
+
+        $routes->post('sales/sales_cash_payment', 'Box\Sales::sales_cash_payment', ['filter' => 'ajax']);
 
     });
 
