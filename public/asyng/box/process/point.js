@@ -20,12 +20,16 @@ async function expedition_point_select(sucursal, user) {
         $('#invoice_number').val(response.values.document_number);
         $('#expedition_point_id').val(response.values.expedition_point);
         $('#sequence_id').val(response.values.document_sequence_id);
+        $('#sequence_number').val(response.values.document_last_number);
+
       }
 
       if (receipt_type === 2) {
         $('#invoice_number').val(response.values.invoice_number);
         $('#expedition_point_id').val(response.values.expedition_point);
         $('#sequence_id').val(response.values.invoice_sequence_id);
+        $('#sequence_number').val(response.values.invoice_last_number);
+
       }
 
     } else {

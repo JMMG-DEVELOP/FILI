@@ -15,5 +15,12 @@ class ExpeditionPointModel extends Model
     'sucursal'
   ];
 
+  public function actualizate_document_secquence($expedition_point)
+  {
 
+  }
+  public function actualizate_invoice_secquence($expedition_point)
+  {
+
+  }
 }

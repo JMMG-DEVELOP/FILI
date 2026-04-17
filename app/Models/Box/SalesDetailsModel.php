@@ -22,11 +22,13 @@ class SalesDetailsModel extends Model
     'margin',
     'total_margin',
     'sales',
+    'unit_iva',
+    'base_imponible'
   ];
 
   public function add_sales_details($data)
   {
-
+    return $this->insertBatch($data);
   }
 
 }

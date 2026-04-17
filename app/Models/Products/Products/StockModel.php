@@ -16,11 +16,11 @@ class StockModel extends Model
         'product'
     ];
 
-    public function add($data)
+    public function add($values)
     {
         $this->db->transStart();
 
-        $inserted = $this->insert($data);
+        $inserted = $this->insert($values);
 
         if ($inserted === false) {
             $this->db->transRollback();
@@ -38,5 +38,42 @@ class StockModel extends Model
         return $insertId;
     }
 
+    public function discountStock($items)
+    {
+        $status = false;
+        foreach ($items as $item) {
 
+            $builder = $this->db->table($this->table);
+
+            $builder->set('stock', 'stock - ' . $item['stock'], false)
+                ->where('product', $item['product'])
+                ->where('sucursal', $item['sucursal'])
+                ->update();
+
+            if ($this->db->affectedRows() > 0) {
+                $status = true;
+            }
+        }
+
+        return $status;
+    }
+
+    // public function discountStock($items)
+    // {
+
+    //     foreach ($items as $item) {
+
+    //         $this->builder()
+    //             ->set('stock', 'stock - ' . $item['stock'], false)
+    //             ->where('product', $item['product'])
+    //             ->where('sucursal', (int) $item['sucursal'])
+    //             ->update();
+
+    //         if ($this->db->affectedRows() > 0) {
+    //             return true;
+    //         }
+    //     }
+
+    //     return false;
+    // }
 }

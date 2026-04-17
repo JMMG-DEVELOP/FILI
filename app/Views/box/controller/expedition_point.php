@@ -28,7 +28,10 @@
     <input type="text" name="user_id" id="user_id" value=" <?= $user ?> " hidden>
     <input type="text" name="expedition_point_id" id="expedition_point_id" hidden>
     <input type="text" name="sequence_id" id="sequence_id" hidden>
-    <input type="text" name="session_id" id="session_id" value=" <?= $session ?>" hidden>
+    <input type="text" name="sequence_number" id="sequence_number" hidden>
+    <input type="text" name="box" id="box" value=" <?= $box ?> " hidden>
+
+
 
 
   </fieldset>

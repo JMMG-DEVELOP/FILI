@@ -26,7 +26,8 @@ class SalesModel extends Model
     'expedition_point',
     'invoice_type',
     'cash_received',
-    'cash_change'
+    'cash_change',
+    'payment'
   ];
 
   public function add_sales($data)

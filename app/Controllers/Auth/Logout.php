@@ -15,12 +15,17 @@ class Logout extends BaseController
             $sessionId = $session->get('session');
 
             if ($sessionId) {
-                $UsersSessionsModel = new UsersSessionsModel();
 
+                // 🔹 Cerrar sesión usuario
+                $UsersSessionsModel = new UsersSessionsModel();
                 $UsersSessionsModel->update($sessionId, [
-                    'status' => 2, // cerrado
+                    'status' => 2,
                     'close' => date("Y-m-d H:i:s")
                 ]);
+
+                // 🔹 Cerrar caja
+                $BoxModel = new \App\Models\Box\BoxModel();
+                $BoxModel->close_box_by_session($sessionId);
             }
 
             $session->destroy();
