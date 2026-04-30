@@ -1,105 +1,136 @@
 <?php
 
 namespace App\Services;
+
+use App\Models\Box\SalesModel;
+use App\Models\Box\SalesDetailsModel;
+use App\Models\Box\BoxMovementModel;
+use App\Models\Box\DocumentSequenceModel;
+use App\Models\Box\InvoiceSequenceModel;
+use App\Models\Box\StockMovmentsModel;
+use App\Models\Box\SalesPaymentsModel;
+use App\Models\Products\Products\StockModel;
 class SalesService
 {
-  public function createSale($data)
-  {
+  protected $InfoSales;
+  protected $SalesModel;
+  protected $SalesDetailsModel;
+  protected $InvoiceSequenceModel;
+  protected $DocumentSequenceModel;
+  protected $BoxMovementModel;
+  protected $StockMovmentsModel;
+  protected $StockModel;
+  protected $SalesPaymentsModel;
 
+
+  public function __construct()
+  {
+    $this->SalesModel = new SalesModel();
+    $this->SalesDetailsModel = new SalesDetailsModel();
+    $this->InvoiceSequenceModel = new InvoiceSequenceModel();
+    $this->DocumentSequenceModel = new DocumentSequenceModel();
+    $this->BoxMovementModel = new BoxMovementModel();
+    $this->StockMovmentsModel = new StockMovmentsModel();
+    $this->StockModel = new StockModel();
+    $this->SalesPaymentsModel =
+      new SalesPaymentsModel();
   }
 
-  public function createSaleDetails($saleId, $cart)
+  public function sales($value)
   {
+    $response = $this->SalesModel->add_sales($value);
 
-  }
-
-  public function createPayment($saleId, $data)
-  {
-    $db = \Config\Database::connect();
-
-    $db->table('sales_payments')->insert([
-      'type' => $data['payment']['payment'], // efectivo
-      'amount' => $this->getTotal($data['cart']),
-      'date' => date('Y-m-d'),
-      'time' => date('H:i:s'),
-      'sales' => $saleId
-    ]);
-  }
-  public function createBoxMovement($saleId, $data)
-  {
-    $db = \Config\Database::connect();
-
-    $total = $this->getTotal($data['cart']);
-    $cash = (float) $data['cash'];
-    $change = (float) $data['change'];
-
-    $db->table('box_movement')->insert([
-      'type' => 1, // ingreso
-      'payment' => $data['payment']['payment'],
-      'payment_mount' => $total,
-      'payment_received' => $cash,
-      'payment_change' => $change,
-      'box' => session('box'),
-      'sales' => $saleId,
-      'quantity' => $data['cant']
-    ]);
-  }
-
-  public function discountStock($cart)
-  {
-    $db = \Config\Database::connect();
-
-    foreach ($cart as $item) {
-
-      $db->table('products_stock')
-        ->set('stock', 'stock - ' . (float) $item['cant'], false)
-        ->where('product', $item['product_id'])
-        ->where('sucursal', session('sucursal'))
-        ->update();
-    }
-  }
-  public function generateNumber($data)
-  {
-    $db = \Config\Database::connect();
-
-    $expeditionPointId = $data['point']['select_sucursal'];
-
-    // obtener punto de expedición
-    $point = $db->table('expedition_point')
-      ->where('id', $expeditionPointId)
-      ->get()
-      ->getRow();
-
-    if (!$point) {
-      throw new \Exception('Punto de expedición no encontrado');
+    if (!$response) {
+      return [
+        'status' => false,
+        'error' => 'Error al guardar cabecera'
+      ];
     }
 
-    // obtener secuencia
-    $seq = $db->table('document_sequence')
-      ->where('expedition_point', $expeditionPointId)
-      ->get()
-      ->getRow();
-
-    if (!$seq) {
-      throw new \Exception('Secuencia no encontrada');
-    }
-
-    $newNumber = (int) $seq->last_number + 1;
-
-    // actualizar secuencia
-    $db->table('document_sequence')
-      ->where('expedition_point', $expeditionPointId)
-      ->update([
-        'last_number' => $newNumber
-      ]);
-
-    // formatear partes
-    $sucursal = str_pad($point->sucursal, 3, '0', STR_PAD_LEFT);
-    $exp = str_pad($point->code, 3, '0', STR_PAD_LEFT);
-    $number = str_pad($newNumber, 7, '0', STR_PAD_LEFT);
-
-    return "{$sucursal}-{$exp}-{$number}";
+    return [
+      'status' => true,
+      'sale_id' => $response
+    ];
   }
 
+  public function details($value)
+  {
+    $response = $this->SalesDetailsModel->add_sales_details($value);
+
+    if (!$response) {
+      return [
+        'status' => false,
+        'error' => 'Error al guardar DETALLES'
+      ];
+    }
+
+    return [
+      'status' => true,
+    ];
+  }
+
+  public function payment_cash($value)
+  {
+    $response = $this->SalesPaymentsModel->add_sales_payment($value);
+
+    if (!$response) {
+      return [
+        'status' => false,
+        'error' => 'Error al guardar TIPO DE PAGO'
+      ];
+    }
+
+    return [
+      'status' => true,
+    ];
+  }
+
+  public function discountStock($value)
+  {
+    $response = $this->StockModel->discountStock($value);
+
+    if (!$response) {
+      return [
+        'status' => false,
+        'error' => 'Error al DESCONTAR STOCK'
+      ];
+    }
+
+    return [
+      'status' => true,
+    ];
+  }
+
+  public function historyStock($value)
+  {
+    $response = $this->StockMovmentsModel->add_stock_movement($value);
+
+    if (!$response) {
+      return [
+        'status' => false,
+        'error' => 'Error al guardar HISTORIAL DE STOCK'
+      ];
+    }
+
+    return [
+      'status' => true,
+    ];
+  }
+
+  public function boxMovements($value)
+  {
+    $response = $this->BoxMovementModel->add_box_movement($value);
+
+    if (!$response) {
+      return [
+        'status' => false,
+        'error' => 'Error al guardar MOVIMIENTO DE CAJA'
+      ];
+    }
+
+    return [
+      'status' => true,
+    ];
+  }
 }
 ?>

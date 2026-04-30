@@ -58,22 +58,5 @@ class StockModel extends Model
         return $status;
     }
 
-    // public function discountStock($items)
-    // {
 
-    //     foreach ($items as $item) {
-
-    //         $this->builder()
-    //             ->set('stock', 'stock - ' . $item['stock'], false)
-    //             ->where('product', $item['product'])
-    //             ->where('sucursal', (int) $item['sucursal'])
-    //             ->update();
-
-    //         if ($this->db->affectedRows() > 0) {
-    //             return true;
-    //         }
-    //     }
-
-    //     return false;
-    // }
 }

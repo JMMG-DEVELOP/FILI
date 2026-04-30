@@ -42,7 +42,7 @@ class InfoSales
 
     return [
       'type' => $payment['sales'] ?? null,
-      'payment' => $payment['payment'] ?? null,
+      // 'payment' => $payment['payment'] ?? null,
       'date' => date('Y-m-d'),
       'time' => date('H:i:s'),
 
@@ -67,6 +67,18 @@ class InfoSales
       'cash_change' => $values['change'] ?? 0,
     ];
   }
+
+  function sales_payment_cash($values, $sale_id)
+  {
+    return [
+      'type' => $values['payment']['payment'] ?? null,
+      'total' => $values['cart']['totals']['total_price'] ?? 0,
+      'sales' => $sale_id,
+      'amount' => $values['cash'] ?? $values['cart']['totals']['total_price'],
+      'diference' => $values['change'] ?? 0,
+    ];
+  }
+
 
   function sales_details($values, $sale_id)
   {
@@ -128,7 +140,7 @@ class InfoSales
     return [
       'type' => 1,
       'payment' => $values['payment']['payment'] ?? null,
-      'mount' => $values['cart']['totals']['total_price'] ?? 0,
+      'mount' => $values['cash'] ?? 0,
       'box' => session()->get('box'),
       'sales' => $sale_id,
     ];
@@ -170,6 +182,14 @@ class InfoSales
     }
 
     return $details;
+  }
+  // Customer
+  public function customers_credits($values)
+  {
+    return [
+      'amount' => $values['cart']['totals']['total_price'] ?? 0,
+      'customer' => $values['cart'],
+    ];
   }
 
 }

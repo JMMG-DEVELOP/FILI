@@ -164,6 +164,11 @@ $(document).on('keydown', function (e) {
     $('#sales').val('1').trigger('change');
     $('#search').select().focus();
   }
+  // Detectar ALT + C cambiar a CONTADO
+  if (e.altKey && e.key.toLowerCase() === 'i') {
+    e.preventDefault();
+    // Abrir panel de Inggreso y Egreo de Efectivo
+  }
   if (e.altKey && e.key.toLowerCase() === 'd') {
     e.preventDefault();
     $('#sales').val('3').trigger('change');
@@ -228,3 +233,5 @@ $(document).on('click', '.product_form_cancel', function () {
 
   return;
 });
+
+

@@ -197,6 +197,7 @@ async function cancelAll() {
   await customer_panel_load();
   await payment_panel_load();
 
+  procedures_hide();
   updateCartCount();
   updateGrandTotal();
   saveCart();

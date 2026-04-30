@@ -11,7 +11,9 @@ $(document).on('keydown', '#cash_payment', function (e) {
     e.preventDefault();
 
     $('#search').focus();
+    $('#cash_payment').val('');
     $('#display_escape').hide();
+    procedures_hide();
   }
 
 });
@@ -26,4 +28,14 @@ $(document).on('keydown', '#receipt_type', function (e) {
 
   }
 
+});
+
+$(document).on('click', '.procedures_send', function () {
+  sales_cash_credit_payment();
+});
+$(document).on('click', '.procedures_credit_send', function () {
+  sales_cash_credit_payment();
+});
+$(document).on('click', '.procedures_hide', function () {
+  procedures_hide();
 });

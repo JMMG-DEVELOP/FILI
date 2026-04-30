@@ -1,122 +1,126 @@
 <?php
+
 namespace App\Controllers\Box;
 
 use App\Controllers\BaseController;
 use App\Libraries\InfoSales;
-use App\Models\Box\SalesModel;
-use App\Models\Box\SalesDetailsModel;
-use App\Models\Box\BoxMovementModel;
 use App\Models\Box\DocumentSequenceModel;
 use App\Models\Box\InvoiceSequenceModel;
-use App\Models\Box\StockMovmentsModel;
-use App\Models\Products\Products\StockModel;
-
-
+use App\Services\SalesService;
 
 class Sales extends BaseController
 {
+  protected $InfoSales;
+  protected $InvoiceSequenceModel;
+  protected $DocumentSequenceModel;
+  protected $SalesService;
+
+  public function __construct()
+  {
+    $this->InfoSales = new InfoSales();
+    $this->InvoiceSequenceModel = new InvoiceSequenceModel();
+    $this->DocumentSequenceModel = new DocumentSequenceModel();
+    $this->SalesService = new SalesService();
+  }
 
   public function sales_cash_payment()
   {
-    $InfoSales = new InfoSales();
-    $SalesModel = new SalesModel();
-    $SalesDetailsModel = new SalesDetailsModel();
-    $InvoiceSequenceModel = new InvoiceSequenceModel();
-    $DocumentSequenceModel = new DocumentSequenceModel();
-    $BoxMovementModel = new BoxMovementModel();
-    $StockMovmentsModel = new StockMovmentsModel();
-    $StockModel = new StockModel();
+    return $this->processSale();
+  }
 
+  public function sales_cash_credit_payment()
+  {
+    return $this->processSale(true);
+  }
 
+  private function processSale($withCredit = false)
+  {
     $values = $this->request->getPost();
-    $values = $InfoSales->formatter($values);
+    $values = $this->InfoSales->formatter($values);
 
     $db = \Config\Database::connect();
     $db->transStart();
 
-    // 🔹 CABECERA
-    $sales = $InfoSales->sales($values);
-    $sale_id = $SalesModel->add_sales($sales);
+    // CABECERA
+    $sales = $this->InfoSales->sales($values);
 
-    if (!$sale_id) {
-      return $this->response->setJSON([
-        'status' => false,
-        'error' => 'Error al guardar cabecera'
-      ]);
+    $sale_operation = $this->SalesService->sales($sales);
+
+    if (!$sale_operation['status']) {
+      return $this->json($sale_operation, 400);
     }
 
-    // 🔹 DETALLE
-    $details = $InfoSales->sales_details($values, $sale_id);
-    $ok = $SalesDetailsModel->add_sales_details($details);
+    $sale_id = $sale_operation['sale_id'];
 
-    if (!$ok) {
-      return $this->response->setJSON([
-        'status' => false,
-        'error' => 'Error al guardar detalle',
-        'csrfName' => csrf_token(),
-        'csrfHash' => csrf_hash()
-      ]);
-    }
+    // DETALLE
+    $response = $this->execute(
+      $this->SalesService->details(
+        $this->InfoSales->sales_details($values, $sale_id)
+      )
+    );
 
-    // ACTUALIZACIÓN DE STOCK
-    $stock = $InfoSales->stock_update($values);
-    $ok = $StockModel->discountStock($stock);
+    if ($response)
+      return $response;
 
-    if (!$ok) {
-      return $this->response->setJSON([
-        'status' => false,
-        'error' => 'Error al actualizar stock',
-        'data' => $stock,
-        'csrfName' => csrf_token(),
-        'csrfHash' => csrf_hash()
-      ]);
-    }
+    // PAGO
+    $response = $this->execute(
+      $this->SalesService->payment_cash(
+        $this->InfoSales->sales_payment_cash($values, $sale_id)
+      )
+    );
 
+    if ($response)
+      return $response;
+
+    // STOCK
+    $response = $this->execute(
+      $this->SalesService->discountStock(
+        $this->InfoSales->stock_update($values)
+      )
+    );
+
+    if ($response)
+      return $response;
 
     // HISTORIAL
-    $history = $InfoSales->stock_movements($values, $sale_id);
-    $ok = $StockMovmentsModel->add_stock_movement($history);
+    $response = $this->execute(
+      $this->SalesService->historyStock(
+        $this->InfoSales->stock_movements($values, $sale_id)
+      )
+    );
 
-    if (!$ok) {
-      return $this->response->setJSON([
-        'status' => false,
-        'error' => 'Error al guardar movimiento de stock',
-        'csrfName' => csrf_token(),
-        'csrfHash' => csrf_hash()
-      ]);
-    }
+    if ($response)
+      return $response;
 
-    // ACTUALIZAR NUMERO DE POINT
-
+    // ACTUALIZAR SECUENCIA
     $sequenceId = (int) $values['point']['sequence_id'];
 
     if ((int) $values['receipt'] === 1) {
-      $newNumber = $DocumentSequenceModel->update_last_number($sequenceId);
-
+      $this->DocumentSequenceModel->update_last_number($sequenceId);
     } else {
-
-      $newNumber = $InvoiceSequenceModel->update_last_number($sequenceId);
-
+      $this->InvoiceSequenceModel->update_last_number($sequenceId);
     }
 
-    // GUARDAR EN BOX_MOVEMENT PARA CONTROL DE CAJA
-    //TYPE 1
-    $movement = $InfoSales->box_movements($values, $sale_id);
+    // MOVIMIENTO DE CAJA
+    $response = $this->execute(
+      $this->SalesService->boxMovements(
+        $this->InfoSales->box_movements($values, $sale_id)
+      )
+    );
 
-    $ok = $BoxMovementModel->add_box_movement($movement);
+    if ($response)
+      return $response;
 
-    if (!$ok) {
-      return $this->response->setJSON([
-        'status' => false,
-        'error' => 'Error al guardar Movimiento de Caja',
-        'data' => $movement,
-        'csrfName' => csrf_token(),
-        'csrfHash' => csrf_hash()
-      ]);
+    // CREDITO
+    if ($withCredit) {
+
+      // lógica crédito
     }
+
     $db->transComplete();
 
     if ($db->transStatus() === false) {
+
       return $this->response->setJSON([
         'status' => false,
         'error' => 'Error en la transacción',
@@ -125,15 +129,20 @@ class Sales extends BaseController
       ]);
     }
 
-
     return $this->response->setJSON([
       'status' => true,
-      'normalize' => $values,
       'sale_id' => $sale_id,
-      'stock' => $stock,
       'csrfName' => csrf_token(),
       'csrfHash' => csrf_hash()
     ]);
   }
 
+  private function execute($operation)
+  {
+    if (!$operation['status']) {
+      return $this->json($operation, 400);
+    }
+
+    return null;
+  }
 }

@@ -20,6 +20,15 @@ use Psr\Log\LoggerInterface;
  */
 abstract class BaseController extends Controller
 {
+    protected function json(array $res, int $statusCode = 200)
+    {
+        return $this->response
+            ->setStatusCode($statusCode)
+            ->setJSON(array_merge($res, [
+                'csrfName' => csrf_token(),
+                'csrfHash' => csrf_hash()
+            ]));
+    }
     protected function validAjax()
     {
         if (!$this->request->isAJAX()) {

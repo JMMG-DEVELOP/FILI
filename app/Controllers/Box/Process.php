@@ -4,7 +4,7 @@ namespace App\Controllers\Box;
 use App\Controllers\BaseController;
 use App\Models\Auth\UsersSucursals;
 use App\Models\Box\UserBoxModel;
-
+use App\Models\Box\PaymentTypeModel;
 use App\Libraries\InfoBox;
 
 class Process extends BaseController
@@ -87,5 +87,25 @@ class Process extends BaseController
       'csrfHash' => csrf_hash()
     ]);
   }
+
+  public function sales_cash_credit_confirm()
+  {
+    $PaymentTypeModel = new PaymentTypeModel();
+    $data = [
+      'payments' => $PaymentTypeModel
+        ->where('id >=', 2)
+        ->findAll(),
+    ];
+    // Instanciar modelos
+    $html = view('Box/components/procedure_confirm', $data);
+
+    return $this->response->setJSON([
+      'status' => true,
+      'html' => $html,
+      'csrfName' => csrf_token(),
+      'csrfHash' => csrf_hash()
+    ]);
+  }
+
 
 }
