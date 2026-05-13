@@ -108,4 +108,19 @@ class Process extends BaseController
   }
 
 
+  public function box_movement_panel_load()
+  {
+    // Instanciar modelos
+    $infobox = new InfoBox();
+    $info = $infobox->box_movements();
+    $html = view('Box/controller/box_movement', $info);
+
+    return $this->response->setJSON([
+      'status' => true,
+      'html' => $html,
+      'csrfName' => csrf_token(),
+      'csrfHash' => csrf_hash()
+    ]);
+
+  }
 }

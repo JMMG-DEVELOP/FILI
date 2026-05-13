@@ -39,7 +39,7 @@
           <td class="text-center">
 
             <button class="btn btn-sm btn-primary add_customer_form" data-ci="<?= esc($detail['ci']) ?>"
-              data-name="<?= esc($detail['name']) ?>">
+              data-id="<?= esc($detail['id']) ?>" data-name="<?= esc($detail['name']) ?>">
               <i class="fas fa-plus"></i>
             </button>
           </td>

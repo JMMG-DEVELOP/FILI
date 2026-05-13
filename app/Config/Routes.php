@@ -81,6 +81,9 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
 
         $routes->post('process/expedition_point_load', 'Box\Process::expedition_point_load', ['filter' => 'ajax']);
 
+        $routes->post('process/box_movement_panel_load', 'Box\Process::box_movement_panel_load', ['filter' => 'ajax']);
+
+
         $routes->post('process/sales_cash_credit_confirm', 'Box\Process::sales_cash_credit_confirm', ['filter' => 'ajax']);
 
         $routes->post('process/expedition_point_select', 'Box\Process::expedition_point_select', ['filter' => 'ajax']);
@@ -107,6 +110,8 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
         $routes->post('sales/sales_procedures_credit_payment', 'Box\Sales::sales_procedures_credit_payment', ['filter' => 'ajax']);
 
         $routes->post('sales/sales_cash_credit_payment', 'Box\Sales::sales_cash_credit_payment', ['filter' => 'ajax']);
+
+        $routes->post('sales/sales_procedures_other_payment', 'Box\Sales::sales_procedures_other_payment', ['filter' => 'ajax']);
 
     });
 

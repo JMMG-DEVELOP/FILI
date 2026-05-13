@@ -13,7 +13,11 @@ class InfoSales
       'cart' => $values['cart'] ?? [],
       'cash' => $values['cash'] ?? 0,
       'change' => $values['change'] ?? 0,
-      'receipt' => $values['receipt'] ?? null
+      'receipt' => $values['receipt'] ?? null,
+      'procedure_other' => isset($values['procedure_other'])
+        ? $this->normalize($values['procedure_other'])
+        : []
+
     ];
   }
   function normalize($array)
@@ -72,10 +76,21 @@ class InfoSales
   {
     return [
       'type' => $values['payment']['payment'] ?? null,
+      'sales' => $sale_id,
+      'amount' => $values['cart']['totals']['total_price'] ?? 0,
+
+    ];
+  }
+
+  function sales_other_payment($values, $sale_id)
+  {
+    $amount = str_replace('.', '', $values['procedure_other']['value_payment_mount'] ?? 0);
+
+    return [
+      'type' => $values['procedure_other']['value_payment_type'] ?? null,
       'total' => $values['cart']['totals']['total_price'] ?? 0,
       'sales' => $sale_id,
-      'amount' => $values['cash'] ?? $values['cart']['totals']['total_price'],
-      'diference' => $values['change'] ?? 0,
+
     ];
   }
 
@@ -140,12 +155,23 @@ class InfoSales
     return [
       'type' => 1,
       'payment' => $values['payment']['payment'] ?? null,
-      'mount' => $values['cash'] ?? 0,
+      'mount' => $values['cart']['totals']['total_price'] ?? 0,
       'box' => session()->get('box'),
       'sales' => $sale_id,
     ];
   }
 
+  function box_movements_other($values, $sale_id)
+  {
+    $amount = str_replace('.', '', $values['procedure_other']['value_payment_mount'] ?? 0);
+    return [
+      'type' => 1,
+      'payment' => $values['procedure_other']['value_payment_type'] ?? null,
+      'mount' => (float) $amount,
+      'box' => session()->get('box'),
+      'sales' => $sale_id,
+    ];
+  }
   public function stock_movements($values, $sale_id)
   {
     $details = [];
@@ -184,12 +210,30 @@ class InfoSales
     return $details;
   }
   // Customer
-  public function customers_credits($values)
+  public function customers_credits_diferencce($values)
   {
     return [
-      'amount' => $values['cart']['totals']['total_price'] ?? 0,
-      'customer' => $values['cart'],
+      'amount' => abs($values['change']) ?? 0,
+      'customer' => $values['customer']['customer_id'],
     ];
   }
 
+  public function customer_credits_details($values, $customer_credits_id, $type)
+  {
+    return [
+      'credit' => $customer_credits_id,
+      'credit_type' => $type,
+      'mount' => abs($values['change']) ?? 0,
+      'date' => date('Y-m-d'),
+      'time' => date('H:i:s'),
+    ];
+  }
+
+  public function credits_sales_details($customer_credits_details_id, $sales_details_id)
+  {
+    return [
+      'credit_detail' => $customer_credits_details_id,
+      'sales' => $sales_details_id,
+    ];
+  }
 }

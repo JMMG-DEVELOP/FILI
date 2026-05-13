@@ -1,3 +1,15 @@
+async function post_sales() {
+  try {
+    await cancelAll();
+    await payment_panel_load();
+    await customer_panel_load();
+    await expedition_point_load();
+
+  } catch (err) {
+    showAlert('Error loading panels', err);
+  }
+}
+
 function change_calculate() {
 
   let total = parseFloat(
@@ -144,13 +156,10 @@ async function sales_cash_payment() {
     let data = sales_send_data();
 
     const response = await asyngAjaxSend('box/sales/sales_cash_payment', data);
-
-    console.log(response.data);
-
-    // if (response.status) {
-    //   alert('GUARDADO, REVISA BD');
-    // }
-
+    if (response.status) {
+      showAlert('VENTA REALIZADA', 'success');
+      post_sales();
+    }
   } catch (err) {
     console.error(err);
     showAlert('Error de comunicación con el servidor sales_cash_payment', 'danger');
@@ -194,12 +203,16 @@ async function sales_cash_credit_payment() {
 
     const response = await asyngAjaxSend('box/sales/sales_cash_credit_payment', data);
 
-    console.log(response.data);
+    if (response.status) {
+      showAlert('VENTA REALIZADA', 'success');
+      post_sales();
+    }
   } catch (err) {
     console.error(err);
     showAlert('Error de comunicación con el servidor sales_cash_credit_payment', 'danger');
   }
 }
+
 function sales_send_verify() {
   let payment = $('#cash_payment').inputmask('unmaskedvalue');
   let change = parseFloat(
@@ -245,21 +258,22 @@ function sales_send_verify() {
 
 }
 
-async function procedures_credit_send() {
+async function procedures_payment_send() {
   try {
     let data = sales_send_data();
 
-    const response = await asyngAjaxSend('box/sales/sales_procedures_credit_payment', data);
+    const response = await asyngAjaxSend('box/sales/sales_procedures_other_payment', data);
 
     console.log(response.data);
 
-    // if (response.status) {
-    //   alert('GUARDADO, REVISA BD');
-    // }
+    if (response.status) {
+      showAlert('VENTA REALIZADA', 'success');
+      post_sales();
+    }
 
   } catch (err) {
     console.error(err);
-    showAlert('Error de comunicación con el servidor sales_procedures_credit_payment', 'danger');
+    showAlert('Error de comunicación con el servidor procedures_payment_send', 'danger');
   }
 
 }

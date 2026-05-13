@@ -21,7 +21,7 @@ class CustomerModel extends Model
 
   public function search($value)
   {
-    return $this->select('ci, name')
+    return $this->select('id, ci, name')
       ->groupStart()
       ->like('ci', $value)
       ->orLike('name', $value)

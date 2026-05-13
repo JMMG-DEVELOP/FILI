@@ -117,6 +117,35 @@ async function expedition_point_load() {
   }
 }
 
+async function box_movement_panel_load() {
+  try {
+
+    const response = await asyngAjaxSend(
+      'box/process/box_movement_panel_load'
+    );
+
+    if (response.status) {
+
+      asyng_show_view({
+        id: 'box_movement_panel',
+        html: response.html,
+        effect: 'fade',
+        callback: () => {
+          asyngMoneyMask();
+          $('#mount').focus()
+        }
+      });
+
+    }
+
+  } catch (err) {
+
+    console.error(err);
+    showAlert('Error de comunicación con el servidor box_movement_panel_load', 'danger');
+
+  }
+}
+
 async function panels_load() {
 
   try {
@@ -124,7 +153,7 @@ async function panels_load() {
     await controller_panel_load();
     await payment_panel_load();
     await customer_panel_load();
-    await expedition_point_load()
+    await expedition_point_load();
 
   } catch (err) {
     showAlert('Error loading panels', err);

@@ -2,10 +2,9 @@ $(document).ready(function () {
 
   panels_load();
   loadCart();
-  asyngMoneyMask();
   $('#display_escape').hide();
   $('#display_other_pay').hide();
-
+  asyngMoneyMask();
 
 });
 
@@ -167,7 +166,8 @@ $(document).on('keydown', function (e) {
   // Detectar ALT + C cambiar a CONTADO
   if (e.altKey && e.key.toLowerCase() === 'i') {
     e.preventDefault();
-    // Abrir panel de Inggreso y Egreo de Efectivo
+    box_movement_panel_load();
+
   }
   if (e.altKey && e.key.toLowerCase() === 'd') {
     e.preventDefault();
@@ -226,6 +226,17 @@ $(document).on('click', '.product_form_cancel', function () {
 
   asyng_hide_view({
     id: 'product_panel',
+    effect: 'fade',
+    clear: true
+  });
+  $("#search").focus().select();
+
+  return;
+});
+$(document).on('click', '.box_movement_hide', function () {
+
+  asyng_hide_view({
+    id: 'box_movement_panel',
     effect: 'fade',
     clear: true
   });

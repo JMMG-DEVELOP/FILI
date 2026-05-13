@@ -31,10 +31,12 @@ $(document).on('keydown', '#customer_name', function (e) {
 $(document).on('click', '.add_customer_form', function (e) {
   e.preventDefault();
   let ci = $(this).data('ci');
+  let id = $(this).data('id');
   let name = $(this).data('name');
 
   $('#ruc_ci').val(ci);
   $('#customer_name').val(name);
+  $('#customer_id').val(id);
   $('#search').focus();
   asyng_hide_view({
     id: 'customer_search_panel',

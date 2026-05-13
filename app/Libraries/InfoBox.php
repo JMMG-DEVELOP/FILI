@@ -6,6 +6,8 @@ use App\Models\Box\PaymentTypeModel;
 use App\Models\Box\SalesTypeModel;
 use App\Models\Box\PercentModel;
 use App\Models\Customer\CustomerModel;
+use App\Models\Box\BoxMovementTypeModel;
+
 
 
 
@@ -41,6 +43,19 @@ class InfoBox
   public function customer()
   {
     $customerModel = new CustomerModel();
+
+  }
+
+  public function box_movements()
+  {
+    // Instanciar modelos
+    $BoxMovementTypeModel = new BoxMovementTypeModel();
+
+    // Retornar en un solo array
+    return [
+      'type' => $BoxMovementTypeModel->findAll(),
+
+    ];
 
   }
 

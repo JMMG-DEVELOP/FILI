@@ -7,6 +7,7 @@ use App\Libraries\InfoSales;
 use App\Models\Box\DocumentSequenceModel;
 use App\Models\Box\InvoiceSequenceModel;
 use App\Services\SalesService;
+use App\Services\CustomerService;
 
 class Sales extends BaseController
 {
@@ -14,6 +15,8 @@ class Sales extends BaseController
   protected $InvoiceSequenceModel;
   protected $DocumentSequenceModel;
   protected $SalesService;
+  protected $CustomerService;
+
 
   public function __construct()
   {
@@ -21,6 +24,8 @@ class Sales extends BaseController
     $this->InvoiceSequenceModel = new InvoiceSequenceModel();
     $this->DocumentSequenceModel = new DocumentSequenceModel();
     $this->SalesService = new SalesService();
+    $this->CustomerService = new CustomerService();
+
   }
 
   public function sales_cash_payment()
@@ -33,7 +38,12 @@ class Sales extends BaseController
     return $this->processSale(true);
   }
 
-  private function processSale($withCredit = false)
+  public function sales_procedures_other_payment()
+  {
+    return $this->processSale(false, true);
+  }
+
+  private function processSale($withCredit = false, $whitOther = false)
   {
     $values = $this->request->getPost();
     $values = $this->InfoSales->formatter($values);
@@ -114,9 +124,66 @@ class Sales extends BaseController
     // CREDITO
     if ($withCredit) {
 
-      // lógica crédito
-    }
+      // CABECERA
+      // Actualizar Monto total del credito del cliente
+      $customer_credits = $this->InfoSales->customers_credits_diferencce($values);
 
+      $customer_credits_operation = $this->CustomerService->customer_credits($customer_credits);
+
+      if (!$customer_credits_operation['status']) {
+        return $this->json($customer_credits_operation, 400);
+      }
+
+      $customer_credits_id = $customer_credits_operation['id'];
+
+      // CUERPO DEL CREDITO
+      // dETALLES DE LA ANOTACION EN CREDITO
+      // 2 saldo por compra
+      $customer_credits_details = $this->InfoSales->customer_credits_details($values, $customer_credits_id, 2);
+
+      $customer_credits_details_operation = $this->CustomerService->customer_credits_details($customer_credits_details);
+
+      if (!$customer_credits_details_operation['status']) {
+        return $this->json($customer_credits_operation, 400);
+      }
+
+      $customer_credits_details_id = $customer_credits_details_operation['id'];
+
+      // Sale a de la que depende el detalle
+
+      // DETALLE
+      $response = $this->execute(
+        $this->CustomerService->credits_sales_details(
+          $this->InfoSales->credits_sales_details($customer_credits_details_id, $sale_id)
+        )
+      );
+
+      if ($response)
+        return $response;
+    } //Credit
+
+    // OTHER
+    if ($whitOther) {
+      // // PAGO
+      // $response = $this->execute(
+      //   $this->SalesService->payment_cash(
+      //     $this->InfoSales->sales_other_payment($values, $sale_id)
+      //   )
+      // );
+
+      // if ($response)
+      //   return $response;
+
+      // MOVIMIENTO DE CAJA
+      $response = $this->execute(
+        $this->SalesService->boxMovements(
+          $this->InfoSales->box_movements_other($values, $sale_id)
+        )
+      );
+
+      if ($response)
+        return $response;
+    }
     $db->transComplete();
 
     if ($db->transStatus() === false) {
@@ -132,6 +199,7 @@ class Sales extends BaseController
     return $this->response->setJSON([
       'status' => true,
       'sale_id' => $sale_id,
+      'values' => $values,
       'csrfName' => csrf_token(),
       'csrfHash' => csrf_hash()
     ]);

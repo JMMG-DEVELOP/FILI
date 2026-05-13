@@ -127,7 +127,6 @@ $(document).on('input', '#cash_payment', function () {
 
 
 $(document).on('click', '#confirm_payment', function (e) {
-  alert('TARR');
-
+  sales_cash_payment();
 });
 

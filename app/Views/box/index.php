@@ -19,10 +19,13 @@
         <div id="customer_panel"></div>
 
         <div id="expedition_point_panel">
-          <?php // $this->include('box/controller/expedition_point'); ?>
         </div>
-      </div>
 
+        <div id="box_movement_panel">
+
+        </div>
+
+      </div>
     </div>
   </div>
 
@@ -57,8 +60,6 @@
 <?= $this->endSection(); ?>
 
 <?= $this->section('other_script'); ?>
-<script src="<?= base_url(); ?>/asyng/js/soundManager.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.9/jquery.inputmask.min.js"></script>
 <!-- Process -->
 <script src="<?= base_url(); ?>/asyng/box/process/sales.js"></script>
 <script src="<?= base_url(); ?>/asyng/box/process/app.js"></script>
