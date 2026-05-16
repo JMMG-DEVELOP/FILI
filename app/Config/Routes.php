@@ -90,6 +90,8 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
 
         $routes->post('controller/product_search', 'Box\Controller::product_search', ['filter' => 'ajax']);
         $routes->post('controller/product_form', 'Box\Controller::product_form', ['filter' => 'ajax']);
+        $routes->post('controller/box_movement_send', 'Box\Controller::box_movement_send', ['filter' => 'ajax']);
+
 
         //Customer
 

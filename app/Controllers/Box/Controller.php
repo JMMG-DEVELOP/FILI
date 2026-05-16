@@ -4,6 +4,8 @@ namespace App\Controllers\Box;
 use App\Controllers\BaseController;
 use App\Models\Products\Products\ProductModel;
 use App\Models\Box\CustomerModel;
+use App\Models\Box\BoxMovementModel;
+
 
 class Controller extends BaseController
 {
@@ -96,4 +98,25 @@ class Controller extends BaseController
     ]);
   }
 
+  public function box_movement_send()
+  {
+
+    $BoxMovementModel = new BoxMovementModel();
+    $operation = $BoxMovementModel->add_box_movement($this->request->getPost());
+    if ($operation === false) {
+
+      return $this->response->setJSON([
+        'status' => false,
+        'error' => 'Error en la transacción',
+        'csrfName' => csrf_token(),
+        'csrfHash' => csrf_hash()
+      ]);
+    }
+
+    return $this->response->setJSON([
+      'status' => true,
+      'csrfName' => csrf_token(),
+      'csrfHash' => csrf_hash()
+    ]);
+  }
 }

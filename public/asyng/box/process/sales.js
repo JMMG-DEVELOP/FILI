@@ -288,3 +288,38 @@ function procedures_hide() {
 
   return;
 }
+
+async function box_movement_send() {
+  try {
+    let data =
+    {
+      type: $('#type_movement').val(),
+      payment: 1,
+      mount: $('#mount').inputmask('unmaskedvalue'),
+      box: $('#box').val(),
+    }
+    const response = await asyngAjaxSend('box/controller/box_movement_send', data);
+
+    if (!response.status) {
+      showAlert(response.message || 'ERROR AL GUARDAR MOVIMIENTO DE CAJA', 'danger');
+      return;
+    }
+
+    showAlert(response.message || 'MOVIMIENTO REGISTRADO', 'success');
+    $('#mount').val('');
+    $('#type_movement').val(1);
+    asyng_hide_view({
+      id: 'box_movement_panel',
+      effect: 'fade',
+      clear: true
+    });
+    $("#search").focus().select();
+
+
+    return
+
+  } catch (err) {
+    console.error(err);
+    showAlert('Error de comunicación con el servidor box_movement_send', 'danger');
+  }
+}

@@ -26,7 +26,7 @@
       </div>
       <div class="col-md-3 mb-2">
         <label> </label>
-        <button type="button" class=" form-control btn btn-outline-success procedures_payment_send">
+        <button type="button" class=" form-control btn btn-outline-success box_movement_send">
           <i class="fas fa-check"></i>
         </button>
       </div>

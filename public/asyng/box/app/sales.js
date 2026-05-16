@@ -47,3 +47,15 @@ $(document).on('click', '.procedures_payment_send', function () {
 $(document).on('click', '.procedures_hide', function () {
   procedures_hide();
 });
+
+$(document).on('click', '.box_movement_send', function () {
+  let Type = $('#type_movement').val();
+  let mount = $('#mount').val();
+
+  if (!Type || !mount) {
+    showAlert('POR FAVOR COMPLETAR LOS CAMPOS', 'warning');
+    return;
+  }
+  box_movement_send()
+
+});

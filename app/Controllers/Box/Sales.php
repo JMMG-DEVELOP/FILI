@@ -40,10 +40,10 @@ class Sales extends BaseController
 
   public function sales_procedures_other_payment()
   {
-    return $this->processSale(false, true);
+    return $this->processSale(false);
   }
 
-  private function processSale($withCredit = false, $whitOther = false)
+  private function processSale($withCredit = false)
   {
     $values = $this->request->getPost();
     $values = $this->InfoSales->formatter($values);
@@ -162,28 +162,6 @@ class Sales extends BaseController
         return $response;
     } //Credit
 
-    // OTHER
-    if ($whitOther) {
-      // // PAGO
-      // $response = $this->execute(
-      //   $this->SalesService->payment_cash(
-      //     $this->InfoSales->sales_other_payment($values, $sale_id)
-      //   )
-      // );
-
-      // if ($response)
-      //   return $response;
-
-      // MOVIMIENTO DE CAJA
-      $response = $this->execute(
-        $this->SalesService->boxMovements(
-          $this->InfoSales->box_movements_other($values, $sale_id)
-        )
-      );
-
-      if ($response)
-        return $response;
-    }
     $db->transComplete();
 
     if ($db->transStatus() === false) {
