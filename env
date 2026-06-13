@@ -14,29 +14,16 @@
 # ENVIRONMENT
 #--------------------------------------------------------------------
 
-# CI_ENVIRONMENT = production
+CI_ENVIRONMENT = production
 
-#--------------------------------------------------------------------
-# APP
-#--------------------------------------------------------------------
+app.baseURL = 'http://38.52.132.225/'
 
-# app.baseURL = ''
-# If you have trouble with `.`, you could also use `_`.
-# app_baseURL = ''
-# app.forceGlobalSecureRequests = false
-# app.CSPEnabled = false
-
-#--------------------------------------------------------------------
-# DATABASE
-#--------------------------------------------------------------------
-
-# database.default.hostname = 127.0.0.1
-# database.default.database = filidb
-# database.default.username = filidb
-# database.default.password = FiLi_15243!Db@Server
-# database.default.DBDriver = MySQLi
-# database.default.DBPrefix =
-# database.default.port = 3306
+database.default.hostname = 127.0.0.1
+database.default.database = filidb
+database.default.username = filidb
+database.default.password = FiLi_15243!Db@Server
+database.default.DBDriver = MySQLi
+database.default.port = 3306
 
 # If you use MySQLi as tests, first update the values of Config\Database::$tests.
 # database.tests.hostname = localhost
