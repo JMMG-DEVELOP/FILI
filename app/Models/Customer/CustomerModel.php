@@ -58,7 +58,7 @@ class CustomerModel extends Model
       return [
         'status' => true,
         'message' => 'Cliente creado correctamente',
-        'data' => $this->where('ci', $data['ci'])->first()
+        'data' => $this->find($insert)
       ];
 
     } catch (\Exception $e) {

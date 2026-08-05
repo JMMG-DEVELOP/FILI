@@ -1,9 +1,6 @@
 async function post_sales() {
   try {
     await cancelAll();
-    await payment_panel_load();
-    await customer_panel_load();
-    await expedition_point_load();
 
   } catch (err) {
     showAlert('Error loading panels', err);
@@ -61,27 +58,30 @@ function sales_send_data() {
 }
 
 function sales_send_display() {
+
   if ($('#cart_invoice tbody tr').length > 0) {
     const paymentType = Number($('#payment').val());
     const sales = Number($('#sales').val());;
+    if ([4].includes(sales)) {
+      wait_save();
+      return;
+    } else
 
-    if ([2, 3, 4].includes(paymentType) || [2, 3, 4].includes(sales)) {
+      if ([2, 3, 4].includes(paymentType) || [2, 3].includes(sales)) {
 
-      SoundManager.payment();
-      $('#display_other_pay').slideDown(200);
-      $('#display_escape').hide(200);
+        SoundManager.payment();
+        $('#display_other_pay').slideDown(200);
+        $('#display_escape').hide(200);
 
-    } else {
+      } else {
 
-      SoundManager.payment();
-      $('#display_escape').slideDown(200);
-      $('#cash_payment').focus();
-      $('#display_other_pay').hide();
+        SoundManager.payment();
+        $('#display_escape').slideDown(200);
+        $('#cash_payment').focus();
+        $('#display_other_pay').hide();
 
-    }
-
+      }
   }
-
 
 }
 function sales_cart_data() {
@@ -129,7 +129,12 @@ function sales_cart_data() {
       unit_cost: cost,
       total_price: total,
       total_cost: totalCost,
-      iva: iva
+      iva: iva,
+
+      description: row.find('td:eq(2)').text().trim(),
+      cant_two: parseFloat(row.data('cant_two')) || 0,
+      price_two: parseFloat(row.data('price-two')) || 0,
+
     });
 
   });
@@ -227,33 +232,23 @@ function sales_send_verify() {
   let sales = Number($('#sales').val());
 
   if ([1].includes(sales)) {
-    if ([2, 3, 4].includes(paymentType)) {
-      // PAGO NO EN EFECTIVO
 
+    if (payment === '' || parseInt(payment) === 0) {
+      showAlert('Ingresa el monto', 'danger');
+      return;
     } else {
-      // PAGO EN EFECTIVO
-      if (payment === '' || parseInt(payment) === 0) {
-        showAlert('Ingresa el monto', 'danger');
-        return;
-      } else {
-        if (change >= 0) {
-          sales_cash_payment();
+      if (change >= 0) {
+        sales_cash_payment();
 
-        } else if (change < 0) {
-          // Saldoo en credito
-          change = Math.abs(change);
-          sales_cash_credit_confirm(change, customer);
-        }
-
+      } else if (change < 0) {
+        // Saldoo en credito
+        change = Math.abs(change);
+        sales_cash_credit_confirm(change, customer);
       }
 
     }
-  } else if ([2].includes(sales)) {
-    // CREDITO
-    alert('credito');
-  } else if ([3].includes(sales)) {
-    // DEVOLUCION
-    alert('devolucion');
+
+
   }
 
 }
@@ -315,7 +310,7 @@ async function box_movement_send() {
     });
     $("#search").focus().select();
 
-
+    await history_movements_panel();
     return
 
   } catch (err) {

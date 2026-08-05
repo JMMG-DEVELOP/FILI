@@ -134,6 +134,7 @@ $(document).on('keydown', function (e) {
     e.preventDefault(); // evita pegar (paste)
 
     $('#sales').focus().select2('open');
+
   }
 
   // ALT + T → Focus en Cantidad
@@ -142,6 +143,8 @@ $(document).on('keydown', function (e) {
 
     $('#product_cant').focus();
     $('#product_cant').select();
+    borderFlash('#product_cant', 'green')
+
   }
 
   // ALT + F → fACTURACION EN CLIENTE
@@ -149,6 +152,8 @@ $(document).on('keydown', function (e) {
     e.preventDefault();
 
     $('#customer_name').focus().select();
+    borderFlash('#customer_name', 'green')
+
   }
 
   // Detectar ALT + C cambiar a credito
@@ -156,14 +161,42 @@ $(document).on('keydown', function (e) {
     e.preventDefault();
     $('#sales').val('2').trigger('change');
     $('#ruc_ci').select().focus();
+    borderFlash('#sales', 'green')
+
   }
-  // Detectar ALT + C cambiar a CONTADO
+  // Detectar ALT + Z cambiar a CONTADO
   if (e.altKey && e.key.toLowerCase() === 'z') {
     e.preventDefault();
     $('#sales').val('1').trigger('change');
     $('#search').select().focus();
+    borderFlash('#sales', 'green')
+
   }
-  // Detectar ALT + C cambiar a CONTADO
+
+  // Detectar ALT + D cambiar a DEVOLUCION
+  if (e.altKey && e.key.toLowerCase() === 'd') {
+    e.preventDefault();
+    $('#sales').val('3').trigger('change');
+    $('#search').select().focus();
+    borderFlash('#sales', 'green')
+  }
+  // Detectar ALT + E cambiar a DEVOLUCION
+  if (e.altKey && e.key.toLowerCase() === 'e') {
+    e.preventDefault();
+    $('#sales').val('4').trigger('change');
+    $('#search').select().focus();
+    borderFlash('#sales', 'green')
+
+  }
+  // Detectar ALT + E cambiar a CONTADO
+  if (e.altKey && e.key.toLowerCase() === 'e') {
+    e.preventDefault();
+    $('#sales').val('4').trigger('change');
+    $('#search').select().focus();
+    borderFlash('#sales', 'green')
+
+  }
+  // Detectar ALT + I, abrir panel de registro de movimientos
   if (e.altKey && e.key.toLowerCase() === 'i') {
     e.preventDefault();
     box_movement_panel_load();
@@ -173,27 +206,37 @@ $(document).on('keydown', function (e) {
     e.preventDefault();
     $('#sales').val('3').trigger('change');
     $('#search').select().focus();
+    borderFlash('#sales', 'green')
+
   }
   // CAMBIAR TIPO DE PAGO
   if (e.altKey && e.key.toLowerCase() === '1') {
     e.preventDefault();
     $('#payment').val('1').trigger('change');
     $('#search').select().focus();
+    borderFlash('#payment', 'green')
+
   }
   if (e.altKey && e.key.toLowerCase() === '2') {
     e.preventDefault();
     $('#payment').val('2').trigger('change');
     $('#search').select().focus();
+    borderFlash('#payment', 'green')
+
   }
   if (e.altKey && e.key.toLowerCase() === '3') {
     e.preventDefault();
     $('#payment').val('3').trigger('change');
     $('#search').select().focus();
+    borderFlash('#payment', 'green')
+
   }
   if (e.altKey && e.key.toLowerCase() === '4') {
     e.preventDefault();
     $('#payment').val('4').trigger('change');
     $('#search').select().focus();
+    borderFlash('#payment', 'green')
+
   }
 
   if (e.altKey && e.key.toLowerCase() === 'l') {

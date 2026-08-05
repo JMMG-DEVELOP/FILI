@@ -33,7 +33,7 @@
 
     </div>
     <div class="border-top pt-4 text-right">
-      <button type="button" class="btn btn-outline-danger box_movement_hide">
+      <button type="submit" class="btn btn-outline-danger box_movement_hide">
         <i class="fas fa-times"></i>
       </button>
     </div>

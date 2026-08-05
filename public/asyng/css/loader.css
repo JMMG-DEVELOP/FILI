@@ -84,3 +84,16 @@ body {
 .display_escape {
   display: contents;
 }
+
+.carrito-scroll {
+  max-height: 600px;
+  overflow-y: auto;
+  overflow-x: auto;
+}
+
+.carrito-scroll thead th {
+  position: sticky;
+  top: 0;
+  background: #fff;
+  z-index: 100;
+}

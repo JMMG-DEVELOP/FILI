@@ -1,92 +1,89 @@
-<div class="col-md-12">
+<table class="table table-hover table-striped table-bordered">
 
-  <table class="table table-hover table-striped table-bordered">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>CÓDIGO</th>
+      <th>DESCRIPCIÓN</th>
+      <th>PRECIO</th>
 
-    <thead>
-      <tr>
-        <th>#</th>
-        <th>CÓDIGO</th>
-        <th>DESCRIPCIÓN</th>
-        <th>PRECIO</th>
+      <!-- Sucursales dinámicas -->
+      <?php if (!empty($result)):
+        $first = $result[0];
+        foreach ($first['stock'] as $sucursalId => $qty): ?>
+          <th>FILI <?= $sucursalId ?></th>
+        <?php endforeach;
+      endif; ?>
 
-        <!-- Sucursales dinámicas -->
-        <?php if (!empty($result)):
-          $first = $result[0];
-          foreach ($first['stock'] as $sucursalId => $qty): ?>
-            <th>FILI <?= $sucursalId ?></th>
-          <?php endforeach;
-        endif; ?>
+      <th>AGREGAR</th>
+    </tr>
+  </thead>
 
-        <th>AGREGAR</th>
-      </tr>
-    </thead>
+  <tbody>
 
-    <tbody>
-
-      <?php if (!empty($result)): ?>
-        <?php foreach ($result as $i => $detail): ?>
-
-          <tr>
-
-            <!-- Índice -->
-            <td class="text-center fw-bold">
-              <?= $i + 1 ?>
-            </td>
-
-            <!-- Código -->
-            <td class="text-center">
-              <span class="badge bg-secondary">
-                <?= esc($detail['code']) ?>
-              </span>
-            </td>
-
-            <!-- Descripción -->
-            <td>
-              <?= esc($detail['description']) ?>
-            </td>
-
-            <!-- Precio -->
-            <td class="text-end fw-bold text-success">
-              <?= number_format($detail['price_one'], 0, ',', '.') ?>
-            </td>
-
-            <!-- Stock por sucursal -->
-            <?php foreach ($detail['stock'] as $qty): ?>
-              <td class="text-center">
-                <?= number_format($qty, 0, ',', '.') ?>
-              </td>
-            <?php endforeach; ?>
-
-            <!-- Botón agregar -->
-            <td class="text-center">
-
-              <button class="btn btn-sm btn-primary product_search_add_cart" data-code="<?= esc($detail['code']) ?>">
-                <i class="fas fa-plus"></i>
-              </button>
-
-            </td>
-
-          </tr>
-
-        <?php endforeach; ?>
-      <?php else: ?>
+    <?php if (!empty($result)): ?>
+      <?php foreach ($result as $i => $detail): ?>
 
         <tr>
-          <td colspan="100" class="text-center text-muted py-4">
-            Sin resultados en la tabla
+
+          <!-- Índice -->
+          <td class="text-center fw-bold">
+            <?= $i + 1 ?>
           </td>
+
+          <!-- Código -->
+          <td class="text-center">
+            <span class="badge bg-secondary">
+              <?= esc($detail['code']) ?>
+            </span>
+          </td>
+
+          <!-- Descripción -->
+          <td>
+            <?= esc($detail['description']) ?>
+          </td>
+
+          <!-- Precio -->
+          <td class="text-end fw-bold text-success">
+            <?= number_format($detail['price_one'], 0, ',', '.') ?>
+          </td>
+
+          <!-- Stock por sucursal -->
+          <?php foreach ($detail['stock'] as $qty): ?>
+            <td class="text-center">
+              <?= number_format($qty, 0, ',', '.') ?>
+            </td>
+          <?php endforeach; ?>
+
+          <!-- Botón agregar -->
+          <td class="text-center">
+
+            <button class="btn btn-sm btn-primary product_search_add_cart" data-code="<?= esc($detail['code']) ?>">
+              <i class="fas fa-plus"></i>
+            </button>
+
+          </td>
+
         </tr>
 
-      <?php endif; ?>
+      <?php endforeach; ?>
+    <?php else: ?>
 
-    </tbody>
+      <tr>
+        <td colspan="100" class="text-center text-muted py-4">
+          Sin resultados en la tabla
+        </td>
+      </tr>
 
-  </table>
+    <?php endif; ?>
+
+  </tbody>
+
+</table>
 
 
-  <div class="border-top pt-4 text-right">
-    <button type="button" class="btn btn-outline-danger product_search_table_hide">
-      <i class="fas fa-times"></i>
-    </button>
-  </div>
+<div class="border-top pt-4 text-right">
+  <button type="button" class="btn btn-outline-danger product_search_table_hide">
+    <i class="fas fa-times"></i>
+  </button>
 </div>

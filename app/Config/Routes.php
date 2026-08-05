@@ -6,126 +6,206 @@ use CodeIgniter\Router\RouteCollection;
  * @var RouteCollection $routes
  */
 
-// ------------------------------
-// RUTAS PÚBLICAS
-// ------------------------------
+// ======================================================
+// PUBLICAS
+// ======================================================
 $routes->get('/', 'Auth\Login::index');
 $routes->post('login', 'Auth\Login::auth');
 $routes->post('auth', 'Auth\Login::auth');
-
 $routes->get('logout', 'Auth\Logout::index');
 
-// ------------------------------
-// GRUPO PROTEGIDO (AUTH)
-// ------------------------------
+
+// ======================================================
+// RUTAS PROTEGIDAS (AUTH)
+// ======================================================
 $routes->group('', ['filter' => 'auth'], function ($routes) {
 
-    // Dashboard (solo login)
+    // ==================================================
+    // DASHBOARD
+    // ==================================================
     $routes->get('dashboard', 'Auth\Dashboard::index');
 
-    // ==========================
-    // PRODUCTOS
-    // Requiere permiso: access_products
-    // ==========================
+
+    // ==================================================
+    // PRODUCTS
+    // Permiso: products_access
+    // ==================================================
     $routes->group('products', ['filter' => 'permission:products_access'], function ($routes) {
 
+        // ------------------------------------------
+        // ACCESS
+        // ------------------------------------------
         $routes->get('/', 'Products\Products\Access::index');
-        $routes->post
-        ('panel', 'Products\Products\Access::panel');
-
-        // Products Datatable
-        $routes->post(
-            'products/datatable',
-            'Products\Products\Datatable::datatable'
-        );
-        // Product Add
-        $routes->post('products/product_open', 'Products\Products\Add::open', ['filter' => 'ajax']);
-        $routes->post('products/product_save', 'Products\Products\Add::save', ['filter' => 'ajax']);
-        $routes->post('products/product_save_verify', 'Products\Products\Add::code_verify');
-        // Product Edit
-        $routes->post('products/product_edit_open', 'Products\Products\Edit::open', ['filter' => 'ajax']);
-        $routes->post('products/product_edit_save', 'Products\Products\Edit::save', ['filter' => 'ajax']);
+        $routes->post('panel', 'Products\Products\Access::panel');
 
 
+        // ------------------------------------------
+        // PRODUCTS
+        // ------------------------------------------
+        $routes->group('products', function ($routes) {
 
-        // Brands Datatable
-        $routes->post(
-            'brands/datatable',
-            'Products\Brands\Datatable::datatable'
-        );
-        // Brands Add
-        $routes->post('brands/brand_open', 'Products\Brands\Add::open', ['filter' => 'ajax']);
+            // Datatable
+            $routes->post('datatable', 'Products\Products\Datatable::datatable');
 
-        // Section Datatable
-        $routes->post(
-            'section/datatable',
-            'Products\Section\Datatable::datatable'
-        );
-        // Section Add
-        $routes->post('section/section_open', 'Products\Section\Add::open', ['filter' => 'ajax']);
+            // Add
+            $routes->post('product_open', 'Products\Products\Add::open', ['filter' => 'ajax']);
+            $routes->post('product_save', 'Products\Products\Add::save', ['filter' => 'ajax']);
+            $routes->post('product_save_verify', 'Products\Products\Add::code_verify');
 
+            // Edit
+            $routes->post('product_edit_open', 'Products\Products\Edit::open', ['filter' => 'ajax']);
+            $routes->post('product_edit_save', 'Products\Products\Edit::save', ['filter' => 'ajax']);
+        });
+
+
+        // ------------------------------------------
+        // BRANDS
+        // ------------------------------------------
+        $routes->group('brands', function ($routes) {
+
+            // Datatable
+            $routes->post('datatable', 'Products\Brands\Datatable::datatable');
+
+            // Add
+            $routes->post('brand_open', 'Products\Brands\Add::open', ['filter' => 'ajax']);
+        });
+
+
+        // ------------------------------------------
+        // SECTION
+        // ------------------------------------------
+        $routes->group('section', function ($routes) {
+
+            // Datatable
+            $routes->post('datatable', 'Products\Section\Datatable::datatable');
+
+            // Add
+            $routes->post('section_open', 'Products\Section\Add::open', ['filter' => 'ajax']);
+        });
 
     });
 
-    // ==========================
+
+    // ==================================================
     // BOX
-    // Requiere permiso:box_access
-    // ==========================
+    // Permiso: box_access
+    // ==================================================
     $routes->group('box', ['filter' => 'permission:box_access'], function ($routes) {
 
+        // ------------------------------------------
+        // ACCESS
+        // ------------------------------------------
         $routes->get('/', 'Box\Access::index');
 
-        $routes->post('process/controller_panel_load', 'Box\Process::controller_panel_load', ['filter' => 'ajax']);
 
-        $routes->post('process/payment_panel_load', 'Box\Process::payment_panel_load', ['filter' => 'ajax']);
+        // ------------------------------------------
+        // PROCESS
+        // ------------------------------------------
+        $routes->group('process', function ($routes) {
 
-        $routes->post('process/expedition_point_load', 'Box\Process::expedition_point_load', ['filter' => 'ajax']);
-
-        $routes->post('process/box_movement_panel_load', 'Box\Process::box_movement_panel_load', ['filter' => 'ajax']);
-
-
-        $routes->post('process/sales_cash_credit_confirm', 'Box\Process::sales_cash_credit_confirm', ['filter' => 'ajax']);
-
-        $routes->post('process/expedition_point_select', 'Box\Process::expedition_point_select', ['filter' => 'ajax']);
-
-        $routes->post('controller/product_search', 'Box\Controller::product_search', ['filter' => 'ajax']);
-        $routes->post('controller/product_form', 'Box\Controller::product_form', ['filter' => 'ajax']);
-        $routes->post('controller/box_movement_send', 'Box\Controller::box_movement_send', ['filter' => 'ajax']);
+            $routes->post('controller_panel_load', 'Box\Process::controller_panel_load', ['filter' => 'ajax']);
+            $routes->post('print_panel_load', 'Box\Process::print_panel_load', ['filter' => 'ajax']);
+            $routes->post('payment_panel_load', 'Box\Process::payment_panel_load', ['filter' => 'ajax']);
+            $routes->post('expedition_point_load', 'Box\Process::expedition_point_load', ['filter' => 'ajax']);
+            $routes->post('box_movement_panel_load', 'Box\Process::box_movement_panel_load', ['filter' => 'ajax']);
+            $routes->post('history_sales_panel_load', 'Box\Process::history_sales_panel_load', ['filter' => 'ajax']);
+            $routes->post('history_movements_panel_load', 'Box\Process::history_movements_panel_load', ['filter' => 'ajax']);
 
 
-        //Customer
+            $routes->post('sales_cash_credit_confirm', 'Box\Process::sales_cash_credit_confirm', ['filter' => 'ajax']);
+            $routes->post('expedition_point_select', 'Box\Process::expedition_point_select', ['filter' => 'ajax']);
+            $routes->post('wait_panel_load', 'Box\Process::wait_panel_load', ['filter' => 'ajax']);
 
-        $routes->post('controller/customer_search', 'Customer\Process::search', ['filter' => 'ajax']);
+        });
+        // ------------------------------------------
+        // WAIT
+        // ------------------------------------------
+        $routes->group('wait', function ($routes) {
+            $routes->post('wait_validation', 'Box\Wait::validation', ['filter' => 'ajax']);
 
-        $routes->post('controller/customer_form', 'Customer\Add::open', ['filter' => 'ajax']);
-        $routes->post('controller/customer_add', 'Customer\Add::save');
+            $routes->post('wait_save', 'Box\Wait::wait_save', ['filter' => 'ajax']);
+            $routes->post('wait_update', 'Box\Wait::update', ['filter' => 'ajax']);
+            $routes->post('wait_list', 'Box\Wait::list', ['filter' => 'ajax']);
+            $routes->post('wait_delete', 'Box\Wait::wait_delete', ['filter' => 'ajax']);
 
 
-        // Invoice
-        $routes->post('invoice/product_add', 'Box\Invoice::product_add', ['filter' => 'ajax']);
 
 
+        });
+
+        // ------------------------------------------
+        // CONTROLLER
+        // ------------------------------------------
+        $routes->group('controller', function ($routes) {
+
+            // Products
+            $routes->post('product_search', 'Box\Controller::product_search', ['filter' => 'ajax']);
+            $routes->post('product_form', 'Box\Controller::product_form', ['filter' => 'ajax']);
+
+            // Box movement
+            $routes->post('box_movement_send', 'Box\Controller::box_movement_send', ['filter' => 'ajax']);
+
+            // Customer
+            $routes->post('customer_search', 'Customer\Process::search', ['filter' => 'ajax']);
+            $routes->post('customer_form', 'Customer\Add::open', ['filter' => 'ajax']);
+            $routes->post('customer_add', 'Customer\Add::save');
+        });
+
+
+        // ------------------------------------------
+        // INVOICE
+        // ------------------------------------------
+        $routes->group('invoice', function ($routes) {
+
+            $routes->post('product_add', 'Box\Invoice::product_add', ['filter' => 'ajax']);
+
+        });
+
+
+        // ------------------------------------------
         // SALES
+        // ------------------------------------------
+        $routes->group('sales', function ($routes) {
 
-        $routes->post('sales/sales_cash_payment', 'Box\Sales::sales_cash_payment', ['filter' => 'ajax']);
+            $routes->post('sales_cash_payment', 'Box\Sales::sales_cash_payment', ['filter' => 'ajax']);
 
-        $routes->post('sales/sales_procedures_credit_payment', 'Box\Sales::sales_procedures_credit_payment', ['filter' => 'ajax']);
+            $routes->post(
+                'sales_procedures_credit_payment',
+                'Box\Sales::sales_procedures_credit_payment',
+                ['filter' => 'ajax']
+            );
 
-        $routes->post('sales/sales_cash_credit_payment', 'Box\Sales::sales_cash_credit_payment', ['filter' => 'ajax']);
+            $routes->post(
+                'sales_cash_credit_payment',
+                'Box\Sales::sales_cash_credit_payment',
+                ['filter' => 'ajax']
+            );
 
-        $routes->post('sales/sales_procedures_other_payment', 'Box\Sales::sales_procedures_other_payment', ['filter' => 'ajax']);
+            $routes->post(
+                'sales_procedures_other_payment',
+                'Box\Sales::sales_procedures_other_payment',
+                ['filter' => 'ajax']
+            );
+        });
 
     });
 
-    // ==========================
-    // CUSTOMER
-    // Requiere permiso:customer_access
-    // ==========================
-    $routes->group('customer', ['filter' => 'permission:customer_access'], function ($routes) {
-        $routes->post('process/customer_panel_load', 'Customer\Process::customer_panel_load');
 
+    // ==================================================
+    // CUSTOMER
+    // Permiso: customer_access
+    // ==================================================
+    $routes->group('customer', ['filter' => 'permission:customer_access'], function ($routes) {
+
+        $routes->group('process', function ($routes) {
+
+            $routes->post(
+                'customer_panel_load',
+                'Customer\Process::customer_panel_load'
+            );
+
+        });
 
     });
 
 });
-

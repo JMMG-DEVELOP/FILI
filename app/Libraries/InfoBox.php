@@ -1,17 +1,11 @@
 <?php
 
 namespace App\Libraries;
-use App\Models\Auth\UsersModel;
 use App\Models\Box\PaymentTypeModel;
 use App\Models\Box\SalesTypeModel;
 use App\Models\Box\PercentModel;
 use App\Models\Customer\CustomerModel;
 use App\Models\Box\BoxMovementTypeModel;
-
-
-
-
-
 
 class InfoBox
 {
@@ -39,10 +33,9 @@ class InfoBox
     ];
 
   }
-
   public function customer()
   {
-    $customerModel = new CustomerModel();
+    return new CustomerModel();
 
   }
 

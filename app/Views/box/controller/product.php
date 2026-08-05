@@ -1,4 +1,4 @@
-<div class="row mt-4">
+<div class="row">
   <!-- Descripción -->
   <div class="col-md-12 mb-2">
     <label>Descripción</label>

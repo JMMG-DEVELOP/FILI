@@ -30,7 +30,31 @@ async function controller_panel_load() {
 
   }
 }
+async function print_panel_load() {
+  try {
 
+    const response = await asyngAjaxSend(
+      'box/process/print_panel_load'
+    );
+
+    if (response.status) {
+
+      asyng_show_view({
+        id: 'print_panel',
+        html: response.html,
+        effect: 'fade',
+
+      });
+
+    }
+
+  } catch (err) {
+
+    console.error(err);
+    showAlert('Error de comunicación con el servidor payment_panel_load', 'danger');
+
+  }
+}
 async function payment_panel_load() {
   try {
 
@@ -146,13 +170,43 @@ async function box_movement_panel_load() {
   }
 }
 
+async function wait_panel_load() {
+  try {
+
+    const response = await asyngAjaxSend(
+      'box/process/wait_panel_load'
+    );
+
+    if (response.status) {
+
+      asyng_show_view({
+        id: 'wait_panel',
+        html: response.html,
+        effect: 'fade',
+
+      });
+
+    }
+
+  } catch (err) {
+
+    console.error(err);
+    showAlert('Error de comunicación con el servidor wait_panel_load', 'danger');
+
+  }
+}
 async function panels_load() {
 
   try {
 
     await controller_panel_load();
+    await print_panel_load();
     await payment_panel_load();
     await customer_panel_load();
+    await history_sales_panel();
+    await history_sales_panel();
+    await history_movements_panel();
+    await wait_panel_load();
     await expedition_point_load();
 
   } catch (err) {
@@ -160,7 +214,75 @@ async function panels_load() {
   }
 
 }
+let currentPage = 1;
 
+async function history_sales_panel(page = 1) {
+  try {
+
+    if (page < 1) {
+      page = 1;
+    }
+
+    currentPage = page;
+
+    const response = await asyngAjaxSend(
+      'box/process/history_sales_panel_load',
+      {
+        page: page
+      }
+    );
+
+    if (response.status) {
+
+      asyng_show_view({
+        id: 'history_sales_panel',
+        html: response.html,
+        effect: 'fade'
+      });
+
+    }
+
+  } catch (err) {
+
+    console.error(err);
+
+    showAlert(
+      'Error de comunicación con el servidor history_sales_panel_load',
+      'danger'
+    );
+
+  }
+}
+async function history_movements_panel() {
+
+  try {
+
+    const response = await asyngAjaxSend(
+      'box/process/history_movements_panel_load'
+    );
+
+    if (response.status) {
+
+      asyng_show_view({
+        id: 'history_movements_panel',
+        html: response.html,
+        effect: 'fade'
+      });
+
+    }
+
+  } catch (err) {
+
+    console.error(err);
+
+    showAlert(
+      'Error al cargar movimientos de caja',
+      'danger'
+    );
+
+  }
+
+}
 
 /*************
  * TOGLES PAYMENT
@@ -223,12 +345,20 @@ async function cancelAll() {
   $('#display_escape').hide();
   $('#display_other_pay').hide();
 
+  await print_panel_load();
   await customer_panel_load();
   await payment_panel_load();
+  await history_sales_panel();
+  await history_movements_panel();
+  await expedition_point_load();
 
   procedures_hide();
   updateCartCount();
   updateGrandTotal();
   saveCart();
   SoundManager.warning();
+}
+
+async function clear() {
+
 }

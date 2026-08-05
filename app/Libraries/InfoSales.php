@@ -150,6 +150,29 @@ class InfoSales
     return $details;
   }
 
+  public function sales_iva($values, $sale_id)
+  {
+    $iva = $values['cart']['iva'] ?? [];
+
+    return [
+      [
+        'type' => 1, // IVA 10%
+        'mount' => $iva['iva_10'] ?? 0,
+        'sales' => $sale_id
+      ],
+      [
+        'type' => 2, // IVA 5%
+        'mount' => $iva['iva_5'] ?? 0,
+        'sales' => $sale_id
+      ],
+      [
+        'type' => 3, // Exenta
+        'mount' => $iva['exenta'] ?? 0,
+        'sales' => $sale_id
+      ]
+    ];
+  }
+
   function box_movements($values, $sale_id)
   {
     return [

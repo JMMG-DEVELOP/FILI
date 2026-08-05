@@ -60,33 +60,37 @@ class Login extends BaseController
     }
     public function session($user)
     {
-        $session = session();
-
-        // Si ya hay sesión activa en PHP, devolverla
-        if ($session->get('logged') && $session->get('session')) {
-            return $session->get('session');
-        }
-
-        // Si no hay sesión → crear nueva en BD
         $UsersSessionsModel = new UsersSessionsModel();
 
+        // Buscar si el usuario ya tiene una sesión abierta
+        $activeSession = $UsersSessionsModel
+            ->where('user', $user)
+            ->where('status', 1)
+            ->first();
+
+        // Si existe, reutilizarla
+        if ($activeSession) {
+            return $activeSession['id'];
+        }
+
+        // Obtener información del dispositivo
         $agent = $this->request->getUserAgent();
 
         $data = [
-            'date' => date("Y-m-d"),
-            'start' => date("H:i:s"),
+            'date' => date('Y-m-d'),
+            'start' => date('H:i:s'),
             'user' => $user,
             'device' => $agent->getPlatform(),
             'ip' => $this->request->getIPAddress(),
             'browser' => $agent->getBrowser() . ' ' . $agent->getVersion(),
             'type' => $agent->isMobile() ? 'Mobile' : 'Desktop',
-            'user_agent' => $this->request->getUserAgent()->getAgentString(),
-            'ip_true' => $_SERVER['HTTP_X_FORWARDED_FOR']
-                ?? $_SERVER['REMOTE_ADDR'],
+            'user_agent' => $agent->getAgentString(),
+            'ip_true' => $_SERVER['HTTP_X_FORWARDED_FOR'] ?? $_SERVER['REMOTE_ADDR'],
             'device_hint' => $this->getDeviceModel($agent->getAgentString()),
             'status' => 1
         ];
 
+        // Crear nueva sesión
         return $UsersSessionsModel->start($data);
     }
 

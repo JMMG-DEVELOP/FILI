@@ -9,6 +9,7 @@ use App\Models\Box\DocumentSequenceModel;
 use App\Models\Box\InvoiceSequenceModel;
 use App\Models\Box\StockMovmentsModel;
 use App\Models\Box\SalesPaymentsModel;
+use App\Models\Box\SalesIvaModel;
 use App\Models\Products\Products\StockModel;
 class SalesService
 {
@@ -21,6 +22,7 @@ class SalesService
   protected $StockMovmentsModel;
   protected $StockModel;
   protected $SalesPaymentsModel;
+  protected $SalesIvaModel;
 
 
   public function __construct()
@@ -32,24 +34,23 @@ class SalesService
     $this->BoxMovementModel = new BoxMovementModel();
     $this->StockMovmentsModel = new StockMovmentsModel();
     $this->StockModel = new StockModel();
-    $this->SalesPaymentsModel =
-      new SalesPaymentsModel();
+    $this->SalesPaymentsModel = new SalesPaymentsModel();
+    $this->SalesIvaModel = new SalesIvaModel();
+
+
   }
 
   public function sales($value)
   {
     $response = $this->SalesModel->add_sales($value);
 
-    if (!$response) {
-      return [
-        'status' => false,
-        'error' => 'Error al guardar cabecera'
-      ];
+    if (!$response['status']) {
+      return $response;
     }
 
     return [
       'status' => true,
-      'sale_id' => $response
+      'sale_id' => $response['id']
     ];
   }
 
@@ -61,6 +62,22 @@ class SalesService
       return [
         'status' => false,
         'error' => 'Error al guardar DETALLES'
+      ];
+    }
+
+    return [
+      'status' => true,
+    ];
+  }
+
+  public function sales_iva($value)
+  {
+    $response = $this->SalesIvaModel->add_sales_iva($value);
+
+    if (!$response) {
+      return [
+        'status' => false,
+        'error' => 'Error al guardar SALES IVA'
       ];
     }
 
@@ -133,5 +150,9 @@ class SalesService
     ];
   }
 
+  public function devolution_Stock()
+  {
+
+  }
 }
 ?>

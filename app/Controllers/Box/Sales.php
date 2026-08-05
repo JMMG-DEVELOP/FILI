@@ -43,6 +43,10 @@ class Sales extends BaseController
     return $this->processSale(false);
   }
 
+  public function sales_devolution()
+  {
+
+  }
   private function processSale($withCredit = false)
   {
     $values = $this->request->getPost();
@@ -66,6 +70,16 @@ class Sales extends BaseController
     $response = $this->execute(
       $this->SalesService->details(
         $this->InfoSales->sales_details($values, $sale_id)
+      )
+    );
+
+    if ($response)
+      return $response;
+
+    // SALES IVA TOTAL
+    $response = $this->execute(
+      $this->SalesService->sales_iva(
+        $this->InfoSales->sales_iva($values, $sale_id)
       )
     );
 

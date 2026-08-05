@@ -282,3 +282,17 @@ function setChange(value) {
     new Intl.NumberFormat('es-PY').format(num)
   );
 }
+
+function borderFlash(selector, color, duration = 3000) {
+  $(selector).css({
+    border: `2px solid ${color}`,
+    transition: 'border 0.2s ease'
+  });
+
+  setTimeout(() => {
+    $(selector).css({
+      border: '',
+      transition: ''
+    });
+  }, duration);
+}

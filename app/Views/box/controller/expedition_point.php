@@ -7,7 +7,7 @@
     <div class="row col-md-12 mb-3">
 
       <!-- SELECT -->
-      <div class="col-md-8">
+      <div class="col-md-12">
         <label>Facturar en </label>
         <select class="form-control" name="select_sucursal" id="select_sucursal" required>
           <?php foreach ($sucursal as $suc): ?>
@@ -17,10 +17,10 @@
           <?php endforeach; ?>
         </select>
       </div>
-
+      <br>
       <!-- INPUT -->
-      <div class="col-md-4">
-        <label>Numero </label> <!-- mantiene altura alineada -->
+      <div class="col-md-12">
+        <!-- <label>Numero </label> mantiene altura alineada -->
         <input type="text" name="invoice_number" class="form-control" id="invoice_number">
       </div>
 

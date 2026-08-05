@@ -182,14 +182,14 @@ function getPrice(product, cant, percent) {
   }
 }
 // Crear Nueva Fila
-function createRow(product, cant, price) {
+function createRow(product, cant, price, save = true) {
 
   const total = cant * price;
 
   let row = `
     <tr data-id="${product.id}"
         data-code="${product.code}"
-        data-stock="${product.stock}"
+       
         data-price-one="${product.price_one}"
         data-price-two="${product.price_two ?? 0}"
         data-cant-two="${product.cant_two ?? 0}"
@@ -229,9 +229,11 @@ function createRow(product, cant, price) {
 
   $('#cart_invoice tbody').prepend(row);
 
-  updateCartCount();
-  updateGrandTotal();
-  saveCart();
+  if (save) {
+    updateCartCount();
+    updateGrandTotal();
+    saveCart();
+  }
 }
 function updateRow(row, product, cantToAdd, percent) {
 

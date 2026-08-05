@@ -8,7 +8,7 @@
 
       <!-- RUC / CI -->
       <div class="col-md-3 mb-2">
-        <label>RUC / CI</label>
+        <label>Ruc</label>
         <input type="text" class="form-control" name="ruc_ci" id="ruc_ci" placeholder="RUC o CI"
           value="<?= esc($result['ci']) ?>">
       </div>

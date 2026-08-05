@@ -42,7 +42,7 @@
             </div>
 
             <!-- 4. COMPROBANTE -->
-            <div class="col-md-2 col-6">
+            <!-- <div class="col-md-2 col-6">
               <div class="h-100 d-flex flex-column justify-content-center">
                 <small class="text-uppercase text-muted fw-semibold">
                   Comprobante
@@ -52,15 +52,16 @@
                   <option value="2">Factura</option>
                 </select>
               </div>
-            </div>
+            </div> -->
+
           </div>
 
           <div id="display_other_pay" class="display_escape">
             <div class="col-md-3 col-6">
               <div class="h-100 d-flex flex-column justify-content-center">
-                <small class="text-uppercase text-muted fw-semibold">
-
-                </small>
+                <!-- <label>Numero de Operación</label>
+                <input type="text" class="form-control" name="operation_number" id="operation_number">
+                <br> -->
                 <input type="button" id="confirm_payment" class="btn btn-outline-brand" value="CONFIRMAR">
               </div>
             </div>
