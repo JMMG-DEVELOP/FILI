@@ -74,7 +74,10 @@
     <div class="card">
       <div class="card-header">
 
-        <?= $this->include('box/components/total_cart'); ?>
+        <div id="invoice_panel">
+
+        </div>
+
 
         <div id="display_procedures"></div>
 

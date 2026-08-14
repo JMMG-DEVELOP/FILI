@@ -97,3 +97,19 @@ body {
   background: #fff;
   z-index: 100;
 }
+
+#global-alert-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 99999;
+  width: auto;
+  max-width: 900px;
+  pointer-events: none;
+}
+
+#global-alert-container .alert {
+  margin: 0;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.20);
+  pointer-events: auto;
+}

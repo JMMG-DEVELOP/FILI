@@ -11,6 +11,7 @@ use App\Models\Box\StockMovmentsModel;
 use App\Models\Box\SalesPaymentsModel;
 use App\Models\Box\SalesIvaModel;
 use App\Models\Products\Products\StockModel;
+
 class SalesService
 {
   protected $InfoSales;
@@ -150,9 +151,22 @@ class SalesService
     ];
   }
 
-  public function devolution_Stock()
+  public function devolution_Stock($values)
   {
+    $StockModel = new StockModel();
 
+    if (!$StockModel->devolutionStock($values)) {
+      return [
+        'status' => false,
+        'message' => 'No fue posible actualizar el stock.'
+      ];
+    }
+
+    return [
+      'status' => true
+    ];
   }
+
+
 }
 ?>

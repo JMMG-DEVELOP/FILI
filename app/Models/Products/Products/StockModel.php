@@ -57,6 +57,26 @@ class StockModel extends Model
 
         return $status;
     }
+    public function devolutionStock($items)
+    {
+        $status = false;
+
+        foreach ($items as $item) {
+
+            $builder = $this->db->table($this->table);
+
+            $builder->set('stock', 'stock + ' . (float) $item['stock'], false)
+                ->where('product', $item['product'])
+                ->where('sucursal', $item['sucursal'])
+                ->update();
+
+            if ($this->db->affectedRows() > 0) {
+                $status = true;
+            }
+        }
+
+        return $status;
+    }
 
 
 }

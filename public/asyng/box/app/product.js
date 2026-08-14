@@ -33,7 +33,7 @@ $(document).on('keydown', '#search', async function (e) {
 
     if (!value) {
 
-      showAlert('Campo Vacío', 'warning')
+      showAlert('Campo Vacío', 'danger')
       SoundManager.error()
       return
 
@@ -89,4 +89,46 @@ $(document).on('click', '.product_search_add_cart', function () {
 
 });
 
+// ¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨
+// ORDERS
+// ...............
+$('#btn_add_orders').on('click', async function () {
+
+  const code = $(this).attr('data-code');
+
+  if (!code) {
+    showAlert(
+      'No se seleccionó ningún producto',
+      'warning'
+    );
+    return;
+  }
+
+  const response = await asyngAjaxSend(
+    'box/orders/order_add',
+    {
+      product: code,
+      user: $('#user_id').val()
+    }
+  );
+
+  if (response.status) {
+
+    showAlert(
+      'PRODUCTO AÑADIDO A PEDIDO',
+      'success'
+    );
+    $('#btn_add_orders_text').text('Ya en Pedido');
+    $('#btn_add_orders_icon')
+      .removeClass('fas fa-list-ol')
+      .addClass('fas fa-check');
+
+  } else {
+
+    showAlert('PRODUCTO YA ESTA EN PEDIDO', 'danger'
+    );
+
+  }
+
+});
 

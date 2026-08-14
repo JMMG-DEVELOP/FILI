@@ -57,7 +57,7 @@ function sales_send_data() {
   return data;
 }
 
-function sales_send_display() {
+async function sales_send_display() {
 
   if ($('#cart_invoice tbody tr').length > 0) {
     const paymentType = Number($('#payment').val());
@@ -67,20 +67,25 @@ function sales_send_display() {
       return;
     } else
 
-      if ([2, 3, 4].includes(paymentType) || [2, 3].includes(sales)) {
+      if ([1].includes(paymentType) || [1].includes(sales)) {
+        await invoice_cash_panel_load()
+      } else
 
-        SoundManager.payment();
-        $('#display_other_pay').slideDown(200);
-        $('#display_escape').hide(200);
+        if ([2, 3, 4].includes(paymentType) || [2, 3].includes(sales)) {
 
-      } else {
+          SoundManager.payment();
+          $('#display_other_pay').slideDown(200);
+          $('#display_escape').hide(200);
 
-        SoundManager.payment();
-        $('#display_escape').slideDown(200);
-        $('#cash_payment').focus();
-        $('#display_other_pay').hide();
+        }
+    // else {
 
-      }
+    //   SoundManager.payment();
+    //   $('#display_escape').slideDown(200);
+    //   $('#cash_payment').focus();
+    //   $('#display_other_pay').hide();
+
+    // }
   }
 
 }
@@ -158,13 +163,22 @@ function sales_cart_data() {
 async function sales_cash_payment() {
 
   try {
+    const sales = Number($('#sales').val());;
     let data = sales_send_data();
-
-    const response = await asyngAjaxSend('box/sales/sales_cash_payment', data);
-    if (response.status) {
-      showAlert('VENTA REALIZADA', 'success');
-      post_sales();
+    if ([3].includes(sales)) {
+      const response = await asyngAjaxSend('box/sales/sales_devolution', data);
+      if (response.status) {
+        showAlert('DEVOLUCIÓN CORRECTA', 'success');
+        post_sales();
+      }
+    } else {
+      const response = await asyngAjaxSend('box/sales/sales_cash_payment', data);
+      if (response.status) {
+        showAlert('VENTA REALIZADA', 'success');
+        post_sales();
+      }
     }
+
   } catch (err) {
     console.error(err);
     showAlert('Error de comunicación con el servidor sales_cash_payment', 'danger');
@@ -221,7 +235,10 @@ async function sales_cash_credit_payment() {
 function sales_send_verify() {
   let payment = $('#cash_payment').inputmask('unmaskedvalue');
   let change = parseFloat(
-    $('#change').text().replace(/\./g, '').replace(',', '.')
+    $('#change')
+      .text()
+      .replace(/\./g, '')
+      .replace(',', '.')
   ) || 0;
   const paymentType = Number($('#payment').val());
 
@@ -247,7 +264,6 @@ function sales_send_verify() {
       }
 
     }
-
 
   }
 

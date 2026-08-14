@@ -18,6 +18,8 @@
               </h1>
             </div>
           </div>
+
+          <!-- fweqew -->
           <div id="display_escape" class="display_escape">
             <!-- 2. ENTREGA -->
             <div class="col-md-3 col-6">
@@ -66,6 +68,8 @@
               </div>
             </div>
           </div>
+
+          <!-- sdfkajds -->
         </div>
 
       </div>

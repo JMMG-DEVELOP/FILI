@@ -16,12 +16,34 @@ class BoxModel extends Model
     'status'
   ];
 
+
   public function add_box($data)
   {
     $this->insert($data);
 
     return $this->insertID();
   }
+
+
+  public function get_open_box($user)
+  {
+    return $this->where('user', $user)
+      ->where('status', 1)
+      ->orderBy('id', 'DESC')
+      ->first();
+  }
+
+
+  public function close_box($box)
+  {
+    return $this->where('id', $box)
+      ->where('status', 1)
+      ->set([
+        'status' => 2
+      ])
+      ->update();
+  }
+
 
   public function close_box_by_session($sessionId)
   {
@@ -32,5 +54,4 @@ class BoxModel extends Model
       ])
       ->update();
   }
-
 }

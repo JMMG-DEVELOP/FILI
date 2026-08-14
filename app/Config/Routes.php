@@ -110,11 +110,14 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
             $routes->post('box_movement_panel_load', 'Box\Process::box_movement_panel_load', ['filter' => 'ajax']);
             $routes->post('history_sales_panel_load', 'Box\Process::history_sales_panel_load', ['filter' => 'ajax']);
             $routes->post('history_movements_panel_load', 'Box\Process::history_movements_panel_load', ['filter' => 'ajax']);
+            $routes->post('invoice_cash_panel', 'Box\Process::invoice_cash_panel_load', ['filter' => 'ajax']);
 
 
             $routes->post('sales_cash_credit_confirm', 'Box\Process::sales_cash_credit_confirm', ['filter' => 'ajax']);
             $routes->post('expedition_point_select', 'Box\Process::expedition_point_select', ['filter' => 'ajax']);
             $routes->post('wait_panel_load', 'Box\Process::wait_panel_load', ['filter' => 'ajax']);
+            $routes->post('invoice_product_panel', 'Box\Process::invoice_product_panel_load', ['filter' => 'ajax']);
+
 
         });
         // ------------------------------------------
@@ -128,8 +131,14 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
             $routes->post('wait_list', 'Box\Wait::list', ['filter' => 'ajax']);
             $routes->post('wait_delete', 'Box\Wait::wait_delete', ['filter' => 'ajax']);
 
+        });
 
-
+        // ------------------------------------------
+        // ORDERS
+        // ------------------------------------------
+        $routes->group('orders', function ($routes) {
+            $routes->post('order_validation', 'Box\orders::validation', ['filter' => 'ajax']);
+            $routes->post('order_add', 'Box\orders::order_add', ['filter' => 'ajax']);
 
         });
 
@@ -184,6 +193,12 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
             $routes->post(
                 'sales_procedures_other_payment',
                 'Box\Sales::sales_procedures_other_payment',
+                ['filter' => 'ajax']
+            );
+
+            $routes->post(
+                'sales_devolution',
+                'Box\Sales::sales_devolution',
                 ['filter' => 'ajax']
             );
         });

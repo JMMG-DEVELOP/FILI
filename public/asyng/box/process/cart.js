@@ -115,6 +115,14 @@ function updateGrandTotal() {
   // format = setChange(total);
   // $('#grand_total').text(format);
 }
+function returnGrandTotal() {
+  let total = 0;
+
+  $('#cart_invoice tbody tr').each(function () {
+    total += parseFloat($(this).find('.row-total').data('total'));
+  });
+  return formatMoney(total);
+}
 // Contar cantidad de lineas del carrito
 function updateCartCount() {
   const count = $('#cart_invoice tbody tr').length;
@@ -391,3 +399,62 @@ function product_add_cart_direct() {
 }
 
 // PAGO DE CARRITO
+async function update_panel_description(product) {
+  try {
+    // Código
+    $('#panel_product_code').text(product.code);
+
+    // Precio 1
+    $('#panel_price_one').text(
+      formatMoney(product.price_one)
+    );
+
+    // Precio 2
+    $('#panel_price_two').text(
+      formatMoney(product.price_two)
+    );
+
+    // Cantidad precio 2
+    $('#panel_cant_two').text(
+      product.cant_two
+    );
+
+    // Stock
+    $('#panel_product_stock').text(
+      product.stock
+    );
+
+    // Código del producto para agregar
+    $('#btn_add_orders').attr(
+      'data-code',
+      product.code
+    );
+
+    const data = {
+      code: product.code
+    };
+
+    // Validar si el cliente ya tiene una espera
+    const response = await asyngAjaxSend('box/orders/order_validation', data);
+    if ($('#btn_add_orders').is(':hidden')) {
+      $('#btn_add_orders').show();
+    }
+    if (response.status) {
+      $('#btn_add_orders_text').text('Ya en Pedido');
+      $('#btn_add_orders_icon')
+        .removeClass('fas fa-list-ol')
+        .addClass('fas fa-check');
+      return;
+    } else {
+      $('#btn_add_orders_text').text('Añadir a Pedido');
+      $('#btn_add_orders_icon')
+        .removeClass('fas fa-check')
+        .addClass('fas fa-list-ol');
+    }
+
+  } catch (err) {
+    console.error(err);
+    showAlert('Error de comunicación con el update_panel_description', 'danger');
+  }
+
+}

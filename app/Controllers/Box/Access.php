@@ -20,14 +20,33 @@ class Access extends BaseController
             $boxModel = new BoxModel();
 
             if (!session()->get('box')) {
-                $boxData = [
-                    'user' => session()->get('id'),
-                    'session' => session()->get('session'),
-                    'status' => 1
-                ];
-                $box = $boxModel->add_box($boxData);
+
+                // Buscar caja abierta del usuario
+                $box = $boxModel->get_open_box(session()->get('id'));
+
                 if ($box) {
-                    session()->set(['box' => $box]);
+
+                    // Recupera la caja existente
+                    session()->set([
+                        'box' => $box['id']
+                    ]);
+
+                } else {
+
+                    // Crear nueva caja
+                    $boxData = [
+                        'user' => session()->get('id'),
+                        'session' => session()->get('session'),
+                        'status' => 1
+                    ];
+
+                    $box = $boxModel->add_box($boxData);
+
+                    if ($box) {
+                        session()->set([
+                            'box' => $box
+                        ]);
+                    }
                 }
             }
 

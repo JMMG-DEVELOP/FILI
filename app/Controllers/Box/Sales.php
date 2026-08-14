@@ -45,9 +45,9 @@ class Sales extends BaseController
 
   public function sales_devolution()
   {
-
+    return $this->processSale(false, true);
   }
-  private function processSale($withCredit = false)
+  private function processSale($withCredit = false, $devolution = false)
   {
     $values = $this->request->getPost();
     $values = $this->InfoSales->formatter($values);
@@ -97,14 +97,27 @@ class Sales extends BaseController
       return $response;
 
     // STOCK
-    $response = $this->execute(
-      $this->SalesService->discountStock(
-        $this->InfoSales->stock_update($values)
-      )
-    );
+    if (!$devolution) {
 
-    if ($response)
+      $response = $this->execute(
+        $this->SalesService->discountStock(
+          $this->InfoSales->stock_update($values)
+        )
+      );
+
+    } else {
+
+      $response = $this->execute(
+        $this->SalesService->devolution_Stock(
+          $this->InfoSales->devolution_Stock($values)
+        )
+      );
+
+    }
+
+    if ($response) {
       return $response;
+    }
 
     // HISTORIAL
     $response = $this->execute(
@@ -175,6 +188,8 @@ class Sales extends BaseController
       if ($response)
         return $response;
     } //Credit
+
+    // Devolucion
 
     $db->transComplete();
 

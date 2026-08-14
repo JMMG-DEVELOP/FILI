@@ -259,4 +259,20 @@ class InfoSales
       'sales' => $sales_details_id,
     ];
   }
+
+  public function devolution_Stock($values)
+  {
+    $items = [];
+
+    foreach ($values['cart']['items'] as $item) {
+
+      $items[] = [
+        'product' => $item['code'], // products_stock.product guarda el código
+        'stock' => $item['cant'],
+        'sucursal' => $values['point']['select_sucursal']
+      ];
+    }
+
+    return $items;
+  }
 }

@@ -54,6 +54,7 @@ async function product_add_cart(value) {
 
           await addOrUpdateRowCart(product, cant, price, percent);
           formatInputs();
+          await update_panel_description(product);
           break;
 
         case 2:

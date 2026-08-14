@@ -1,4 +1,4 @@
-$(document).on('keydown', '#cash_payment', function (e) {
+$(document).on('keydown', '#cash_payment', async function (e) {
 
   if (e.key === 'Escape') {
     e.preventDefault();
@@ -9,7 +9,7 @@ $(document).on('keydown', '#cash_payment', function (e) {
   if (e.key === 'Enter') {
 
     e.preventDefault();
-
+    await invoice_panel_load();
     $('#search').focus();
     $('#cash_payment').val('');
     $('#display_escape').hide();
@@ -17,7 +17,11 @@ $(document).on('keydown', '#cash_payment', function (e) {
   }
 
 });
+$(document).on('blur', '#cash_payment', async function (e) {
 
+  await invoice_panel_load();
+
+});
 $(document).on('change', '#receipt_type', function (e) {
   $('#cash_payment').focus();
 

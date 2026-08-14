@@ -96,7 +96,7 @@ $(document).on('input', '#cash_payment', function () {
   }
 
   // 4. Obtener total
-  let total = Number($('#grand_total').text().replace(/\./g, '')) || 0;
+  let total = Number($('#cash_grand_total').text().replace(/\./g, '')) || 0;
 
   // 5. Pago
   let pago = Number(raw) || 0;

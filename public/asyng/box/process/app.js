@@ -195,6 +195,36 @@ async function wait_panel_load() {
 
   }
 }
+
+async function invoice_panel_load() {
+  try {
+
+    const response = await asyngAjaxSend(
+      'box/process/invoice_product_panel'
+    );
+
+    if (response.status) {
+
+      asyng_show_view({
+        id: 'invoice_panel',
+        html: response.html,
+        effect: 'fade',
+        callback: () => {
+          updateGrandTotal();
+          $('search').focus();
+        }
+      });
+
+    }
+
+  } catch (err) {
+
+    console.error(err);
+    showAlert('Error de comunicación con el servidor invoice_panel', 'danger');
+
+  }
+}
+
 async function panels_load() {
 
   try {
@@ -207,7 +237,9 @@ async function panels_load() {
     await history_sales_panel();
     await history_movements_panel();
     await wait_panel_load();
+    await invoice_panel_load();
     await expedition_point_load();
+    $('#btn_add_orders').hide();
 
   } catch (err) {
     showAlert('Error loading panels', err);
@@ -284,6 +316,37 @@ async function history_movements_panel() {
 
 }
 
+async function invoice_cash_panel_load() {
+  try {
+
+    const response = await asyngAjaxSend(
+      'box/process/invoice_cash_panel'
+    );
+
+    if (response.status) {
+
+      asyng_show_view({
+        id: 'invoice_panel',
+        html: response.html,
+        effect: 'fade',
+        callback: () => {
+          asyngMoneyMask();
+
+          $('#cash_payment').focus();
+          $('#cash_grand_total').text(returnGrandTotal());
+        }
+
+      });
+    }
+
+  } catch (err) {
+
+    console.error(err);
+    showAlert('Error de comunicación con el servidor invoice_panel', 'danger');
+
+  }
+}
+
 /*************
  * TOGLES PAYMENT
  */
@@ -356,6 +419,7 @@ async function cancelAll() {
   updateCartCount();
   updateGrandTotal();
   saveCart();
+  $('#btn_add_orders').hide();
   SoundManager.warning();
 }
 

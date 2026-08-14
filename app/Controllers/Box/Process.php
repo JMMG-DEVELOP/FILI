@@ -24,6 +24,19 @@ class Process extends BaseController
       'csrfHash' => csrf_hash()
     ]);
   }
+
+  public function invoice_cash_panel_load()
+  {
+    $html = view('Box/invoice/cash_payment');
+
+    return $this->response->setJSON([
+      'status' => true,
+      'html' => $html,
+      'csrfName' => csrf_token(),
+      'csrfHash' => csrf_hash()
+    ]);
+
+  }
   public function print_panel_load()
   {
     $InvoiceType = new InvoiceTypeModel();
@@ -232,5 +245,20 @@ class Process extends BaseController
       'csrfName' => csrf_token(),
       'csrfHash' => csrf_hash()
     ]);
+  }
+
+  public function invoice_product_panel_load()
+  {
+    // Instanciar modelos
+
+    $html = view('Box/invoice/product_panel');
+
+    return $this->response->setJSON([
+      'status' => true,
+      'html' => $html,
+      'csrfName' => csrf_token(),
+      'csrfHash' => csrf_hash()
+    ]);
+
   }
 }
