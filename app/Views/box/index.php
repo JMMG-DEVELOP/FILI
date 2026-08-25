@@ -79,7 +79,7 @@
         </div>
 
 
-        <div id="display_procedures"></div>
+        <div id="display_multi_payment"></div>
 
       </div>
       <div class="card-body">
@@ -111,6 +111,7 @@
 <script src="<?= base_url(); ?>/asyng/box/process/product.js"></script>
 <script src="<?= base_url(); ?>/asyng/box/process/customer.js"></script>
 <script src="<?= base_url(); ?>/asyng/box/process/point.js"></script>
+<script src="<?= base_url(); ?>/asyng/box/process/invoice_display.js"></script>
 
 
 
@@ -122,6 +123,7 @@
 <script src="<?= base_url(); ?>/asyng/box/app/customer.js"></script>
 <script src="<?= base_url(); ?>/asyng/box/app/point.js"></script>
 <script src="<?= base_url(); ?>/asyng/box/app/sales.js"></script>
+
 
 
 

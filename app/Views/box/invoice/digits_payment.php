@@ -1,4 +1,4 @@
-<form id="form_cash_payment">
+<form id="form_digist_payment">
   <div class="row g-3">
 
     <!-- TOTAL -->
@@ -20,37 +20,37 @@
               </h1>
 
               <!-- DATOS -->
-              <div class="d-flex flex-wrap justify-content-between align-items-center w-100">
+              <div class="row w-100 g-3">
 
-                <!-- ENTREGA -->
-                <div class="text-center">
+                <!-- NUMERO DE OPERACION -->
+                <div class="col-6 text-center">
                   <small class="text-muted d-block">
-                    ENTREGA DE EFECTIVO
+                    NUMERO DE OPERACIÓN
                   </small>
-                  <input type="text" id="cash_payment"
-                    class="form-control form-control-lg text-center fw-bold  input-cash money">
 
+                  <input id="payment_device_operation_number" class="form-control form-control-lg text-center fw-bold">
                 </div>
 
-                <!-- ENTREGA -->
-                <div class="text-center">
+                <!-- DISPOSITIVO -->
+                <div class="col-6 text-center">
                   <small class="text-muted d-block">
-                    VUELTO
+                    DISPOSITIVO
                   </small>
-                  <h1 class="fw-bold mb-0 money text-dark display-5" id="change">
 
-                  </h1>
+                  <select class="form-control select" name="device_payment" id="payment_device" required>
+                    <option value="2">SUDAMERIS</option>
 
+                    <?php foreach ($devices as $key): ?>
+                      <option value="<?= esc($key['id']) ?>">
+                        <?= esc($key['name']) ?>
+                      </option>
+                    <?php endforeach; ?>
+                  </select>
                 </div>
-
 
               </div>
-
             </div>
-
           </div>
-
-
 
         </div>
       </div>

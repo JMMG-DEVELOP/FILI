@@ -113,10 +113,11 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
             $routes->post('invoice_cash_panel', 'Box\Process::invoice_cash_panel_load', ['filter' => 'ajax']);
 
 
-            $routes->post('sales_cash_credit_confirm', 'Box\Process::sales_cash_credit_confirm', ['filter' => 'ajax']);
+            $routes->post('invoice_multi_payment_load', 'Box\Process::invoice_multi_payment_load', ['filter' => 'ajax']);
             $routes->post('expedition_point_select', 'Box\Process::expedition_point_select', ['filter' => 'ajax']);
             $routes->post('wait_panel_load', 'Box\Process::wait_panel_load', ['filter' => 'ajax']);
             $routes->post('invoice_product_panel', 'Box\Process::invoice_product_panel_load', ['filter' => 'ajax']);
+            $routes->post('invoice_digits_panel', 'Box\Process::invoice_digits_panel_load', ['filter' => 'ajax']);
 
 
         });

@@ -9,7 +9,7 @@ async function post_sales() {
 
 function change_calculate() {
 
-  let total = parseFloat(
+  const total = parseFloat(
     $('#grand_total')
       .text()
       .replace(/[^\d,.-]/g, '')
@@ -17,17 +17,14 @@ function change_calculate() {
       .replace(',', '.')
   ) || 0;
 
-  let pago = parseFloat(
-    $('#cash_payment')
-      .val()
-      .replace(/[^\d,.-]/g, '')
-      .replace(/\./g, '')
-      .replace(',', '.')
+  const pago = parseFloat(
+    $('#cash_payment').inputmask('unmaskedvalue')
   ) || 0;
 
-  let change = pago - total;
+  return pago - total;
+}
+function sales_payment_data() {
 
-  return change;
 }
 function sales_send_data() {
   const payment = asyngFormData('#form_payment');
@@ -35,6 +32,7 @@ function sales_send_data() {
   const point = asyngFormData('#form_expedition_point');
   const procedure_credit_payment = asyngFormData('#procedure_credit_payment');
   const procedure_other_payment = asyngFormData('#procedure_other_payment');
+  // const cash_payment = asynFormData('#cash_payment');
 
 
   const receipt = Number($('#receipt_type').val());
@@ -57,38 +55,7 @@ function sales_send_data() {
   return data;
 }
 
-async function sales_send_display() {
 
-  if ($('#cart_invoice tbody tr').length > 0) {
-    const paymentType = Number($('#payment').val());
-    const sales = Number($('#sales').val());;
-    if ([4].includes(sales)) {
-      wait_save();
-      return;
-    } else
-
-      if ([1].includes(paymentType) || [1].includes(sales)) {
-        await invoice_cash_panel_load()
-      } else
-
-        if ([2, 3, 4].includes(paymentType) || [2, 3].includes(sales)) {
-
-          SoundManager.payment();
-          $('#display_other_pay').slideDown(200);
-          $('#display_escape').hide(200);
-
-        }
-    // else {
-
-    //   SoundManager.payment();
-    //   $('#display_escape').slideDown(200);
-    //   $('#cash_payment').focus();
-    //   $('#display_other_pay').hide();
-
-    // }
-  }
-
-}
 function sales_cart_data() {
 
   let items = [];
@@ -174,7 +141,7 @@ async function sales_cash_payment() {
     } else {
       const response = await asyngAjaxSend('box/sales/sales_cash_payment', data);
       if (response.status) {
-        showAlert('VENTA REALIZADA', 'success');
+        45('VENTA REALIZADA', 'success');
         post_sales();
       }
     }
@@ -184,37 +151,7 @@ async function sales_cash_payment() {
     showAlert('Error de comunicación con el servidor sales_cash_payment', 'danger');
   }
 }
-async function sales_cash_credit_confirm(change, customer) {
-  try {
 
-    const response = await asyngAjaxSend(
-      'box/process/sales_cash_credit_confirm'
-    );
-
-    if (response.status) {
-
-      asyng_show_view({
-        id: 'display_procedures',
-        html: response.html,
-        effect: 'fade',
-        callback: () => {
-          $('#value_credit_mount').val(change);
-          $('#value_credit_customer').val(customer);
-          $('#value_payment_mount').val(change);
-
-          asyngMoneyMask();
-        }
-      });
-    }
-
-  } catch (err) {
-
-    console.error(err);
-    showAlert('Error de comunicación con el servidor cash_credit_confirm', 'danger');
-
-  }
-
-}
 async function sales_cash_credit_payment() {
 
   try {
@@ -232,42 +169,7 @@ async function sales_cash_credit_payment() {
   }
 }
 
-function sales_send_verify() {
-  let payment = $('#cash_payment').inputmask('unmaskedvalue');
-  let change = parseFloat(
-    $('#change')
-      .text()
-      .replace(/\./g, '')
-      .replace(',', '.')
-  ) || 0;
-  const paymentType = Number($('#payment').val());
 
-  const receipt = Number($('#receipt_type').val());
-
-  const customer = $('#customer_name').val();
-
-  let sales = Number($('#sales').val());
-
-  if ([1].includes(sales)) {
-
-    if (payment === '' || parseInt(payment) === 0) {
-      showAlert('Ingresa el monto', 'danger');
-      return;
-    } else {
-      if (change >= 0) {
-        sales_cash_payment();
-
-      } else if (change < 0) {
-        // Saldoo en credito
-        change = Math.abs(change);
-        sales_cash_credit_confirm(change, customer);
-      }
-
-    }
-
-  }
-
-}
 
 async function procedures_payment_send() {
   try {
@@ -289,16 +191,7 @@ async function procedures_payment_send() {
 
 }
 
-function procedures_hide() {
-  asyng_hide_view({
-    id: 'display_procedures',
-    effect: 'fade',
-    clear: true
-  });
-  $("#search").focus().select();
 
-  return;
-}
 
 async function box_movement_send() {
   try {
@@ -334,3 +227,21 @@ async function box_movement_send() {
     showAlert('Error de comunicación con el servidor box_movement_send', 'danger');
   }
 }
+async function devolution() {
+  try {
+    let data = sales_send_data();
+
+    const response = await asyngAjaxSend('box/sales/sales_devolution', data);
+
+    if (response.status) {
+      showAlert('DEVOLUCION EXITOSA', 'success');
+      post_sales();
+    }
+
+  } catch (err) {
+    console.error(err);
+    showAlert('Error de comunicación con el servidor devolution', 'danger');
+  }
+
+}
+

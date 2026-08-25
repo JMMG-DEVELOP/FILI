@@ -4,21 +4,17 @@ namespace App\Models\Box;
 
 use CodeIgniter\Model;
 
-class SalesPaymentsModel extends Model
+class PaymentDeviceModel extends Model
 {
-  protected $table = 'sales_payments';
+  protected $table = 'payment_device';
   protected $primaryKey = 'id';
   protected $returnType = 'array';
 
   protected $allowedFields = [
-    'type',
-    'amount',
-    'sales',
-    'number',
-    'device'
+    'name',
   ];
 
-  public function add_sales_payment($values)
+  public function add_payment_device($values)
   {
     return $this->insert($values);
   }

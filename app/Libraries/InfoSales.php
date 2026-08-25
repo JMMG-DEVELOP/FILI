@@ -4,40 +4,6 @@ namespace App\Libraries;
 
 class InfoSales
 {
-  function formatter($values)
-  {
-    return [
-      'payment' => $this->normalize($values['payment']),
-      'customer' => $this->normalize($values['customer']),
-      'point' => $this->normalize($values['point']),
-      'cart' => $values['cart'] ?? [],
-      'cash' => $values['cash'] ?? 0,
-      'change' => $values['change'] ?? 0,
-      'receipt' => $values['receipt'] ?? null,
-      'procedure_other' => isset($values['procedure_other'])
-        ? $this->normalize($values['procedure_other'])
-        : []
-
-    ];
-  }
-  function normalize($array)
-  {
-    $result = [];
-
-    foreach ($array as $item) {
-      if (isset($item['name']) && isset($item['value'])) {
-        $result[$item['name']] = trim($item['value']);
-      }
-    }
-
-    return $result;
-  }
-  private $ivaMap = [
-    '10' => 1, // IVA 10% → id 1
-    '5' => 2, // IVA 5% → id 2
-    '0' => 3  // Exenta → id 3
-  ];
-
   function sales($values)
   {
     $payment = $values['payment'];
@@ -78,6 +44,7 @@ class InfoSales
       'type' => $values['payment']['payment'] ?? null,
       'sales' => $sale_id,
       'amount' => $values['cart']['totals']['total_price'] ?? 0,
+      'device' => 1
 
     ];
   }

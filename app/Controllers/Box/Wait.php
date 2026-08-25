@@ -21,7 +21,7 @@ class Wait extends BaseController
   public function validation()
   {
     $values = $this->request->getPost();
-    $values = $this->InfoWait->formatter($values);
+    // $values = $this->InfoWait->formatter($values);
 
     $validation = $this->WaitService->validation($values['customer']['customer_id']);
     return $this->response->setJSON([

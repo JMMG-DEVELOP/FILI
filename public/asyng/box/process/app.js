@@ -316,11 +316,11 @@ async function history_movements_panel() {
 
 }
 
-async function invoice_cash_panel_load() {
+async function invoice_digist_panel_load() {
   try {
 
     const response = await asyngAjaxSend(
-      'box/process/invoice_cash_panel'
+      'box/process/invoice_digits_panel'
     );
 
     if (response.status) {
@@ -330,10 +330,8 @@ async function invoice_cash_panel_load() {
         html: response.html,
         effect: 'fade',
         callback: () => {
-          asyngMoneyMask();
-
-          $('#cash_payment').focus();
           $('#cash_grand_total').text(returnGrandTotal());
+          $('#payment_device_operation_number').focus()
         }
 
       });
@@ -342,7 +340,7 @@ async function invoice_cash_panel_load() {
   } catch (err) {
 
     console.error(err);
-    showAlert('Error de comunicación con el servidor invoice_panel', 'danger');
+    showAlert('Error de comunicación con el servidor invoice_digits_panel_load', 'danger');
 
   }
 }
@@ -423,6 +421,8 @@ async function cancelAll() {
   SoundManager.warning();
 }
 
-async function clear() {
+async function searh_focus() {
+  await invoice_panel_load();
+
 
 }

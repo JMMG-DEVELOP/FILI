@@ -2,26 +2,26 @@
   <legend class="w-auto px-2 fw-semibold small">
     Procedimientos Especiales
   </legend>
-  <form id="procedure_credit_payment">
+  <form id="form_cash_credit_payment">
     <fieldset class="mt-0 border rounded p-3 mb-3">
       <legend class="w-auto px-2 fw-semibold small">
         Anotar Saldo en Credito
       </legend>
       <div class="row">
 
-        <div class="col-md-3 mb-2">
+        <div class="col-md-2 mb-2">
           <label> Saldo </label>
-          <input type="text" class="form-control money" name="value_credit_mount" id="value_credit_mount"
+          <input type="text" class="form-control money" name="cash_credit_mount" id="cash_credit_mount"
             placeholder="Monto">
         </div>
-        <div class="col-md-6 mb-2">
+        <div class="col-md-8 mb-2">
           <label> Cliente </label>
-          <input type="text" class="form-control" name="value_credit_customer" id="value_credit_customer"
+          <input type="text" class="form-control" name="cash_credit_customer" id="cash_credit_customer"
             placeholder="Cliente">
         </div>
-        <div class="col-md-3 mb-2">
+        <div class="col-md-2 mb-2">
           <label> </label>
-          <button type="button" class=" form-control btn btn-outline-success procedures_credit_send">
+          <button type="button" class=" form-control btn btn-outline-success multi_payment_cash_credit">
             <i class="fas fa-check"></i>
           </button>
         </div>
@@ -29,7 +29,7 @@
       </div>
     </fieldset>
   </form>
-  <form id="procedure_other_payment">
+  <form id="form_cash_digist_payment">
     <fieldset class="mt-0 border rounded p-3 mb-3">
       <legend class="w-auto px-2 fw-semibold small">
         Cobrar Saldo con otro metodo de pago
@@ -37,14 +37,14 @@
       <div class="row">
 
 
-        <div class="col-md-3 mb-2">
+        <div class="col-md-2 mb-2">
           <label> Saldo </label>
-          <input type="text" class="form-control money" name="value_payment_mount" id="value_payment_mount"
+          <input type="text" class="form-control money" name="cash_digits_mount" id="cash_digits_mount"
             placeholder="Monto">
         </div>
-        <div class="col-md-6 mb-2">
+        <div class="col-md-4 mb-2">
           <label> Metodo de Pago </label>
-          <select class="form-control select" name="value_payment_type" id="value_payment_type" required>
+          <select class="form-control select" name="cash_digits_payment" id="cash_digits_payment" required>
             <option value="">Seleccione</option>
             <?php foreach ($payments as $payment): ?>
               <option value="<?= esc($payment['id']) ?>">
@@ -53,9 +53,14 @@
             <?php endforeach; ?>
           </select>
         </div>
-        <div class="col-md-3 mb-2">
+        <div class="col-md-4 mb-2">
+          <label> Numero de Operación </label>
+          <input type="text" class="form-control" name="cash_digits_number" id="cash_digits_number"
+            placeholder="Numero de Operacion">
+        </div>
+        <div class="col-md-2 mb-2">
           <label> </label>
-          <button type="button" class=" form-control btn btn-outline-success procedures_payment_send">
+          <button type="button" class=" form-control btn btn-outline-success multi_payment_cash_digits">
             <i class="fas fa-check"></i>
           </button>
         </div>
@@ -65,7 +70,7 @@
   </form>
 
   <div class="pt-4 text-right">
-    <button type="button" class="btn btn-outline-danger procedures_hide">
+    <button type="button" class="btn btn-outline-danger multi_payment_hide">
       <i class="fas fa-times"></i>
     </button>
   </div>

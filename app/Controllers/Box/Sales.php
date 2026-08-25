@@ -47,10 +47,9 @@ class Sales extends BaseController
   {
     return $this->processSale(false, true);
   }
-  private function processSale($withCredit = false, $devolution = false)
+  private function processSale($withCredit = false, $devolution = false, $cashCredit = false)
   {
     $values = $this->request->getPost();
-    $values = $this->InfoSales->formatter($values);
 
     $db = \Config\Database::connect();
     $db->transStart();
@@ -86,17 +85,8 @@ class Sales extends BaseController
     if ($response)
       return $response;
 
-    // PAGO
-    $response = $this->execute(
-      $this->SalesService->payment_cash(
-        $this->InfoSales->sales_payment_cash($values, $sale_id)
-      )
-    );
-
-    if ($response)
-      return $response;
-
-    // STOCK
+  
+    // STOCK | PRODUCTS_STOCK
     if (!$devolution) {
 
       $response = $this->execute(
@@ -118,8 +108,19 @@ class Sales extends BaseController
     if ($response) {
       return $response;
     }
+    // PAGO | SALES_PAYMENTS
+    $response = $this->execute(
+      $this->SalesService->payment_cash(
+        $this->InfoSales->sales_payment_cash($values, $sale_id)
+      ),
+      $values
+    );
 
-    // HISTORIAL
+    if ($response)
+      return $response;
+
+
+    // HISTORIAL DE STOCK | PRODUCTS_STOCK
     $response = $this->execute(
       $this->SalesService->historyStock(
         $this->InfoSales->stock_movements($values, $sale_id)
@@ -189,8 +190,6 @@ class Sales extends BaseController
         return $response;
     } //Credit
 
-    // Devolucion
-
     $db->transComplete();
 
     if ($db->transStatus() === false) {
@@ -198,6 +197,7 @@ class Sales extends BaseController
       return $this->response->setJSON([
         'status' => false,
         'error' => 'Error en la transacción',
+        'values' => $values,
         'csrfName' => csrf_token(),
         'csrfHash' => csrf_hash()
       ]);
@@ -212,7 +212,7 @@ class Sales extends BaseController
     ]);
   }
 
-  private function execute($operation)
+  private function execute($operation, $values = false)
   {
     if (!$operation['status']) {
       return $this->json($operation, 400);

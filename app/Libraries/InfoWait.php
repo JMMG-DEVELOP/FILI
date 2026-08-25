@@ -3,28 +3,6 @@ namespace App\Libraries;
 
 class InfoWait
 {
-  public function formatter($values)
-  {
-    return [
-      'customer' => $this->normalize($values['customer']),
-      'cart' => $values['cart'] ?? [],
-    ];
-  }
-
-  private function normalize($array)
-  {
-    $result = [];
-
-    foreach ($array as $item) {
-
-      if (isset($item['name'], $item['value'])) {
-        $result[$item['name']] = trim($item['value']);
-      }
-    }
-
-    return $result;
-  }
-
   public function wait($values)
   {
     return [

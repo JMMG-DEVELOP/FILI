@@ -7,6 +7,8 @@ use App\Models\Box\UserBoxModel;
 use App\Models\Box\PaymentTypeModel;
 use App\Models\Box\InvoiceTypeModel;
 use App\Models\Box\WaitModel;
+use App\Models\Box\PaymentDeviceModel;
+
 
 
 use App\Libraries\InfoBox;
@@ -37,6 +39,26 @@ class Process extends BaseController
     ]);
 
   }
+
+  public function invoice_digits_panel_load()
+  {
+    $PaymentDeviceModel = new PaymentDeviceModel();
+
+    $data = [
+      'devices' => $PaymentDeviceModel->findAll()
+    ];
+
+    $html = view('Box/invoice/digits_payment', $data);
+
+    return $this->response->setJSON([
+      'status' => true,
+      'html' => $html,
+      'csrfName' => csrf_token(),
+      'csrfHash' => csrf_hash()
+    ]);
+
+  }
+
   public function print_panel_load()
   {
     $InvoiceType = new InvoiceTypeModel();
@@ -122,7 +144,7 @@ class Process extends BaseController
     ]);
   }
 
-  public function sales_cash_credit_confirm()
+  public function invoice_multi_payment_load()
   {
     $PaymentTypeModel = new PaymentTypeModel();
     $data = [
@@ -131,7 +153,7 @@ class Process extends BaseController
         ->findAll(),
     ];
     // Instanciar modelos
-    $html = view('Box/components/procedure_confirm', $data);
+    $html = view('Box/invoice/multi_payment', $data);
 
     return $this->response->setJSON([
       'status' => true,

@@ -63,15 +63,29 @@ function asyngInfo(msg) {
 
 
 // Preparación de formulario para envio por ajax
-function asyngFormData(form) {
-  let formData = $(form).serializeArray();
+// function asyngFormData(form) {
+//   let formData = $(form).serializeArray();
 
-  formData.push({
-    name: csrfName,
-    value: csrfHash
+//   formData.push({
+//     name: csrfName,
+//     value: csrfHash
+//   });
+
+//   return formData;
+// }
+function asyngFormData(form) {
+
+  const data = {};
+
+  if ($(form).length === 0) {
+    return data;
+  }
+
+  $(form).serializeArray().forEach(item => {
+    data[item.name] = item.value;
   });
 
-  return formData;
+  return data;
 }
 
 // Envio de datos por ajax
