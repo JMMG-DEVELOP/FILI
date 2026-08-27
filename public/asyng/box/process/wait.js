@@ -30,20 +30,31 @@ async function wait_save() {
     }
 
     if (response.status) {
+
       $('#cart_invoice tbody').empty();
+
       await wait_panel_load();
       await payment_panel_load();
       await customer_panel_load();
+
       $('#search').focus();
+
       $('#display_escape').hide();
       $('#display_other_pay').hide();
-      procedures_hide();
+
       updateCartCount();
       updateGrandTotal();
       saveCart();
-      showAlert('AÑADIDO EN ESPERA', 'success');
-    }
 
+      showAlert('AÑADIDO EN ESPERA', 'success');
+
+    } else {
+
+      showAlert(
+        response.error || 'NO SE PUDO GUARDAR EN ESPERA',
+        'warning'
+      );
+    }
   } catch (err) {
 
     console.error(err);

@@ -71,7 +71,7 @@ $(document).on('blur', '.row-cant', function () {
 
 $(document).on('click', '#remove_cart', function () {
 
-  cancelAll();
+  clear();
 });
 
 $(document).on('input', '#cash_payment', function () {

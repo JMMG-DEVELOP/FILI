@@ -399,28 +399,22 @@ function formatInputs() {
 
 }
 
-async function cancelAll() {
 
+async function clear() {
   $('#cart_invoice tbody').empty();
   $('#search').focus();
-  $('#display_escape').hide();
-  $('#display_other_pay').hide();
+  $('#receipt_type').val('1').trigger('change');
+  $('#print_type').val('1').trigger('change');
+  $('#sales').val('1').trigger('change');
+  $('#payment').val('1').trigger('change');
+  $('#ruc_ci').text('1');
+  $('#customer_name').text('CLIENTE OCASIONAL');
 
-  await print_panel_load();
-  await customer_panel_load();
-  await payment_panel_load();
-  await history_sales_panel();
-  await history_movements_panel();
   await expedition_point_load();
+  await invoice_panel_load();
+  await multi_payment_hide();
 
-  procedures_hide();
-  updateCartCount();
-  updateGrandTotal();
-  saveCart();
-  $('#btn_add_orders').hide();
-  SoundManager.warning();
 }
-
 async function searh_focus() {
   await invoice_panel_load();
 

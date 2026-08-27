@@ -241,7 +241,7 @@ $(document).on('keydown', function (e) {
 
   if (e.altKey && e.key.toLowerCase() === 'l') {
     e.preventDefault();
-    cancelAll();
+    clear();
   }
   // Presionar Escape y Cerrar Venta
   if (e.key === 'Escape') {

@@ -109,9 +109,6 @@ class Wait extends BaseController
   {
     $values = $this->request->getPost();
 
-    // Formatear datos recibidos
-    $values = $this->InfoWait->formatter($values);
-
     $db = \Config\Database::connect();
     $db->transStart();
 
@@ -121,7 +118,15 @@ class Wait extends BaseController
     $wait_operation = $this->WaitService->wait($wait);
 
     if (!$wait_operation['status']) {
-      return $this->json($wait_operation, 400);
+
+      $db->transRollback();
+
+      return $this->response->setJSON([
+        'status' => false,
+        'error' => $wait_operation['error'] ?? 'Error al guardar espera',
+        'csrfName' => csrf_token(),
+        'csrfHash' => csrf_hash()
+      ]);
     }
 
     $waitid = $wait_operation['wait_id'];
@@ -133,8 +138,9 @@ class Wait extends BaseController
       )
     );
 
-    if ($response)
+    if ($response) {
       return $response;
+    }
 
     $db->transComplete();
 
@@ -142,15 +148,15 @@ class Wait extends BaseController
 
       return $this->response->setJSON([
         'status' => false,
-        'wait_id' => $values,
         'error' => 'Error en la transacción',
         'csrfName' => csrf_token(),
         'csrfHash' => csrf_hash()
       ]);
     }
+
     return $this->response->setJSON([
       'status' => true,
-      'wait_id' => $values,
+      'wait_id' => $waitid,
       'csrfName' => csrf_token(),
       'csrfHash' => csrf_hash()
     ]);

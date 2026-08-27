@@ -176,12 +176,17 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
         // SALES
         // ------------------------------------------
         $routes->group('sales', function ($routes) {
+            $routes->post(
+                'sales_devolution',
+                'Box\Sales::sales_devolution',
+                ['filter' => 'ajax']
+            );
 
             $routes->post('sales_cash_payment', 'Box\Sales::sales_cash_payment', ['filter' => 'ajax']);
 
             $routes->post(
-                'sales_procedures_credit_payment',
-                'Box\Sales::sales_procedures_credit_payment',
+                'sales_credit_payment',
+                'Box\Sales::sales_credit_payment',
                 ['filter' => 'ajax']
             );
 
@@ -197,11 +202,7 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
                 ['filter' => 'ajax']
             );
 
-            $routes->post(
-                'sales_devolution',
-                'Box\Sales::sales_devolution',
-                ['filter' => 'ajax']
-            );
+
         });
 
     });

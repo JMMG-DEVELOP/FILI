@@ -21,6 +21,7 @@ class SalesPaymentsModel extends Model
   public function add_sales_payment($values)
   {
     return $this->insert($values);
+
   }
 
 

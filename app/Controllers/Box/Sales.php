@@ -30,7 +30,11 @@ class Sales extends BaseController
 
   public function sales_cash_payment()
   {
-    return $this->processSale();
+    return $this->processSale(true);
+  }
+  public function sales_credit_payment()
+  {
+    return $this->processSale(false, true);
   }
 
   public function sales_cash_credit_payment()
@@ -38,16 +42,11 @@ class Sales extends BaseController
     return $this->processSale(true);
   }
 
-  public function sales_procedures_other_payment()
-  {
-    return $this->processSale(false);
-  }
-
   public function sales_devolution()
   {
-    return $this->processSale(false, true);
+    return $this->processSale(false, false, false, false, true);
   }
-  private function processSale($withCredit = false, $devolution = false, $cashCredit = false)
+  private function processSale($withCash = false, $withCredit = false, $withCashCredit = false, $withCashDigist = false, $withDevolution = false)
   {
     $values = $this->request->getPost();
 
@@ -67,7 +66,7 @@ class Sales extends BaseController
 
     // DETALLE
     $response = $this->execute(
-      $this->SalesService->details(
+      $this->SalesService->sales_details(
         $this->InfoSales->sales_details($values, $sale_id)
       )
     );
@@ -85,15 +84,22 @@ class Sales extends BaseController
     if ($response)
       return $response;
 
-  
+
     // STOCK | PRODUCTS_STOCK
-    if (!$devolution) {
+    if (!$withDevolution) {
 
       $response = $this->execute(
-        $this->SalesService->discountStock(
-          $this->InfoSales->stock_update($values)
+        $this->SalesService->products_stock(
+          $this->InfoSales->products_stock($values)
         )
       );
+      // Movimiento de Stock
+      $response = $this->execute(
+        $this->SalesService->stock_movements(
+          $this->InfoSales->stock_movements($values, '1', $sale_id)
+        )
+      );
+
 
     } else {
 
@@ -102,33 +108,24 @@ class Sales extends BaseController
           $this->InfoSales->devolution_Stock($values)
         )
       );
-
+      // Movimiento de Stock
+      $response = $this->execute(
+        $this->SalesService->stock_movements(
+          $this->InfoSales->stock_movements($values, '2', $sale_id)
+        )
+      );
+      // Movimiento de Caja
+      // BOX_MOVEMENT
+      $response = $this->execute(
+        $this->SalesService->box_movements(
+          $this->InfoSales->box_movements($values, $sale_id, 3)
+        )
+      );
     }
-
-    if ($response) {
-      return $response;
-    }
-    // PAGO | SALES_PAYMENTS
-    $response = $this->execute(
-      $this->SalesService->payment_cash(
-        $this->InfoSales->sales_payment_cash($values, $sale_id)
-      ),
-      $values
-    );
 
     if ($response)
       return $response;
 
-
-    // HISTORIAL DE STOCK | PRODUCTS_STOCK
-    $response = $this->execute(
-      $this->SalesService->historyStock(
-        $this->InfoSales->stock_movements($values, $sale_id)
-      )
-    );
-
-    if ($response)
-      return $response;
 
     // ACTUALIZAR SECUENCIA
     $sequenceId = (int) $values['point']['sequence_id'];
@@ -139,56 +136,23 @@ class Sales extends BaseController
       $this->InvoiceSequenceModel->update_last_number($sequenceId);
     }
 
-    // MOVIMIENTO DE CAJA
-    $response = $this->execute(
-      $this->SalesService->boxMovements(
-        $this->InfoSales->box_movements($values, $sale_id)
-      )
-    );
+    if ($response)
+      return $response;
+
+    // PAGO | SALES_PAYMENTS
+    // CASH
+
+    if ($withCash) {
+      $response = $this->payment_cash($values, $sale_id);
+    }
+    // CREDIT
+    if ($withCredit) {
+      $response = $this->payment_credit($values, $sale_id);
+    }
 
     if ($response)
       return $response;
 
-    // CREDITO
-    if ($withCredit) {
-
-      // CABECERA
-      // Actualizar Monto total del credito del cliente
-      $customer_credits = $this->InfoSales->customers_credits_diferencce($values);
-
-      $customer_credits_operation = $this->CustomerService->customer_credits($customer_credits);
-
-      if (!$customer_credits_operation['status']) {
-        return $this->json($customer_credits_operation, 400);
-      }
-
-      $customer_credits_id = $customer_credits_operation['id'];
-
-      // CUERPO DEL CREDITO
-      // dETALLES DE LA ANOTACION EN CREDITO
-      // 2 saldo por compra
-      $customer_credits_details = $this->InfoSales->customer_credits_details($values, $customer_credits_id, 2);
-
-      $customer_credits_details_operation = $this->CustomerService->customer_credits_details($customer_credits_details);
-
-      if (!$customer_credits_details_operation['status']) {
-        return $this->json($customer_credits_operation, 400);
-      }
-
-      $customer_credits_details_id = $customer_credits_details_operation['id'];
-
-      // Sale a de la que depende el detalle
-
-      // DETALLE
-      $response = $this->execute(
-        $this->CustomerService->credits_sales_details(
-          $this->InfoSales->credits_sales_details($customer_credits_details_id, $sale_id)
-        )
-      );
-
-      if ($response)
-        return $response;
-    } //Credit
 
     $db->transComplete();
 
@@ -212,10 +176,54 @@ class Sales extends BaseController
     ]);
   }
 
+  private function payment_credit($values, $sale_id)
+  {
+    // SALES_PAYMENT
+    $response = $this->execute(
+      $this->SalesService->payment_credit(
+        $this->InfoSales->payment_credit($values, $sale_id)
+      ),
+      $values
+    );
+    if ($response)
+      return $response;
+
+
+  }
+
+
+  private function payment_cash($values, $sale_id)
+  {
+    // SALES_PAYMENT
+    $response = $this->execute(
+      $this->SalesService->payment_cash(
+        $this->InfoSales->payment_cash($values, $sale_id)
+      ),
+      $values
+    );
+
+    // BOX_MOVEMENT
+    $response = $this->execute(
+      $this->SalesService->box_movements(
+        $this->InfoSales->box_movements($values, $sale_id, 1)
+      )
+    );
+    if ($response)
+      return $response;
+
+  }
+
   private function execute($operation, $values = false)
   {
-    if (!$operation['status']) {
-      return $this->json($operation, 400);
+    if (!$operation || !$operation['status']) {
+
+      return $this->json(
+        $operation ?: [
+          'status' => false,
+          'error' => 'Operación no válida'
+        ],
+        200
+      );
     }
 
     return null;

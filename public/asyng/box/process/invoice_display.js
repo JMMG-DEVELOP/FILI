@@ -135,7 +135,7 @@ async function sales_send_display() {
   // CRÉDITO
   // =========================
   if (sales === 2) {
-    // sales_cash_payment();
+    sales_credit_payment();
     return;
   }
 

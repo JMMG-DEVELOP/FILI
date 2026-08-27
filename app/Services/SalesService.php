@@ -12,6 +12,9 @@ use App\Models\Box\SalesPaymentsModel;
 use App\Models\Box\SalesIvaModel;
 use App\Models\Products\Products\StockModel;
 
+use App\Models\Customer\CustomersCreditsModel;
+
+
 class SalesService
 {
   protected $InfoSales;
@@ -55,7 +58,7 @@ class SalesService
     ];
   }
 
-  public function details($value)
+  public function sales_details($value)
   {
     $response = $this->SalesDetailsModel->add_sales_details($value);
 
@@ -70,7 +73,6 @@ class SalesService
       'status' => true,
     ];
   }
-
   public function sales_iva($value)
   {
     $response = $this->SalesIvaModel->add_sales_iva($value);
@@ -87,62 +89,15 @@ class SalesService
     ];
   }
 
-  public function payment_cash($value)
-  {
-    $response = $this->SalesPaymentsModel->add_sales_payment($value);
-
-    if (!$response) {
-      return [
-        'status' => false,
-        'error' => 'Error al guardar TIPO DE PAGO'
-      ];
-    }
-
-    return [
-      'status' => true,
-    ];
-  }
-
-  public function discountStock($value)
+  // STOCK 
+  public function products_stock($value)
   {
     $response = $this->StockModel->discountStock($value);
 
     if (!$response) {
       return [
         'status' => false,
-        'error' => 'Error al DESCONTAR STOCK'
-      ];
-    }
-
-    return [
-      'status' => true,
-    ];
-  }
-
-  public function historyStock($value)
-  {
-    $response = $this->StockMovmentsModel->add_stock_movement($value);
-
-    if (!$response) {
-      return [
-        'status' => false,
-        'error' => 'Error al guardar HISTORIAL DE STOCK'
-      ];
-    }
-
-    return [
-      'status' => true,
-    ];
-  }
-
-  public function boxMovements($value)
-  {
-    $response = $this->BoxMovementModel->add_box_movement($value);
-
-    if (!$response) {
-      return [
-        'status' => false,
-        'error' => 'Error al guardar MOVIMIENTO DE CAJA'
+        'error' => 'ERROR AL DESCONTAR STOCK'
       ];
     }
 
@@ -158,7 +113,7 @@ class SalesService
     if (!$StockModel->devolutionStock($values)) {
       return [
         'status' => false,
-        'message' => 'No fue posible actualizar el stock.'
+        'message' => 'ERROR AL REALIZAR LA DEVOLUCIÓN'
       ];
     }
 
@@ -166,6 +121,86 @@ class SalesService
       'status' => true
     ];
   }
+
+  public function stock_movements($value)
+  {
+    $response = $this->StockMovmentsModel->add_stock_movement($value);
+
+    if (!$response) {
+      return [
+        'status' => false,
+        'error' => 'Error al guardar HISTORIAL DE STOCK',
+        'model_errors' => $this->StockMovmentsModel->errors(),
+        'db_error' => $this->StockMovmentsModel->db->error(),
+        'data' => $value,
+      ];
+    }
+
+    return [
+      'status' => true,
+    ];
+  }
+
+  // PAGO CASH
+
+  public function payment_cash($value)
+  {
+    $response = $this->SalesPaymentsModel->add_sales_payment($value);
+
+    if (!$response) {
+      return [
+        'status' => false,
+        'error' => 'Error al guardar TIPO DE PAGO',
+        'model_errors' => $this->SalesPaymentsModel->errors(),
+        'db_error' => $this->SalesPaymentsModel->db->error(),
+        'data' => $value,
+      ];
+    }
+
+    return [
+      'status' => true,
+    ];
+  }
+
+  public function box_movements($value)
+  {
+    $response = $this->BoxMovementModel->add_box_movement($value);
+
+    if (!$response) {
+      return [
+        'status' => false,
+        'error' => 'Error al guardar MOVIMIENTO DE CAJA',
+        'model_errors' => $this->BoxMovementModel->errors(),
+        'db_error' => $this->BoxMovementModel->db->error(),
+        'data' => $value,
+      ];
+    }
+
+    return [
+      'status' => true,
+    ];
+  }
+
+  public function payment_credit($value)
+  {
+    $CustomersCreditsModel = new CustomersCreditsModel();
+
+    if ($CustomersCreditsModel->verify_customer_credit_status($value['customer'])) {
+
+      // Puede agregar crédito
+
+    } else {
+
+      return [
+        'status' => false,
+        'error' => 'CLIENTE NO ESTA HABILITADO PARA CREDITO'
+      ];
+    }
+  }
+
+
+
+
 
 
 }

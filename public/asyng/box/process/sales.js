@@ -1,55 +1,41 @@
 async function post_sales() {
   try {
-    await cancelAll();
+    await clear();
 
   } catch (err) {
     showAlert('Error loading panels', err);
   }
 }
 
-function change_calculate() {
+function change_format() {
 
-  const total = parseFloat(
-    $('#grand_total')
+  let change = parseFloat(
+    $('#change')
       .text()
-      .replace(/[^\d,.-]/g, '')
       .replace(/\./g, '')
       .replace(',', '.')
   ) || 0;
+  return change = Math.abs(change);
 
-  const pago = parseFloat(
-    $('#cash_payment').inputmask('unmaskedvalue')
-  ) || 0;
-
-  return pago - total;
 }
 function sales_payment_data() {
+  paymentType = Number($('#payment').val());
+  const sales = Number($('#sales').val());
 
 }
 function sales_send_data() {
-  const payment = asyngFormData('#form_payment');
-  const customer = asyngFormData('#form_customer');
-  const point = asyngFormData('#form_expedition_point');
-  const procedure_credit_payment = asyngFormData('#procedure_credit_payment');
-  const procedure_other_payment = asyngFormData('#procedure_other_payment');
-  // const cash_payment = asynFormData('#cash_payment');
-
-
-  const receipt = Number($('#receipt_type').val());
-  const cart = sales_cart_data();
-  const cash = $('#cash_payment').inputmask('unmaskedvalue');
-  let change = change_calculate();
 
   let data = {
-    payment: payment,
-    customer: customer,
-    point: point,
-    receipt: receipt,
-    cart: cart,
-    change: change,
-    cash: cash,
-    procedure_credit: procedure_credit_payment,
-    procedure_other: procedure_other_payment,
+    payment: asyngFormData('#form_payment'),
+    customer: asyngFormData('#form_customer'),
+    point: asyngFormData('#form_expedition_point'),
+    receipt: Number($('#receipt_type').val()),
+    cart: sales_cart_data(),
+    change: change_format(),
+    cash: $('#cash_payment').inputmask('unmaskedvalue'),
+    cash_credit_payment: asyngFormData('#form_cash_credit_payment'),
+    cash_digist_payment: asyngFormData('#form_cash_digist_payment'),
+    digist_payment: asyngFormData('#form_digist_payment'),
 
   }
   return data;
@@ -62,7 +48,6 @@ function sales_cart_data() {
 
   let total_price = 0;
   let total_cost = 0;
-
   let iva_10 = 0;
   let iva_5 = 0;
   let iva_exenta = 0;
@@ -70,12 +55,10 @@ function sales_cart_data() {
   $('#cart_invoice tbody tr').each(function () {
 
     let row = $(this);
-
     let cant = parseFloat(row.find('.row-cant').val()) || 0;
     let price = parseFloat(row.find('.row-price').data('price')) || 0;
     let cost = parseFloat(row.data('cost')) || 0;
     let iva = parseInt(row.data('iva')) || 0;
-
     let total = parseFloat(row.find('.row-total').data('total')) || (cant * price);
     let totalCost = cant * cost;
 
@@ -126,30 +109,6 @@ function sales_cart_data() {
       exenta: iva_exenta
     }
   };
-}
-async function sales_cash_payment() {
-
-  try {
-    const sales = Number($('#sales').val());;
-    let data = sales_send_data();
-    if ([3].includes(sales)) {
-      const response = await asyngAjaxSend('box/sales/sales_devolution', data);
-      if (response.status) {
-        showAlert('DEVOLUCIÓN CORRECTA', 'success');
-        post_sales();
-      }
-    } else {
-      const response = await asyngAjaxSend('box/sales/sales_cash_payment', data);
-      if (response.status) {
-        45('VENTA REALIZADA', 'success');
-        post_sales();
-      }
-    }
-
-  } catch (err) {
-    console.error(err);
-    showAlert('Error de comunicación con el servidor sales_cash_payment', 'danger');
-  }
 }
 
 async function sales_cash_credit_payment() {
@@ -227,6 +186,41 @@ async function box_movement_send() {
     showAlert('Error de comunicación con el servidor box_movement_send', 'danger');
   }
 }
+async function sales_credit_payment() {
+
+  try {
+    let data = sales_send_data();
+    const response = await asyngAjaxSend('box/sales/sales_credit_payment', data);
+    if (response.status) {
+      showAlert('ANOTADO CORRECTAMENTE EN CREDITO', 'success');
+      await post_sales();
+    } else {
+      showAlert(response.error, 'warning');
+    }
+
+  } catch (err) {
+    console.error(err);
+    showAlert('Error de comunicación con el servidor sales_credit_payment', 'danger');
+  }
+}
+async function sales_cash_payment() {
+
+  try {
+    let data = sales_send_data();
+    const response = await asyngAjaxSend('box/sales/sales_cash_payment', data);
+    if (response.status) {
+      showAlert('VENDIDO PAGO EN EFECTIVO', 'success');
+      await post_sales();
+    } else {
+      showAlert('ERROR - Al Procesar la Venta', 'warning');
+    }
+
+  } catch (err) {
+    console.error(err);
+    showAlert('Error de comunicación con el servidor sales_cash_payment', 'danger');
+  }
+}
+
 async function devolution() {
   try {
     let data = sales_send_data();

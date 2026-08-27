@@ -3,6 +3,7 @@
 namespace App\Models\Customer;
 
 use CodeIgniter\Model;
+use PhpParser\Builder\Function_;
 
 class CustomersCreditsModel extends Model
 {
@@ -16,6 +17,16 @@ class CustomersCreditsModel extends Model
     'customer',
   ];
 
+  public function verify_customer_credit_status($customer)
+  {
+    $result = $this->db->table('customers')
+      ->select('credit_status')
+      ->where('id', $customer)
+      ->get()
+      ->getRowArray();
+
+    return $result && (int) $result['credit_status'] === 1;
+  }
   public function customer_credit($data)
   {
     // Buscar crédito existente del cliente
