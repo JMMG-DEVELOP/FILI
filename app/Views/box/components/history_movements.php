@@ -36,20 +36,9 @@
 
                 <td>
 
-                  <?php if ($row['sales'] != null): ?>
-
-                    <span class="badge bg-success">
-                      Venta
-                    </span>
-
-                  <?php else: ?>
-
-                    <?= esc($row['movement_type_name']) ?>
-
-                  <?php endif ?>
+                  <?= esc($row['movement_type_name']) ?>
 
                 </td>
-
 
                 <td class="text-end">
 

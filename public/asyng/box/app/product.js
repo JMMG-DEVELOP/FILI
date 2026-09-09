@@ -92,7 +92,7 @@ $(document).on('click', '.product_search_add_cart', function () {
 // ¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨
 // ORDERS
 // ...............
-$('#btn_add_orders').on('click', async function () {
+$(document).on('click', '#btn_add_orders', async function () {
 
   const code = $(this).attr('data-code');
 

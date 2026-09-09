@@ -147,9 +147,97 @@ class InfoSales
 
     return $details;
   }
+  function box_movements($values, $sale_id, $type)
+  {
+    return [
+      'type' => $type,
+      'mount' => $values['cart']['totals']['total_price'] ?? 0,
+      'box' => session()->get('box'),
+      'sales' => $sale_id,
+      'sales_type' => $values['payment']['sales'] ?? null,
+      'sales_payment' => $values['payment']['payment'] ?? null
+
+    ];
+  }
+  function box_movements_cash_credit_cash($values, $sale_id, $type)
+  {
+    return [
+      'type' => $type,
+      'mount' => $values['cash'] ?? 0,
+      'box' => session()->get('box'),
+      'sales' => $sale_id,
+      'sales_type' => $values['payment']['sales'] ?? null,
+      'sales_payment' => $values['payment']['payment'] ?? null
+
+    ];
+  }
+  function box_movements_cash_digits_digits($values, $sale_id, $type)
+  {
+    return [
+      'type' => $type,
+      'mount' => $values['cash_digist_payment']['cash_digits_mount'] ?? 0,
+      'box' => session()->get('box'),
+      'sales' => $sale_id,
+      'sales_type' => $values['payment']['sales'] ?? null,
+      'sales_payment' => $values['cash_digist_payment']['cash_digits_payment_type'] ?? null
+
+    ];
+  }
+  function box_movements_cash_credit_credit($values, $sale_id, $type)
+  {
+    return [
+      'type' => $type,
+      'mount' => abs($values['cash_credit_payment']['cash_credit_mount']) ?? 0,
+      'box' => session()->get('box'),
+      'sales' => $sale_id,
+      'sales_type' => 2,
+      'sales_payment' => $values['payment']['payment'] ?? null
+
+    ];
+  }
+  // CASH CREDIT
+  public function multi_payment_cash($values, $sale_id)
+  {
+    return [
+      'type' => $values['payment']['payment'] ?? null,
+      'amount' => $values['cash'] ?? 0,
+      'sales' => $sale_id,
+      'device' => 1
+    ];
+
+  }
+
+  public function multi_payment_credit($values)
+  {
+    return [
+      'amount' => abs($values['cash_credit_payment']['cash_credit_mount']) ?? 0,
+      'customer' => $values['customer']['customer_id'],
+
+    ];
+
+  }
+  public function multi_payment_credit_detail($values, $customer_credits_id, $type)
+  {
+    return [
+      'credit' => $customer_credits_id,
+      'credit_type' => $type,
+      'mount' => abs($values['cash_credit_payment']['cash_credit_mount']) ?? 0,
+      'date' => date('Y-m-d'),
+      'time' => date('H:i:s'),
+    ];
+  }
+  public function multi_payment_digist($values, $sale_id)
+  {
+    return [
+      'type' => $values['cash_digist_payment']['cash_digits_payment_type'] ?? null,
+      'amount' => $values['cash_digist_payment']['cash_digits_mount'] ?? 0,
+      'sales' => $sale_id,
+      'device' => $values['cash_digist_payment']['cash_digits_device_payment'] ?? 1,
+    ];
+
+  }
 
   // PAGO CASH
-
   function payment_cash($values, $sale_id)
   {
 
@@ -161,46 +249,47 @@ class InfoSales
     ];
   }
 
-  function box_movements($values, $sale_id, $type)
+  function payment_digist($values, $sale_id)
   {
+
     return [
-      'type' => $type,
-      'payment' => $values['payment']['payment'] ?? null,
-      'mount' => $values['cart']['totals']['total_price'] ?? 0,
-      'box' => session()->get('box'),
+      'type' => $values['payment']['payment'] ?? null,
+      'amount' => $values['cart']['totals']['total_price'] ?? 0,
       'sales' => $sale_id,
+      'device' => $values['digist_payment']['device_payment'],
+      'number' => $values['digist_payment']['payment_device_operation_number']
+
     ];
   }
-
-
   // CREDIT
-  public function payment_credit($values, $sale_id)
+  public function payment_credit($values)
   {
     return [
-      'amount' => abs($values['change']) ?? 0,
+      'amount' => abs($values['cart']['totals']['total_price']) ?? 0,
       'customer' => $values['customer']['customer_id'],
 
     ];
   }
 
-  public function customer_credits_details($values, $customer_credits_id, $type)
+  public function payment_credit_detail($values, $customer_credits_id, $type)
   {
     return [
       'credit' => $customer_credits_id,
       'credit_type' => $type,
-      'mount' => abs($values['change']) ?? 0,
+      'mount' => abs($values['cart']['totals']['total_price'] ?? 0),
       'date' => date('Y-m-d'),
       'time' => date('H:i:s'),
     ];
   }
 
-  public function credits_sales_details($customer_credits_details_id, $sales_details_id)
+  public function payment_credit_sales_detail($customer_credits_details_id, $sales_details_id)
   {
     return [
       'credit_detail' => $customer_credits_details_id,
       'sales' => $sales_details_id,
     ];
   }
+
 
 
 }

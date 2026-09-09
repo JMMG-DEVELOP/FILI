@@ -102,7 +102,18 @@ class Controller extends BaseController
   {
 
     $BoxMovementModel = new BoxMovementModel();
-    $operation = $BoxMovementModel->add_box_movement($this->request->getPost());
+    $values = $this->request->getPost();
+
+    $data = [
+      'type' => $values['type'],
+      'mount' => $values['mount'],
+      'box' => session()->get('box'),
+      'sales' => 1,
+      'sales_type' => 1,
+      'sales_payment' => 1
+    ];
+
+    $operation = $BoxMovementModel->add_box_movement($data);
     if ($operation === false) {
 
       return $this->response->setJSON([

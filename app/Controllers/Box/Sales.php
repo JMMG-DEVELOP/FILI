@@ -37,16 +37,27 @@ class Sales extends BaseController
     return $this->processSale(false, true);
   }
 
+  public function sales_digist_payment()
+  {
+    return $this->processSale(false, false, true);
+
+  }
+
   public function sales_cash_credit_payment()
   {
-    return $this->processSale(true);
+    return $this->processSale(false, false, false, true);
+  }
+
+  public function sales_cash_digist_payment()
+  {
+    return $this->processSale(false, false, false, false, true);
   }
 
   public function sales_devolution()
   {
-    return $this->processSale(false, false, false, false, true);
+    return $this->processSale(false, false, false, false, false, true);
   }
-  private function processSale($withCash = false, $withCredit = false, $withCashCredit = false, $withCashDigist = false, $withDevolution = false)
+  private function processSale($withCash = false, $withCredit = false, $withDigist = false, $withCashCredit = false, $withCashDigist = false, $withDevolution = false)
   {
     $values = $this->request->getPost();
 
@@ -150,6 +161,18 @@ class Sales extends BaseController
       $response = $this->payment_credit($values, $sale_id);
     }
 
+    if ($withDigist) {
+      $response = $this->payment_digist($values, $sale_id);
+    }
+
+    if ($withCashCredit) {
+      $response = $this->payment_cash_credit($values, $sale_id);
+    }
+
+    if ($withCashDigist) {
+      $response = $this->payment_cash_digits($values, $sale_id);
+    }
+
     if ($response)
       return $response;
 
@@ -176,31 +199,222 @@ class Sales extends BaseController
     ]);
   }
 
-  private function payment_credit($values, $sale_id)
+  private function payment_cash_digits($values, $sale_id)
   {
-    // SALES_PAYMENT
+    $operation = $this->SalesService->multi_payment_cash(
+      $this->InfoSales->multi_payment_cash
+      ($values, $sale_id)
+    );
+
     $response = $this->execute(
-      $this->SalesService->payment_credit(
-        $this->InfoSales->payment_credit($values, $sale_id)
-      ),
+      $operation,
       $values
     );
-    if ($response)
+
+    if ($response) {
       return $response;
+    }
+
+    // ==========================================
+    // BOX_MOVEMENT
+    // 
+    // ==========================================
+
+    $operation = $this->SalesService->box_movements(
+      $this->InfoSales->box_movements_cash_credit_cash(
+        $values,
+        $sale_id,
+        1
+      )
+    );
+
+    $response = $this->execute(
+      $operation,
+      $values
+    );
+
+    if ($response) {
+      return $response;
+    }
+
+    // DIGIST
+    $operation = $this->SalesService->payment_digist(
+      $this->InfoSales->multi_payment_digist
+      ($values, $sale_id)
+    );
+
+    $response = $this->execute(
+      $operation,
+      $values
+    );
+
+    if ($response) {
+      return $response;
+    }
+
+    // ==========================================
+    // BOX_MOVEMENT
+    // 
+    // ==========================================
+
+    $operation = $this->SalesService->box_movements(
+      $this->InfoSales->box_movements_cash_digits_digits(
+        $values,
+        $sale_id,
+        1
+      )
+    );
+
+    $response = $this->execute(
+      $operation,
+      $values
+    );
+
+    if ($response) {
+      return $response;
+    }
+  }
+
+  private function payment_cash_credit($values, $sale_id)
+  {
+
+    $operation = $this->SalesService->multi_payment_cash(
+      $this->InfoSales->multi_payment_cash
+      ($values, $sale_id)
+    );
+
+    $response = $this->execute(
+      $operation,
+      $values
+    );
+
+    if ($response) {
+      return $response;
+    }
+
+    // ==========================================
+    // BOX_MOVEMENT
+    // 
+    // ==========================================
+
+    $operation = $this->SalesService->box_movements(
+      $this->InfoSales->box_movements_cash_credit_cash(
+        $values,
+        $sale_id,
+        1
+      )
+    );
+
+    $response = $this->execute(
+      $operation,
+      $values
+    );
+
+    if ($response) {
+      return $response;
+    }
+    // ==========================================
+    // CUSTOMER_CREDITS
+    // ==========================================
+
+    $operation = $this->SalesService->payment_credit(
+      $this->InfoSales->multi_payment_credit($values)
+    );
+
+    $response = $this->execute(
+      $operation,
+      $values
+    );
+
+    if ($response) {
+      return $response;
+    }
+    // ID del crédito creado o actualizado
+    $credit_id = $operation['credit'];
+
+    // ==========================================
+    // CUSTOMER_CREDIT_DETAILS
+    // ==========================================
+
+    $operation = $this->SalesService->payment_credit_detail(
+      $this->InfoSales->multi_payment_credit_detail(
+        $values,
+        $credit_id,
+        2
+      )
+    );
+
+    $response = $this->execute(
+      $operation,
+      $values
+    );
+
+    if ($response) {
+      return $response;
+    }
+
+    // ID del detalle del crédito
+    $credit_detail_id = $operation['id'];
+
+    // ==========================================
+    // CREDITS_SALES_DETAILS
+    // ==========================================
+
+    $operation = $this->SalesService->payment_credit_sales_detail(
+      $this->InfoSales->payment_credit_sales_detail(
+        $credit_detail_id,
+        $sale_id
+      )
+    );
+
+    $response = $this->execute(
+      $operation,
+      $values
+    );
+
+
+    if ($response) {
+      return $response;
+    }
+    // ==========================================
+    // BOX_MOVEMENT
+    // sales_type = 2 → CREDITO
+    // ==========================================
+
+    $operation = $this->SalesService->box_movements(
+      $this->InfoSales->box_movements_cash_credit_credit(
+        $values,
+        $sale_id,
+        5
+      )
+    );
+
+    $response = $this->execute(
+      $operation,
+      $values
+    );
+
+    if ($response) {
+      return $response;
+    }
+
+    return null;
 
 
   }
-
-
-  private function payment_cash($values, $sale_id)
+  private function payment_digist($values, $sale_id)
   {
     // SALES_PAYMENT
     $response = $this->execute(
-      $this->SalesService->payment_cash(
-        $this->InfoSales->payment_cash($values, $sale_id)
+      $this->SalesService->payment_digist(
+        $this->InfoSales->payment_digist($values, $sale_id)
       ),
       $values
     );
+
+    if ($response) {
+      return $response;
+    }
 
     // BOX_MOVEMENT
     $response = $this->execute(
@@ -208,9 +422,154 @@ class Sales extends BaseController
         $this->InfoSales->box_movements($values, $sale_id, 1)
       )
     );
-    if ($response)
-      return $response;
 
+    if ($response) {
+      return $response;
+    }
+
+    return null;
+  }
+  private function payment_credit($values, $sale_id)
+  {
+    // ==========================================
+    // CUSTOMER_CREDITS
+    // ==========================================
+
+    $operation = $this->SalesService->payment_credit(
+      $this->InfoSales->payment_credit($values)
+    );
+
+    $response = $this->execute(
+      $operation,
+      $values
+    );
+
+    if ($response) {
+      return $response;
+    }
+
+    // ID del crédito creado o actualizado
+    $credit_id = $operation['credit'];
+
+    // ==========================================
+    // CUSTOMER_CREDIT_DETAILS
+    // ==========================================
+
+    $operation = $this->SalesService->payment_credit_detail(
+      $this->InfoSales->payment_credit_detail(
+        $values,
+        $credit_id,
+        1
+      )
+    );
+
+    $response = $this->execute(
+      $operation,
+      $values
+    );
+
+    if ($response) {
+      return $response;
+    }
+
+    // ID del detalle del crédito
+    $credit_detail_id = $operation['id'];
+
+    // ==========================================
+    // CREDITS_SALES_DETAILS
+    // ==========================================
+
+    $operation = $this->SalesService->payment_credit_sales_detail(
+      $this->InfoSales->payment_credit_sales_detail(
+        $credit_detail_id,
+        $sale_id
+      )
+    );
+
+    $response = $this->execute(
+      $operation,
+      $values
+    );
+
+    if ($response) {
+      return $response;
+    }
+
+
+    if ($response) {
+      return $response;
+    }
+    // ==========================================
+    // BOX_MOVEMENT
+    // sales_type = 2 → CREDITO
+    // ==========================================
+
+    $operation = $this->SalesService->box_movements(
+      $this->InfoSales->box_movements(
+        $values,
+        $sale_id,
+        5
+      )
+    );
+
+    $response = $this->execute(
+      $operation,
+      $values
+    );
+
+    if ($response) {
+      return $response;
+    }
+
+    return null;
+  }
+
+
+  private function payment_cash($values, $sale_id)
+  {
+    // ==========================================
+    // SALES_PAYMENT
+    // ==========================================
+
+    $operation = $this->SalesService->payment_cash(
+      $this->InfoSales->payment_cash(
+        $values,
+        $sale_id
+      )
+    );
+
+    $response = $this->execute(
+      $operation,
+      $values
+    );
+
+    if ($response) {
+      return $response;
+    }
+
+    // ==========================================
+    // BOX_MOVEMENT
+    // sales_type = 1 → CONTADO
+    // ==========================================
+
+    $operation = $this->SalesService->box_movements(
+      $this->InfoSales->box_movements(
+        $values,
+        $sale_id,
+        1
+      )
+    );
+
+    $response = $this->execute(
+      $operation,
+      $values
+    );
+
+    if ($response) {
+      return $response;
+    }
+
+    return null;
   }
 
   private function execute($operation, $values = false)
@@ -220,7 +579,7 @@ class Sales extends BaseController
       return $this->json(
         $operation ?: [
           'status' => false,
-          'error' => 'Operación no válida'
+          'error' => 'ERROR AL EJECUTAR LA OPERACIÓN'
         ],
         200
       );

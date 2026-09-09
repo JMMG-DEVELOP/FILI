@@ -112,7 +112,7 @@
 <script src="<?= base_url(); ?>/asyng/box/process/customer.js"></script>
 <script src="<?= base_url(); ?>/asyng/box/process/point.js"></script>
 <script src="<?= base_url(); ?>/asyng/box/process/invoice_display.js"></script>
-
+<script src="<?= base_url(); ?>/asyng/box/process/print.js"></script>
 
 
 <!-- Apps -->

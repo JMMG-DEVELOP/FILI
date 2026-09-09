@@ -57,7 +57,10 @@ function loadCart() {
   });
 
 }
-
+function clearCart() {
+  localStorage.removeItem('cart_invoice');
+  $('#cart_invoice tbody').empty();
+}
 //Estrucutrar datos a cargar en el carrito
 function getCode(code) {
 
@@ -171,24 +174,71 @@ function getCant(value = '') {
 }
 // Seleccionar Precio
 function getPrice(product, cant, percent) {
+
   let price;
+
+  // Precio ingresado manualmente
   let price_input = Number($('#product_price_input').val());
 
+  // 1. Precio manual tiene prioridad
   if (!isNaN(price_input) && price_input > 1) {
+
     return price_input;
+
   }
 
-  if (cant < product.cant_two || product.cant_two <= 0) {
-    price = product.price_one;
-  } else {
+  // 2. Si está activo "Precio 2", usar Precio 2 para todo
+  if ($('#all_price_two').is(':checked')) {
+
     price = product.price_two;
-  }
-  if (percent === 0) {
-    return price;
+
   } else {
-    return price + (price * percent / 100);
+
+    // 3. Lógica normal según cantidad
+    if (cant < product.cant_two || product.cant_two <= 0) {
+
+      price = product.price_one;
+
+    } else {
+
+      price = product.price_two;
+
+    }
+
   }
+
+  // 4. Aplicar porcentaje
+  if (percent === 0) {
+
+    return price;
+
+  } else {
+
+    return price + (price * percent / 100);
+
+  }
+
 }
+
+// function getPrice(product, cant, percent) {
+//   let price;
+//   let price_input = Number($('#product_price_input').val());
+
+//   if (!isNaN(price_input) && price_input > 1) {
+//     return price_input;
+//   }
+
+//   if (cant < product.cant_two || product.cant_two <= 0) {
+//     price = product.price_one;
+//   } else {
+//     price = product.price_two;
+//   }
+//   if (percent === 0) {
+//     return price;
+//   } else {
+//     return price + (price * percent / 100);
+//   }
+// }
 // Crear Nueva Fila
 function createRow(product, cant, price, save = true) {
 

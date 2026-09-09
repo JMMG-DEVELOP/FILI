@@ -1,11 +1,13 @@
 <?php
-namespace App\Controllers\Products\Products;
+namespace App\Controllers\Config;
 
 use App\Controllers\BaseController;
 use App\Libraries\Infopage;
 
+
 class Access extends BaseController
 {
+
     public function index()
     {
         if (session()->get('logged')) {
@@ -13,13 +15,11 @@ class Access extends BaseController
             $infopage = new Infopage();
 
             $info = [
-                'title' => 'Products',
+                'title' => 'Config',
             ];
             $page = $infopage->infopage($info);
-            return view('Products/index', $page);
-            // return view('products/index', [ ]);
+            return view('config/index', $page);
+
         }
     }
-
-
 }

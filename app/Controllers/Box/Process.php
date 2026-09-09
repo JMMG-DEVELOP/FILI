@@ -8,8 +8,7 @@ use App\Models\Box\PaymentTypeModel;
 use App\Models\Box\InvoiceTypeModel;
 use App\Models\Box\WaitModel;
 use App\Models\Box\PaymentDeviceModel;
-
-
+use App\Models\Box\SalesDetailsModel;
 
 use App\Libraries\InfoBox;
 
@@ -146,11 +145,14 @@ class Process extends BaseController
 
   public function invoice_multi_payment_load()
   {
+    $PaymentDeviceModel = new PaymentDeviceModel();
     $PaymentTypeModel = new PaymentTypeModel();
     $data = [
       'payments' => $PaymentTypeModel
         ->where('id >=', 2)
         ->findAll(),
+      'devices' => $PaymentDeviceModel->findAll()
+
     ];
     // Instanciar modelos
     $html = view('Box/invoice/multi_payment', $data);
@@ -183,30 +185,101 @@ class Process extends BaseController
   {
     $BoxMovementModel = new \App\Models\Box\BoxMovementModel();
 
-    $page = (int) ($this->request->getVar('page') ?? 1);
-
     $limit = 10;
-    $offset = ($page - 1) * $limit;
 
-    $filters = [
-      'box' => session('box'),
-      'type' => 1
-    ];
-
-    $total = $BoxMovementModel->countMovements($filters);
-
-    $sales = $BoxMovementModel->getMovements(
-      $filters,
-      $limit,
-      $offset
+    $pageCash = max(
+      1,
+      (int) ($this->request->getVar('page_cash') ?? 1)
     );
 
-    $totalPages = ceil($total / $limit);
+    $pageCredit = max(
+      1,
+      (int) ($this->request->getVar('page_credit') ?? 1)
+    );
+
+    $pageOther = max(
+      1,
+      (int) ($this->request->getVar('page_other') ?? 1)
+    );
+
+    // EFECTIVO
+    $filtersCash = [
+      'box' => session('box'),
+      'type' => 1,
+      'sales_type' => 1,
+      'payment' => 1
+    ];
+
+    $totalCash = $BoxMovementModel->countMovements($filtersCash);
+
+    $offsetCash = ($pageCash - 1) * $limit;
+
+    $cash = $BoxMovementModel->getMovements(
+      $filtersCash,
+      $limit,
+      $offsetCash
+    );
+
+    $totalPagesCash = max(
+      1,
+      (int) ceil($totalCash / $limit)
+    );
+
+    // CRÉDITO
+    $filtersCredit = [
+      'box' => session('box'),
+      'sales_type' => 2
+    ];
+
+    $totalCredit = $BoxMovementModel->countMovements($filtersCredit);
+
+    $offsetCredit = ($pageCredit - 1) * $limit;
+
+    $credit = $BoxMovementModel->getMovements(
+      $filtersCredit,
+      $limit,
+      $offsetCredit
+    );
+
+    $totalPagesCredit = max(
+      1,
+      (int) ceil($totalCredit / $limit)
+    );
+
+    // OTROS
+    $filtersOther = [
+      'box' => session('box'),
+      'sales_type' => 1,
+      'payment_not' => 1
+    ];
+
+    $totalOther = $BoxMovementModel->countMovements($filtersOther);
+
+    $offsetOther = ($pageOther - 1) * $limit;
+
+    $other = $BoxMovementModel->getMovements(
+      $filtersOther,
+      $limit,
+      $offsetOther
+    );
+
+    $totalPagesOther = max(
+      1,
+      (int) ceil($totalOther / $limit)
+    );
 
     $html = view('box/components/history_sales', [
-      'sales' => $sales,
-      'page' => $page,
-      'totalPages' => $totalPages
+      'cash' => $cash,
+      'credit' => $credit,
+      'other' => $other,
+
+      'pageCash' => $pageCash,
+      'pageCredit' => $pageCredit,
+      'pageOther' => $pageOther,
+
+      'totalPagesCash' => $totalPagesCash,
+      'totalPagesCredit' => $totalPagesCredit,
+      'totalPagesOther' => $totalPagesOther
     ]);
 
     return $this->response->setJSON([
@@ -216,6 +289,39 @@ class Process extends BaseController
       'csrfHash' => csrf_hash()
     ]);
   }
+
+  public function history_sales_details_panel_load()
+  {
+    try {
+
+      $SalesDetailsModel = new SalesDetailsModel();
+
+      $values = $SalesDetailsModel->get_id($this->request->getPost('id'));
+
+      $html = view(
+        'box/components/history_sales_detail',
+        [
+          'sales' => $values
+        ]
+      );
+
+      return $this->response->setJSON([
+        'status' => true,
+        'html' => $html,
+        'csrfName' => csrf_token(),
+        'csrfHash' => csrf_hash()
+      ]);
+
+    } catch (\Throwable $th) {
+
+      return $this->response->setJSON([
+        'status' => false,
+        'message' => $th->getMessage()
+      ]);
+
+    }
+  }
+
   public function history_movements_panel_load()
   {
     try {
@@ -224,7 +330,8 @@ class Process extends BaseController
 
       $movements = $BoxMovementModel->getMovements([
         'box' => session('box'),
-        'type_not' => 1
+
+        'type_not_in' => [1, 5]
       ]);
 
       $html = view(

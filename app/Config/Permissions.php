@@ -13,7 +13,7 @@ class Permissions extends BaseConfig
         1 => [
             // '*',
             //  Productos
-            'products_access', //Acceder por menu y route
+            'access_product', //Acceder por menu y route
 
             'product_products_view',
             'product_product_add',
@@ -49,13 +49,22 @@ class Permissions extends BaseConfig
             //
             //  BOX
             //
-            'box_access', //Acceder por menu y route
+            'access_box', //Acceder por menu y route
 
             //
             //  CUSTOMER
             //
-            'customer_access', //Acceder por menu y route
+            'access_customer', //Acceder por menu y route
 
+            //
+            //  USERS
+            //
+            'access_users', //Acceder por menu y route
+
+            //
+            //  CONFIG
+            //
+            'access_config', //Acceder por menu y route
         ],
 
         // ADMIN
@@ -63,7 +72,7 @@ class Permissions extends BaseConfig
 
         ],
 
-        // VISOR
+        // USER
         3 => [
 
         ],

@@ -42,9 +42,10 @@
           <input type="text" class="form-control money" name="cash_digits_mount" id="cash_digits_mount"
             placeholder="Monto">
         </div>
-        <div class="col-md-4 mb-2">
-          <label> Metodo de Pago </label>
-          <select class="form-control select" name="cash_digits_payment" id="cash_digits_payment" required>
+
+        <div class="col-md-2 mb-2">
+          <label> Forma </label>
+          <select class="form-control select" name="cash_digits_payment_type" id="cash_digits_payment_type" required>
             <option value="">Seleccione</option>
             <?php foreach ($payments as $payment): ?>
               <option value="<?= esc($payment['id']) ?>">
@@ -53,11 +54,29 @@
             <?php endforeach; ?>
           </select>
         </div>
-        <div class="col-md-4 mb-2">
-          <label> Numero de Operación </label>
+
+        <div class="col-md-3 mb-2">
+          <label> Numero </label>
           <input type="text" class="form-control" name="cash_digits_number" id="cash_digits_number"
             placeholder="Numero de Operacion">
         </div>
+
+        <div class="col-3 text-center">
+          <small class="text-muted d-block">
+            DISPOSITIVO
+          </small>
+
+          <select class="form-control select" name="cash_digits_device_payment" id="payment_device" required>
+            <option value="2">SUDAMERIS</option>
+
+            <?php foreach ($devices as $key): ?>
+              <option value="<?= esc($key['id']) ?>">
+                <?= esc($key['name']) ?>
+              </option>
+            <?php endforeach; ?>
+          </select>
+        </div>
+
         <div class="col-md-2 mb-2">
           <label> </label>
           <button type="button" class=" form-control btn btn-outline-success multi_payment_cash_digits">

@@ -8,7 +8,6 @@ class CustomersCreditsDetailsModel extends Model
 {
   protected $table = 'customer_credits_details';
   protected $primaryKey = 'id';
-  // protected $useAutoIncrement = false;
   protected $returnType = 'array';
 
   protected $allowedFields = [
@@ -21,7 +20,10 @@ class CustomersCreditsDetailsModel extends Model
 
   public function add_CustomersCreditsDetailsModel($values)
   {
-    $this->insert($values);
+    if (!$this->insert($values)) {
+      return false;
+    }
+
     return $this->getInsertID();
   }
 }

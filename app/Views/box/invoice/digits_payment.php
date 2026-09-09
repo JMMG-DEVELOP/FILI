@@ -28,7 +28,8 @@
                     NUMERO DE OPERACIÓN
                   </small>
 
-                  <input id="payment_device_operation_number" class="form-control form-control-lg text-center fw-bold">
+                  <input name="payment_device_operation_number" id="payment_device_operation_number"
+                    class="form-control form-control-lg text-center fw-bold">
                 </div>
 
                 <!-- DISPOSITIVO -->

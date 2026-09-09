@@ -30,7 +30,7 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
     // PRODUCTS
     // Permiso: products_access
     // ==================================================
-    $routes->group('products', ['filter' => 'permission:products_access'], function ($routes) {
+    $routes->group('products', ['filter' => 'permission:access_product'], function ($routes) {
 
         // ------------------------------------------
         // ACCESS
@@ -90,7 +90,7 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
     // BOX
     // Permiso: box_access
     // ==================================================
-    $routes->group('box', ['filter' => 'permission:box_access'], function ($routes) {
+    $routes->group('box', ['filter' => 'permission:access_box'], function ($routes) {
 
         // ------------------------------------------
         // ACCESS
@@ -109,6 +109,7 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
             $routes->post('expedition_point_load', 'Box\Process::expedition_point_load', ['filter' => 'ajax']);
             $routes->post('box_movement_panel_load', 'Box\Process::box_movement_panel_load', ['filter' => 'ajax']);
             $routes->post('history_sales_panel_load', 'Box\Process::history_sales_panel_load', ['filter' => 'ajax']);
+            $routes->post('history_sales_details_panel_load', 'Box\Process::history_sales_details_panel_load', ['filter' => 'ajax']);
             $routes->post('history_movements_panel_load', 'Box\Process::history_movements_panel_load', ['filter' => 'ajax']);
             $routes->post('invoice_cash_panel', 'Box\Process::invoice_cash_panel_load', ['filter' => 'ajax']);
 
@@ -185,6 +186,11 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
             $routes->post('sales_cash_payment', 'Box\Sales::sales_cash_payment', ['filter' => 'ajax']);
 
             $routes->post(
+                'sales_digist_payment',
+                'Box\Sales::sales_digist_payment',
+                ['filter' => 'ajax']
+            );
+            $routes->post(
                 'sales_credit_payment',
                 'Box\Sales::sales_credit_payment',
                 ['filter' => 'ajax']
@@ -197,8 +203,8 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
             );
 
             $routes->post(
-                'sales_procedures_other_payment',
-                'Box\Sales::sales_procedures_other_payment',
+                'sales_cash_digist_payment',
+                'Box\Sales::sales_cash_digist_payment',
                 ['filter' => 'ajax']
             );
 
@@ -212,13 +218,32 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
     // CUSTOMER
     // Permiso: customer_access
     // ==================================================
-    $routes->group('customer', ['filter' => 'permission:customer_access'], function ($routes) {
+    $routes->group('customer', ['filter' => 'permission:access_customer'], function ($routes) {
 
         $routes->group('process', function ($routes) {
 
             $routes->post(
                 'customer_panel_load',
                 'Customer\Process::customer_panel_load'
+            );
+
+        });
+
+    });
+
+    // ==================================================
+    // CONFIG
+    // Permiso: access_config
+    // ==================================================
+    $routes->group('config', ['filter' => 'permission:access_config'], function ($routes) {
+        $routes->get('/', 'Config\Access::index');
+
+
+        $routes->group('config', function ($routes) {
+
+            $routes->post(
+                'config',
+                'Config\Access::customer_panel_load'
             );
 
         });

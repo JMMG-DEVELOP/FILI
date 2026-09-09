@@ -46,7 +46,10 @@ class CustomersCreditsModel extends Model
       }
 
       // retornar ID existente
-      return $credit['id'];
+      return [
+        'status' => true,
+        'id' => $credit['id']
+      ];
     }
 
     // SI NO EXISTE -> INSERTAR
@@ -56,10 +59,36 @@ class CustomersCreditsModel extends Model
     ]);
 
     if (!$insert) {
-      return false;
+
+      return [
+        'status' => false,
+        'errors' => $this->errors(),
+        'db' => $this->db->error(),
+        'data' => $data
+      ];
     }
 
     // retornar nuevo ID
-    return $this->getInsertID();
+    return [
+      'status' => true,
+      'id' => $this->insertID()
+    ];
   }
+  // public function add_sales($data)
+  // {
+  //   if (!$this->insert($data)) {
+
+  //     return [
+  //       'status' => false,
+  //       'errors' => $this->errors(),
+  //       'db' => $this->db->error(),
+  //       'data' => $data
+  //     ];
+  //   }
+
+  //   return [
+  //     'status' => true,
+  //     'id' => $this->insertID()
+  //   ];
+  // }
 }

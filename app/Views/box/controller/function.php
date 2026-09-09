@@ -11,12 +11,23 @@
 
 
     <!-- Cant -->
-    <div class="col-md-2 mb-2">
+    <div class="col-md-1 mb-2">
       <label>Cant</label>
       <input type="text" class="form-control" name="product_cant" id="product_cant" value="1">
     </div>
+    <!-- Simepre precio 2 -->
+    <div class="col-md-2 mb-2">
+      <label>-</label>
+      <div class="custom-control custom-checkbox">
+        <input type="checkbox" name="all_price_two" id="all_price_two" class="custom-control-input">
+        <label class="custom-control-label" for="all_price_two">
+          Precio 2
+        </label>
+      </div>
+    </div>
+
     <!-- Otro Precio -->
-    <div class="col-md-4 mb-2">
+    <div class="col-md-3 mb-2">
       <label>-</label>
       <input type="text" class="form-control" name="product_price_input" id="product_price_input">
     </div>

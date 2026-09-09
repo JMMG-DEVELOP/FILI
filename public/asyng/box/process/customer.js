@@ -44,3 +44,23 @@ async function customer_add(data) {
     showAlert('Error de comunicación con el servidor customer_add', 'danger');
   }
 }
+
+function selectCustomer(button) {
+
+  let ci = $(button).data('ci');
+  let id = $(button).data('id');
+  let name = $(button).data('name');
+
+  $('#ruc_ci').val(ci);
+  $('#customer_name').val(name);
+  $('#customer_id').val(id);
+
+  $('#search').focus();
+
+  asyng_hide_view({
+    id: 'customer_search_panel',
+    effect: 'fade',
+    clear: true
+  });
+}
+

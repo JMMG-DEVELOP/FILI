@@ -147,11 +147,18 @@ $(document).on('keydown', function (e) {
 
   }
 
+  // ALT + R → fACTURACION EN CLIENTE
+  if (e.altKey && e.key.toLowerCase() === 'r') {
+    e.preventDefault();
+    $('#receipt_type').val('1').trigger('change');
+    borderFlash('#customer_name', 'green')
+
+  }
   // ALT + F → fACTURACION EN CLIENTE
   if (e.altKey && e.key.toLowerCase() === 'f') {
     e.preventDefault();
-
-    $('#customer_name').focus().select();
+    $('#receipt_type').val('2').trigger('change');
+    $('#customer_name').select();
     borderFlash('#customer_name', 'green')
 
   }
@@ -171,6 +178,13 @@ $(document).on('keydown', function (e) {
     $('#search').select().focus();
     borderFlash('#sales', 'green')
 
+  }
+  // Detectar ALT + . sin impresion
+  if (e.altKey && e.key.toLowerCase() === '.') {
+    e.preventDefault();
+    $('#receipt_type').val('1').trigger('change');
+    $('#print_type').val('0').trigger('change');
+    borderFlash('#print_type', 'receipt_type')
   }
 
   // Detectar ALT + D cambiar a DEVOLUCION

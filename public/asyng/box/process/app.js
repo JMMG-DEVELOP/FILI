@@ -234,7 +234,6 @@ async function panels_load() {
     await payment_panel_load();
     await customer_panel_load();
     await history_sales_panel();
-    await history_sales_panel();
     await history_movements_panel();
     await wait_panel_load();
     await invoice_panel_load();
@@ -248,20 +247,100 @@ async function panels_load() {
 }
 let currentPage = 1;
 
-async function history_sales_panel(page = 1) {
+async function history_sales_panel(type = null, page = 1) {
+
+  let pageCash = window.historyPageCash || 1;
+  let pageCredit = window.historyPageCredit || 1;
+  let pageOther = window.historyPageOther || 1;
+
+  /*
+   * Guardar la pestaña que estaba activa
+   * antes de reemplazar el HTML.
+   */
+  let activeTab = $('#history_sales_panel .nav-tabs .nav-link.active')
+    .attr('href');
+
+  // Si no existe todavía, Efectivo por defecto
+  if (!activeTab) {
+    activeTab = '#cash';
+  }
+
+  // Cambiar página de EFECTIVO
+  if (type === 'cash') {
+    pageCash = Math.max(1, Number(page));
+    activeTab = '#cash';
+  }
+
+  // Cambiar página de CRÉDITO
+  if (type === 'credit') {
+    pageCredit = Math.max(1, Number(page));
+    activeTab = '#credit';
+  }
+
+  // Cambiar página de OTROS
+  if (type === 'other') {
+    pageOther = Math.max(1, Number(page));
+    activeTab = '#other';
+  }
+
+  // Guardar las páginas actuales
+  window.historyPageCash = pageCash;
+  window.historyPageCredit = pageCredit;
+  window.historyPageOther = pageOther;
+
+  const data = {
+    page_cash: pageCash,
+    page_credit: pageCredit,
+    page_other: pageOther
+  };
+
   try {
-
-    if (page < 1) {
-      page = 1;
-    }
-
-    currentPage = page;
 
     const response = await asyngAjaxSend(
       'box/process/history_sales_panel_load',
-      {
-        page: page
-      }
+      data
+    );
+
+    if (!response || !response.status) {
+
+      showAlert(
+        response?.error || 'ERROR AL CARGAR EL HISTORIAL',
+        'error'
+      );
+
+      return;
+    }
+
+    /*
+     * Reemplazar el contenido.
+     */
+    $('#history_sales_panel').html(response.html);
+
+    /*
+     * Restaurar la pestaña que estaba activa.
+     */
+    $('#history_sales_panel .nav-tabs a[href="' + activeTab + '"]').tab('show');
+
+  } catch (error) {
+
+    console.error('history_sales_panel:', error);
+
+    showAlert(
+      'ERROR DE COMUNICACIÓN AL CARGAR EL HISTORIAL',
+      'error'
+    );
+  }
+}
+
+
+async function history_sales_detail_panel(id) {
+  try {
+
+    const data = {
+      id: id
+    }
+    const response = await asyngAjaxSend(
+      'box/process/history_sales_details_panel_load', data
     );
 
     if (response.status) {
@@ -279,11 +358,12 @@ async function history_sales_panel(page = 1) {
     console.error(err);
 
     showAlert(
-      'Error de comunicación con el servidor history_sales_panel_load',
+      'Error al cargar movimientos de caja',
       'danger'
     );
 
   }
+
 }
 async function history_movements_panel() {
 
@@ -409,14 +489,17 @@ async function clear() {
   $('#payment').val('1').trigger('change');
   $('#ruc_ci').text('1');
   $('#customer_name').text('CLIENTE OCASIONAL');
+  $('#all_price_two').prop('checked', false);
 
   await expedition_point_load();
   await invoice_panel_load();
+  await history_sales_panel();
   await multi_payment_hide();
+  clearCart();
+  saveCart()
 
 }
 async function searh_focus() {
   await invoice_panel_load();
-
 
 }

@@ -1,6 +1,13 @@
 async function post_sales() {
   try {
-    await clear();
+    // Verificar tipo de comprobante
+    // Ticket
+    if ($('#print_type').val() === 1) {
+
+    }
+
+    // 
+    clear();
 
   } catch (err) {
     showAlert('Error loading panels', err);
@@ -38,6 +45,13 @@ function sales_send_data() {
     digist_payment: asyngFormData('#form_digist_payment'),
 
   }
+  // Quitar formato de miles
+  data.cash_credit_payment.cash_credit_mount =
+    $('#cash_credit_mount').inputmask('unmaskedvalue');
+
+  data.cash_digist_payment.cash_digits_mount =
+    $('#cash_digits_mount').inputmask('unmaskedvalue');
+
   return data;
 }
 
@@ -111,45 +125,6 @@ function sales_cart_data() {
   };
 }
 
-async function sales_cash_credit_payment() {
-
-  try {
-    let data = sales_send_data();
-
-    const response = await asyngAjaxSend('box/sales/sales_cash_credit_payment', data);
-
-    if (response.status) {
-      showAlert('VENTA REALIZADA', 'success');
-      post_sales();
-    }
-  } catch (err) {
-    console.error(err);
-    showAlert('Error de comunicación con el servidor sales_cash_credit_payment', 'danger');
-  }
-}
-
-
-
-async function procedures_payment_send() {
-  try {
-    let data = sales_send_data();
-
-    const response = await asyngAjaxSend('box/sales/sales_procedures_other_payment', data);
-
-    console.log(response.data);
-
-    if (response.status) {
-      showAlert('VENTA REALIZADA', 'success');
-      post_sales();
-    }
-
-  } catch (err) {
-    console.error(err);
-    showAlert('Error de comunicación con el servidor procedures_payment_send', 'danger');
-  }
-
-}
-
 
 
 async function box_movement_send() {
@@ -186,9 +161,73 @@ async function box_movement_send() {
     showAlert('Error de comunicación con el servidor box_movement_send', 'danger');
   }
 }
+
+async function sales_cash_digist_payment() {
+
+  try {
+    if (!validateForm('#form_cash_digist_payment')) {
+      showAlert('COMPLETAR TODOS LOS CAMPOS', 'warning');
+      return;
+    }
+
+
+    let data = sales_send_data();
+
+    const response = await asyngAjaxSend('box/sales/sales_cash_digist_payment', data);
+
+    if (response.status) {
+      showAlert('VENTA REALIZADA', 'success');
+      post_sales();
+    } else {
+      showAlert(response.error, 'warning');
+    }
+  } catch (err) {
+    console.error(err);
+    showAlert('Error de comunicación con el servidor sales_cash_credit_payment', 'danger');
+  }
+}
+
+async function sales_cash_credit_payment() {
+
+  try {
+
+
+    let data = sales_send_data();
+
+    const response = await asyngAjaxSend('box/sales/sales_cash_credit_payment', data);
+
+    if (response.status) {
+      showAlert('VENTA REALIZADA - SALDO ANOTADO EN CREDITO', 'success');
+      post_sales();
+    } else {
+      showAlert(response.error, 'warning');
+    }
+  } catch (err) {
+    console.error(err);
+    showAlert('Error de comunicación con el servidor sales_cash_credit_payment', 'danger');
+  }
+}
+async function sales_digist_payment() {
+  try {
+
+    let data = sales_send_data();
+    const response = await asyngAjaxSend('box/sales/sales_digist_payment', data);
+    if (response.status) {
+      showAlert('VENTE REGISTRADA EXITOSAMENTE', 'success');
+      await post_sales();
+    } else {
+      showAlert(response.error, 'warning');
+    }
+
+  } catch (err) {
+    console.error(err);
+    showAlert('Error de comunicación con el servidor sales_digist_payment', 'danger');
+  }
+}
 async function sales_credit_payment() {
 
   try {
+
     let data = sales_send_data();
     const response = await asyngAjaxSend('box/sales/sales_credit_payment', data);
     if (response.status) {
@@ -210,7 +249,7 @@ async function sales_cash_payment() {
     const response = await asyngAjaxSend('box/sales/sales_cash_payment', data);
     if (response.status) {
       showAlert('VENDIDO PAGO EN EFECTIVO', 'success');
-      await post_sales();
+      post_sales();
     } else {
       showAlert('ERROR - Al Procesar la Venta', 'warning');
     }
