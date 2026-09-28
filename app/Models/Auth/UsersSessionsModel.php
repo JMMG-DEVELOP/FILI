@@ -25,6 +25,12 @@ class UsersSessionsModel extends Model
         'status'
     ];
 
+    public function close_session($session)
+    {
+        return $this->update($session, [
+            'status' => 2
+        ]);
+    }
     public function start($session)
     {
         $existing = $this->verify($session['user']);

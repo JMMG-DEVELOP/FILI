@@ -11,53 +11,6 @@ use App\Models\Box\BoxModel;
 
 class Access extends BaseController
 {
-    // public function index()
-    // {
-    //     if (session()->get('logged')) {
-
-    //         $infopage = new Infopage();
-    //         $infobox = new InfoBox();
-    //         $boxModel = new BoxModel();
-
-    //         if (!session()->get('box')) {
-
-    //             // Buscar caja abierta del usuario
-    //             $box = $boxModel->get_open_box(session()->get('id'));
-
-    //             if ($box) {
-
-    //                 // Recupera la caja existente
-    //                 session()->set([
-    //                     'box' => $box['id']
-    //                 ]);
-
-    //             } else {
-
-    //                 // Crear nueva caja
-    //                 $boxData = [
-    //                     'user' => session()->get('id'),
-    //                     'session' => session()->get('session'),
-    //                     'status' => 1
-    //                 ];
-
-    //                 $box = $boxModel->add_box($boxData);
-
-    //                 if ($box) {
-    //                     session()->set([
-    //                         'box' => $box
-    //                     ]);
-    //                 }
-    //             }
-    //         }
-
-    //         $info = $infobox->info();
-
-    //         $page = $infopage->infopage($info);
-    //         return view('Box/index', $page);
-
-    //     }
-    // }
-
     public function index()
     {
         /*
@@ -66,7 +19,10 @@ class Access extends BaseController
          * =====================================================
          */
         if (!session()->get('logged')) {
-            return redirect()->to(base_url('auth/login'));
+
+            return redirect()->to(
+                base_url('auth/login')
+            );
         }
 
 
@@ -83,7 +39,10 @@ class Access extends BaseController
 
             return redirect()
                 ->to(base_url('auth/login'))
-                ->with('errors', 'La sesión no es válida.');
+                ->with(
+                    'errors',
+                    'La sesión no es válida.'
+                );
         }
 
 
@@ -108,9 +67,6 @@ class Access extends BaseController
          */
         if (!$userSession) {
 
-            /*
-             * Limpiar datos de la sesión de CodeIgniter.
-             */
             session()->destroy();
 
             return redirect()
@@ -124,10 +80,9 @@ class Access extends BaseController
 
         /*
          * =====================================================
-         * 4. SESIÓN VÁLIDA -> CONTINUAR CON BOX
+         * 4. CARGAR MODELOS
          * =====================================================
          */
-
         $infopage = new Infopage();
         $infobox = new InfoBox();
         $boxModel = new BoxModel();
@@ -135,23 +90,82 @@ class Access extends BaseController
 
         /*
          * =====================================================
-         * 5. RECUPERAR / CREAR CAJA
+         * 5. OBTENER CAJA GUARDADA EN SESSION
          * =====================================================
          */
-        if (!session()->get('box')) {
+        $boxId = session()->get('box');
+
+
+        /*
+         * =====================================================
+         * 6. SI EXISTE UNA CAJA EN SESSION
+         * =====================================================
+         */
+        if ($boxId) {
 
             /*
-             * Buscar caja abierta del usuario.
+             * Verificar que la caja siga existiendo
+             * y que realmente esté abierta.
+             */
+            $box = $boxModel
+                ->where('id', $boxId)
+                ->where('user', session()->get('id'))
+                ->where('session', $userSessionId)
+                ->where('status', 1)
+                ->first();
+
+
+            /*
+             * =================================================
+             * LA CAJA DE SESSION ES VÁLIDA
+             * =================================================
+             */
+            if ($box) {
+
+                /*
+                 * Continuar normalmente.
+                 */
+
+            } else {
+
+                /*
+                 * La caja guardada en session ya no es válida.
+                 *
+                 * Eliminamos el ID de caja de la sesión.
+                 */
+                session()->remove('box');
+
+                $boxId = null;
+            }
+        }
+
+
+        /*
+         * =====================================================
+         * 7. SI NO TENEMOS CAJA VÁLIDA
+         * =====================================================
+         */
+        if (!$boxId) {
+
+            /*
+             * Buscar si existe una caja abierta
+             * para el usuario actual.
              */
             $box = $boxModel->get_open_box(
                 session()->get('id')
             );
 
 
+            /*
+             * =================================================
+             * EXISTE UNA CAJA ABIERTA
+             * =================================================
+             */
             if ($box) {
 
                 /*
-                 * Recuperar caja existente.
+                 * Guardar la caja encontrada
+                 * en la sesión.
                  */
                 session()->set([
                     'box' => $box['id']
@@ -160,36 +174,67 @@ class Access extends BaseController
             } else {
 
                 /*
-                 * Crear nueva caja asociada
-                 * a la sesión actual.
+                 * =================================================
+                 * NO EXISTE CAJA ABIERTA
+                 * =================================================
+                 *
+                 * IMPORTANTE:
+                 *
+                 * Aquí NO se crea la caja.
+                 *
+                 * Se envía al controlador de apertura:
+                 *
+                 * GET /box/open
+                 *
                  */
-                $boxData = [
-                    'user' => session()->get('id'),
-                    'session' => $userSessionId,
-                    'status' => 1
-                ];
-
-                $box = $boxModel->add_box($boxData);
-
-                if ($box) {
-
-                    session()->set([
-                        'box' => $box
-                    ]);
-                }
+                return redirect()->to(
+                    base_url('box/open')
+                );
             }
         }
 
 
         /*
          * =====================================================
-         * 6. CARGAR INFORMACIÓN
+         * 8. CARGAR INFORMACIÓN DE LA CAJA
          * =====================================================
          */
         $info = $infobox->info();
 
         $page = $infopage->infopage($info);
 
-        return view('Box/index', $page);
+
+        /*
+         * =====================================================
+         * 9. MOSTRAR PANTALLA PRINCIPAL DE BOX
+         * =====================================================
+         */
+        return view(
+            'Box/index',
+            $page
+        );
     }
+
+    public function open()
+    {
+        if (!session()->get('logged')) {
+            return redirect()->to(base_url('auth/login'));
+        }
+
+        $infopage = new Infopage();
+
+        $info = [
+            'title' => 'Apertura de Caja',
+            'type' => 'open'
+        ];
+
+        $page = $infopage->infopage($info);
+
+        return view(
+            'box/components/open_close',
+            $page
+        );
+    }
+
+
 }

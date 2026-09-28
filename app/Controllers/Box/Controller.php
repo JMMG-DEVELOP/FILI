@@ -5,10 +5,195 @@ use App\Controllers\BaseController;
 use App\Models\Products\Products\ProductModel;
 use App\Models\Box\CustomerModel;
 use App\Models\Box\BoxMovementModel;
+use App\Models\Box\BoxModel;
+
 
 
 class Controller extends BaseController
 {
+  public function open_box()
+  {
+    /*
+     * =====================================================
+     * 1. VERIFICAR LOGIN
+     * =====================================================
+     */
+    if (!session()->get('logged')) {
+
+      return $this->response->setJSON([
+        'status' => false,
+        'message' => 'La sesión no es válida.'
+      ]);
+    }
+
+
+    /*
+     * =====================================================
+     * 2. DATOS DE SESIÓN
+     * =====================================================
+     */
+    $userId = session()->get('id');
+    $sessionId = session()->get('session');
+
+
+    if (!$userId || !$sessionId) {
+
+      return $this->response->setJSON([
+        'status' => false,
+        'message' => 'La sesión de usuario no es válida.'
+      ]);
+    }
+
+
+    /*
+     * =====================================================
+     * 3. OBTENER MONTO DE APERTURA
+     * =====================================================
+     */
+    $amount = (float) $this->request->getPost('cash_total');
+
+
+    if ($amount < 0) {
+
+      return $this->response->setJSON([
+        'status' => false,
+        'message' => 'El monto de apertura no puede ser negativo.'
+      ]);
+    }
+
+
+    /*
+     * =====================================================
+     * 4. MODELOS
+     * =====================================================
+     */
+    $boxModel = new BoxModel();
+    $boxMovementModel = new BoxMovementModel();
+
+
+    /*
+     * =====================================================
+     * 5. VERIFICAR QUE NO TENGA OTRA CAJA ABIERTA
+     * =====================================================
+     */
+    $openBox = $boxModel->get_open_box($userId);
+
+    if ($openBox) {
+
+      /*
+       * Si ya existe una caja abierta,
+       * simplemente guardar su ID en session.
+       */
+      session()->set([
+        'box' => $openBox['id']
+      ]);
+
+      return $this->response->setJSON([
+        'status' => true,
+        'message' => 'Ya existe una caja abierta.',
+        'redirect' => base_url('box')
+      ]);
+    }
+
+
+    /*
+     * =====================================================
+     * 6. INICIAR TRANSACCIÓN
+     * =====================================================
+     */
+    $db = \Config\Database::connect();
+
+    $db->transStart();
+
+
+    /*
+     * =====================================================
+     * 7. CREAR CAJA
+     * =====================================================
+     */
+    $boxId = $boxModel->add_box([
+      'user' => $userId,
+      'session' => $sessionId,
+      'status' => 1
+    ]);
+
+
+    if (!$boxId) {
+
+      $db->transRollback();
+
+      return $this->response->setJSON([
+        'status' => false,
+        'message' => 'No se pudo crear la caja.'
+      ]);
+    }
+
+
+    /*
+     * =====================================================
+     * 8. REGISTRAR MOVIMIENTO DE APERTURA
+     * =====================================================
+     */
+    $movement = $boxMovementModel->insert([
+      'mount' => $amount,
+      'box' => $boxId,
+      'sales' => null,
+      'type' => 4,
+      'sales_type' => 1,
+      'sales_payment' => 1
+    ]);
+
+
+    if (!$movement) {
+
+      $db->transRollback();
+
+      return $this->response->setJSON([
+        'status' => false,
+        'message' => 'No se pudo registrar la apertura de caja.'
+      ]);
+    }
+
+
+    /*
+     * =====================================================
+     * 9. FINALIZAR TRANSACCIÓN
+     * =====================================================
+     */
+    $db->transComplete();
+
+
+    if (!$db->transStatus()) {
+
+      return $this->response->setJSON([
+        'status' => false,
+        'message' => 'No se pudo completar la apertura de caja.'
+      ]);
+    }
+
+
+    /*
+     * =====================================================
+     * 10. GUARDAR CAJA EN SESSION
+     * =====================================================
+     */
+    session()->set([
+      'box' => $boxId
+    ]);
+
+
+    /*
+     * =====================================================
+     * 11. RESPUESTA
+     * =====================================================
+     */
+    return $this->response->setJSON([
+      'status' => true,
+      'message' => 'Caja abierta correctamente.',
+      'box' => $boxId,
+      'redirect' => base_url('box')
+    ]);
+  }
   public function product_search()
   {
 

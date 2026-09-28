@@ -26,4 +26,10 @@ class CustomersCreditsDetailsModel extends Model
 
     return $this->getInsertID();
   }
+  public function get_credit_detail($id)
+  {
+    return $this
+      ->where('id', $id)
+      ->first();
+  }
 }

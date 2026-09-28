@@ -62,6 +62,7 @@ async function product_add_cart(value) {
           break;
       }
     }
+    product_search_table_hide();
 
   } catch (err) {
 
@@ -70,4 +71,14 @@ async function product_add_cart(value) {
 
   }
 
+}
+
+async function product_search_table_hide() {
+  asyng_hide_view({
+    id: 'product_search_panel',
+    effect: 'fade',
+    clear: true
+  })
+
+  $("#search").focus()
 }

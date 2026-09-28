@@ -15,6 +15,7 @@ use App\Models\Products\Products\StockModel;
 use App\Models\Customer\CustomersCreditsModel;
 use App\Models\Customer\CustomersCreditsDetailsModel;
 use App\Models\Customer\CreditsSalesDetailsModel;
+use App\Models\Customer\CustomerPaymentsModel;
 
 
 
@@ -295,6 +296,307 @@ class SalesService
     ];
   }
 
+  public function sales_detail_get($sale_id)
+  {
+    $SalesDetailsModel = new SalesDetailsModel();
+
+    $values = $SalesDetailsModel->get_id($sale_id);
+
+    return $values;
+  }
+  public function credit_sales_get($sale_id)
+  {
+    $CreditsSalesDetailsModel = new CreditsSalesDetailsModel();
+
+    $details = $CreditsSalesDetailsModel->credit_sales_get($sale_id);
+
+    if (empty($details)) {
+      return false;
+    }
+
+    return $details;
+  }
+  public function box_movement_get($sale_id)
+  {
+    $filters = [
+      'sales' => $sale_id
+    ];
+
+    return $this->BoxMovementModel->getMovements($filters);
+  }
+
+  public function box_movement_null($values)
+  {
+    $response = $this->BoxMovementModel->box_movement_null($values);
+    if (!$response) {
+
+      return [
+        'status' => false,
+        'error' => 'ERROR AL ANULAR MOVIMIENTO DE CAJA',
+        'model_errors' => $this->BoxMovementModel->errors(),
+        'db_error' => $this->BoxMovementModel->db->error(),
+        'data' => $values,
+      ];
+    }
+
+    return [
+      'status' => true,
+      // 'credit' => $response['id']
+    ];
+  }
+
+  public function stock_null($values)
+  {
+    $StockModel = new StockModel();
+
+    if (!$StockModel->devolutionStock($values)) {
+      return [
+        'status' => false,
+        'message' => 'ERROR AL REALIZAR LA DEVOLUCIÓN'
+      ];
+    }
+
+    return [
+      'status' => true
+    ];
+  }
+  public function box_movement_credit_get($sale_id)
+  {
+    $BoxMovementModel = new BoxMovementModel();
+
+    $filters = [
+      'sales' => $sale_id,
+      'type' => 5,
+    ];
+
+    $movements = $BoxMovementModel->getMovements($filters);
+
+    if (empty($movements)) {
+      return false;
+    }
+
+    return $movements;
+  }
+  public function customer_credit_null($sale_id)
+  {
+    $CreditsSalesDetailsModel = new CreditsSalesDetailsModel();
+    $CustomersCreditsDetailsModel = new CustomersCreditsDetailsModel();
+    $CustomersCreditsModel = new CustomersCreditsModel();
+    $CustomerPaymentsModel = new CustomerPaymentsModel();
+
+    // ==========================================
+    // VERIFICAR SI LA VENTA ES CRÉDITO
+    // ==========================================
+
+    $creditSales = $CreditsSalesDetailsModel
+      ->credit_sales_get($sale_id);
+
+    /*
+     * Si la venta no está registrada en
+     * credits_sales_details, no hacemos
+     * absolutamente nada relacionado al crédito.
+     */
+
+    if (empty($creditSales)) {
+      return false;
+    }
+
+    // ==========================================
+    // OBTENER MOVIMIENTO DE CRÉDITO
+    // TYPE = 5
+    // ==========================================
+
+    $creditMovement = $this->box_movement_credit_get($sale_id);
+
+    if (empty($creditMovement)) {
+
+      return [
+        'status' => false,
+        'error' => 'NO SE ENCONTRÓ EL MOVIMIENTO DE CRÉDITO DE LA VENTA'
+      ];
+    }
+
+    // ==========================================
+    // OBTENER MONTO REAL DEL CRÉDITO
+    //
+    // NO USAMOS EL TOTAL DE LA VENTA.
+    //
+    // TYPE 5 = CRÉDITO
+    // ==========================================
+
+    $amount = 0;
+
+    foreach ($creditMovement as $movement) {
+
+      $amount += (float) $movement['mount'];
+    }
+
+    if ($amount <= 0) {
+
+      return [
+        'status' => false,
+        'error' => 'EL MONTO DEL CRÉDITO ES INVÁLIDO'
+      ];
+    }
+
+    // ==========================================
+    // OBTENER RELACIÓN VENTA / CRÉDITO
+    // ==========================================
+
+    /*
+     * Normalmente una venta tiene un
+     * credit_detail.
+     *
+     * Tomamos el primer registro para evitar
+     * descontar dos veces el mismo monto.
+     */
+
+    $creditSale = $creditSales[0];
+
+    $customer = $creditSale['customer'];
+    $creditDetailId = $creditSale['credit_detail'];
+
+    // ==========================================
+    // OBTENER DETALLE DEL CRÉDITO
+    // ==========================================
+
+    $creditDetail = $CustomersCreditsDetailsModel
+      ->get_credit_detail($creditDetailId);
+
+    if (!$creditDetail) {
+
+      return [
+        'status' => false,
+        'error' => 'NO SE ENCONTRÓ EL DETALLE DEL CRÉDITO'
+      ];
+    }
+
+    // ==========================================
+    // OBTENER CRÉDITO DEL CLIENTE
+    // ==========================================
+
+    $credit = $CustomersCreditsModel
+      ->where('customer', $customer)
+      ->first();
+
+    if (!$credit) {
+
+      return [
+        'status' => false,
+        'error' => 'NO SE ENCONTRÓ EL CRÉDITO DEL CLIENTE'
+      ];
+    }
+
+    // ==========================================
+    // RESTAR MONTO DEL CRÉDITO
+    // ==========================================
+
+    $response = $CustomersCreditsModel
+      ->customer_credit_null(
+        $customer,
+        $amount
+      );
+
+    if (!$response || !$response['status']) {
+
+      return [
+        'status' => false,
+        'error' => 'ERROR AL DESCONTAR EL CRÉDITO DEL CLIENTE'
+      ];
+    }
+
+    // ==========================================
+    // REGISTRAR HISTORIAL DEL PAGO
+    // ==========================================
+
+    $payment = $CustomerPaymentsModel
+      ->add_payment([
+        'customer_credit' => $credit['id'],
+        'date' => date('Y-m-d'),
+        'time' => date('H:i:s'),
+        'amount' => $amount,
+        'user' => session()->get('id')
+      ]);
+
+    if (!$payment) {
+
+      return [
+        'status' => false,
+        'error' => 'ERROR AL REGISTRAR EL HISTORIAL DEL PAGO'
+      ];
+    }
+
+    // ==========================================
+    // RESULTADO
+    // ==========================================
+
+    return [
+      'status' => true,
+      'customer' => $customer,
+      'customer_credit' => $credit['id'],
+      'credit_detail' => $creditDetailId,
+      'amount' => $amount,
+      'payment' => $payment
+    ];
+  }
+  public function sales_null($values, $sale_id)
+  {
+    $SalesModel = new SalesModel();
+
+    $sale = $SalesModel->find($sale_id);
+
+    // ==========================================
+    // VERIFICAR QUE LA VENTA EXISTA
+    // ==========================================
+
+    if (!$sale) {
+      return [
+        'status' => false,
+        'error' => 'VENTA NO ENCONTRADA'
+      ];
+    }
+
+    // ==========================================
+    // VERIFICAR SI YA ESTÁ ANULADA
+    // ==========================================
+
+    if ((int) $sale['status'] === 2) {
+      return [
+        'status' => false,
+        'error' => 'LA VENTA YA SE ENCUENTRA ANULADA'
+      ];
+    }
+
+    // ==========================================
+    // CAMBIAR STATUS
+    // 1 = VÁLIDA
+    // 2 = ANULADA
+    // ==========================================
+
+    $values['status'] = 2;
+
+    $response = $SalesModel->edit_sales(
+      $values,
+      $sale_id
+    );
+
+    if (!$response) {
+      return [
+        'status' => false,
+        'error' => 'ERROR AL MODIFICAR ESTADO DE VENTA'
+      ];
+    }
+
+    // ==========================================
+    // RESPUESTA
+    // ==========================================
+
+    return [
+      'status' => true,
+      'sale_id' => $sale_id,
+      'status_sale' => 2
+    ];
+  }
 
 
 

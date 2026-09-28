@@ -27,7 +27,9 @@ class InfoBox
 
     // Retornar en un solo array
     return [
-      'payment' => $paymentTypeModel->findAll(),
+      'payment' => $paymentTypeModel
+        ->where('id !=', 5)
+        ->findAll(),
       'sales' => $salesTypeModel->findAll(),
       'percent' => $percent,
     ];

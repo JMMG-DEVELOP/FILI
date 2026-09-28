@@ -159,6 +159,18 @@ class InfoSales
 
     ];
   }
+  function box_movements_credit($values, $sale_id, $type)
+  {
+    return [
+      'type' => $type,
+      'mount' => $values['cart']['totals']['total_price'] ?? 0,
+      'box' => session()->get('box'),
+      'sales' => $sale_id,
+      'sales_type' => $values['payment']['sales'] ?? null,
+      'sales_payment' => 5
+
+    ];
+  }
   function box_movements_cash_credit_cash($values, $sale_id, $type)
   {
     return [
@@ -191,7 +203,7 @@ class InfoSales
       'box' => session()->get('box'),
       'sales' => $sale_id,
       'sales_type' => 2,
-      'sales_payment' => $values['payment']['payment'] ?? null
+      'sales_payment' => 5
 
     ];
   }
@@ -289,6 +301,67 @@ class InfoSales
       'sales' => $sales_details_id,
     ];
   }
+
+  public function stock_null($values)
+  {
+    $items = [];
+
+    foreach ($values as $item) {
+
+      $items[] = [
+        'product' => $item['product'], // products_stock.product guarda el código
+        'stock' => $item['cant'],
+        'sucursal' => $item['sucursal']
+      ];
+    }
+
+    return $items;
+  }
+  public function stock_movements_null($values, $sale_id)
+  {
+    $details = [];
+
+    foreach ($values as $item) {
+
+      $details[] = [
+        'product' => $item['product'],
+        'quantity' => (float) $item['cant'],
+        'movement' => 5,
+        'date' => date('Y-m-d'),
+        'time' => date('H:i:s'),
+        'sucursal' => $item['sucursal'] ?? null,
+        'user' => session()->get('id'),
+        'operation' => $sale_id
+      ];
+    }
+
+    return $details;
+  }
+  function box_movements_cash_null($movement, $sale_id)
+  {
+    $process = [];
+
+    foreach ($movement as $item) {
+      $process[] = [
+        'type' => 6,
+        'mount' => $item['mount'] ?? 0,
+        'box' => $item['box'],
+        'sales' => $sale_id,
+        'sales_type' => 5,
+        'sales_payment' => $item['sales_payment']
+
+      ];
+    }
+
+    return $process;
+  }
+  public function sales_null()
+  {
+    return [
+      'status' => 2
+    ];
+  }
+
 
 
 

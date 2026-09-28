@@ -21,23 +21,84 @@ $(document).on('keydown', '#search', async function (e) {
     }
 
     product_search(data)
-
+    $('#search').select()
     return
 
   }
 
-  /* ENTER */
+
   if (e.key === 'Enter' && !e.repeat) {
 
     e.preventDefault()
 
+    /*
+     * =====================================================
+     * SI EL CAMPO ESTÁ VACÍO
+     * =====================================================
+     */
+
     if (!value) {
 
+      const $table = $('#product_search_table')
+
+      /*
+       * Verificar que la tabla exista
+       */
+      if ($table.length > 0) {
+
+        /*
+         * Buscar el primer producto de la tabla
+         */
+        const $firstButton = $table
+          .find('tbody .product_search_add_cart')
+          .first()
+
+        /*
+         * Si existe un resultado
+         */
+        if ($firstButton.length > 0) {
+
+          /*
+           * Obtener código del primer producto
+           */
+          const code = $firstButton.attr('data-code')
+
+          if (code) {
+
+            const formatted = code.length <= 7
+              ? code.padStart(7, '0')
+              : code
+
+            /*
+             * Colocar el código en el campo
+             */
+            $(this).val(formatted)
+
+            /*
+             * Agregar primer resultado
+             */
+            product_add_cart(formatted)
+
+            return
+          }
+        }
+      }
+
+      /*
+       * No hay código y tampoco resultados
+       */
       showAlert('Campo Vacío', 'danger')
       SoundManager.error()
-      return
 
+      return
     }
+
+
+    /*
+     * =====================================================
+     * SI EL CAMPO TIENE UN CÓDIGO
+     * =====================================================
+     */
 
     const formatted = value.length <= 7
       ? value.padStart(7, '0')
@@ -46,7 +107,6 @@ $(document).on('keydown', '#search', async function (e) {
     $(this).val(formatted)
 
     product_add_cart(formatted)
-
   }
 
   // Operacion al Precionar , COMA
@@ -70,14 +130,7 @@ $(document).on('keydown', '#search', async function (e) {
 });
 
 $(document).on('click', '.product_search_table_hide', function () {
-
-  asyng_hide_view({
-    id: 'product_search_panel',
-    effect: 'fade',
-    clear: true
-  })
-
-  $("#search").focus()
+  product_search_table_hide();
 
 });
 
@@ -86,7 +139,7 @@ $(document).on('click', '.product_search_add_cart', function () {
   const code = $(this).data('code')
 
   product_add_cart(code)
-
+  $('#search').focus()
 });
 
 // ¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨

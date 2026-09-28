@@ -1,4 +1,5 @@
 <?= $this->extend('interface/interface'); ?>
+
 <?= $this->section('main'); ?>
 <div class="row">
   <div class="col-md-12 mb-12 justify-content-center">
@@ -103,6 +104,7 @@
 <?= $this->endSection(); ?>
 
 <?= $this->section('other_script'); ?>
+<script src="<?= base_url(); ?>/asyng/box/process/print.js"></script>
 <!-- Process -->
 <script src="<?= base_url(); ?>/asyng/box/process/sales.js"></script>
 <script src="<?= base_url(); ?>/asyng/box/process/app.js"></script>
@@ -112,7 +114,7 @@
 <script src="<?= base_url(); ?>/asyng/box/process/customer.js"></script>
 <script src="<?= base_url(); ?>/asyng/box/process/point.js"></script>
 <script src="<?= base_url(); ?>/asyng/box/process/invoice_display.js"></script>
-<script src="<?= base_url(); ?>/asyng/box/process/print.js"></script>
+
 
 
 <!-- Apps -->

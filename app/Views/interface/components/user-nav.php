@@ -8,6 +8,5 @@
     </h5>
     <span class="status"></span><span class="ml-2"><?= $category_name ?></span>
   </div>
-  <a class="dropdown-item" href="#"><i class="fas fa-cog mr-2"></i>Configuración</a>
-  <a class="dropdown-item" href="#"><i class="fas fa-power-off mr-2"></i>Cerrar Sesión</a>
+  <a class="dropdown-item" href="<?= base_url(); ?>/logout"><i class="fas fa-power-off mr-2"></i>Cerrar Sesión</a>
 </div>

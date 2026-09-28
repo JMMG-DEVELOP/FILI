@@ -74,7 +74,7 @@ function asyngVisualEffects($elements) {
 }
 
 /* Mayusculas a input */
-$(document).on('input', 'input[type="text"]:not(.money):not(.percent):not(.numeric):not(.stock)', function () {
+$(document).on('input', 'input[type="text"]:not(.money):not(.percent):not(.numeric):not(.stock):not(.minusc)', function () {
   this.value = this.value.toUpperCase();
 });
 

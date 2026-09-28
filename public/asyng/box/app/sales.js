@@ -119,3 +119,23 @@ $(document).on('change', '#receipt_type', function () {
   borderFlash('#print_type', '#receipt_type', '#customer_name')
 
 });
+
+$(document).on('click', '.sales_cash_null', function () {
+  const id = $(this).data('id');
+
+  sales_cash_null(id);
+
+});
+
+$(document).on('click', '.sales_credit_null', function () {
+  const id = $(this).data('id');
+
+  sales_credit_null(id);
+
+});
+$(document).on('click', '.sales_digist_null', function () {
+  const id = $(this).data('id');
+
+  sales_cash_null(id);
+
+});

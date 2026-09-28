@@ -96,6 +96,27 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
         // ACCESS
         // ------------------------------------------
         $routes->get('/', 'Box\Access::index');
+        $routes->get('close', 'Box\Close::index');
+        $routes->get('open', 'Box\Access::open');
+
+
+        // ------------------------------------------
+        // CIERE DE CAJA
+        // ------------------------------------------
+
+        $routes->group('close', function ($routes) {
+
+            $routes->post(
+                'box_close_save',
+                'Box\Close::box_close_save'
+            );
+            $routes->post(
+                'box_close_resume',
+                'Box\Close::box_close_resume'
+            );
+
+
+        });
 
 
         // ------------------------------------------
@@ -112,8 +133,6 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
             $routes->post('history_sales_details_panel_load', 'Box\Process::history_sales_details_panel_load', ['filter' => 'ajax']);
             $routes->post('history_movements_panel_load', 'Box\Process::history_movements_panel_load', ['filter' => 'ajax']);
             $routes->post('invoice_cash_panel', 'Box\Process::invoice_cash_panel_load', ['filter' => 'ajax']);
-
-
             $routes->post('invoice_multi_payment_load', 'Box\Process::invoice_multi_payment_load', ['filter' => 'ajax']);
             $routes->post('expedition_point_select', 'Box\Process::expedition_point_select', ['filter' => 'ajax']);
             $routes->post('wait_panel_load', 'Box\Process::wait_panel_load', ['filter' => 'ajax']);
@@ -148,6 +167,9 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
         // CONTROLLER
         // ------------------------------------------
         $routes->group('controller', function ($routes) {
+
+            // Apertura de Caja
+            $routes->post('open_box', 'Box\Controller::open_box', ['filter' => 'ajax']);
 
             // Products
             $routes->post('product_search', 'Box\Controller::product_search', ['filter' => 'ajax']);
@@ -208,6 +230,18 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
                 ['filter' => 'ajax']
             );
 
+            $routes->post(
+                'sales_cash_null',
+                'Box\Sales::sales_cash_null',
+                ['filter' => 'ajax']
+            );
+
+            $routes->post(
+                'sales_credit_null',
+                'Box\Sales::sales_credit_null',
+                ['filter' => 'ajax']
+            );
+
 
         });
 
@@ -238,16 +272,58 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
     $routes->group('config', ['filter' => 'permission:access_config'], function ($routes) {
         $routes->get('/', 'Config\Access::index');
 
+        $routes->post(
+            'delete_open',
+            'Config\Access::delete_open'
+        );
 
-        $routes->group('config', function ($routes) {
+        $routes->group('printers', function ($routes) {
 
             $routes->post(
-                'config',
-                'Config\Access::customer_panel_load'
+                'panel_load',
+                'Config\Printers\Printers::panel_load'
+            );
+            $routes->post(
+                'form_new_open',
+                'Config\Printers\Printers::form_new_open'
+            );
+            $routes->post(
+                'form_new_save',
+                'Config\Printers\Printers::form_new_save'
+            );
+            $routes->post(
+                'form_edit_open',
+                'Config\Printers\Printers::form_edit_open'
+            );
+            $routes->post(
+                'form_edit_save',
+                'Config\Printers\Printers::form_edit_save'
+            );
+            $routes->post(
+                'delete_save',
+                'Config\Printers\Printers::delete_save'
             );
 
         });
 
     });
+
+    // ==================================================
+    // BOX CLOSE - CIERRE DE CAJA
+    // 
+    // ==================================================
+    // $routes->group('box', function ($routes) {
+
+
+    //     $routes->group('close', function ($routes) {
+
+    //         $routes->post(
+    //             'box_close_save',
+    //             'Box\Close::box_close_save'
+    //         );
+
+    //     });
+
+    // });
 
 });

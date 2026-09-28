@@ -1,4 +1,4 @@
-<table class="table table-hover table-striped table-bordered">
+<table class="table table-hover table-striped table-bordered" id="product_search_table">
 
   <thead>
     <tr>

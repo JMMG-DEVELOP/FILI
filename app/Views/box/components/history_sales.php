@@ -78,7 +78,9 @@
                 <th>MONTO</th>
                 <th>ENTREGA</th>
                 <th>VUELTO</th>
-                <th>#</th>
+                <th></th>
+                <th></th>
+
               </tr>
             </thead>
 
@@ -137,6 +139,12 @@
                       </button>
                       
                     </td>
+                    <td>
+                        <button type="button" class="btn btn-outline-danger sales_cash_null"
+                        data-id="<?= esc($row['sales'] ?? '') ?>" >
+                        <i class=" fas fa-trash"></i>
+                      </button>
+                     </td>
 
                   </tr>
 
@@ -208,7 +216,8 @@
                 <th>NUMERO</th>
                 <th>CLIENTE</th>
                 <th>MONTO</th>
-                <th>#</th>
+                <th></th>
+                 <th></th>
               </tr>
             </thead>
 
@@ -234,7 +243,7 @@
 
                     <td class="text-end">
                       <?= number_format(
-                        (float) ($row['total_price'] ?? 0),
+                        (float) ($row['mount'] ?? 0),
                         0,
                         ',',
                         '.'
@@ -248,6 +257,12 @@
                       </button>
                       
                     </td>
+                     <td>
+                        <button type="button" class="btn btn-outline-danger sales_credit_null"
+                        data-id="<?= esc($row['sales'] ?? '') ?>" >
+                        <i class=" fas fa-trash"></i>
+                      </button>
+                     </td>
 
                   </tr>
 
@@ -322,7 +337,8 @@
                 <th>PAGO</th>
                 <th>N.º OPERACIÓN</th>
                 <th>DISPOSITIVO</th>
-                <th>#</th>
+                <th></th>
+                 <th></th>
               </tr>
             </thead>
 
@@ -374,6 +390,12 @@
                       </button>
                       
                     </td>
+                    <td>
+                        <button type="button" class="btn btn-outline-danger sales_digist_null"
+                        data-id="<?= esc($row['sales'] ?? '') ?>" >
+                        <i class=" fas fa-trash"></i>
+                      </button>
+                     </td>
 
                   </tr>
 

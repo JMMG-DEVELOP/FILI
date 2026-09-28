@@ -1,12 +1,16 @@
-async function post_sales() {
+async function post_sales(sale_id) {
   try {
     // Verificar tipo de comprobante
     // Ticket
     if ($('#print_type').val() === 1) {
-
+      ticket();
     }
 
     // 
+    // Factura 
+    if ($('#print_type').val() === 2) {
+
+    }
     clear();
 
   } catch (err) {
@@ -177,7 +181,7 @@ async function sales_cash_digist_payment() {
 
     if (response.status) {
       showAlert('VENTA REALIZADA', 'success');
-      post_sales();
+      post_sales(response.sale_id);
     } else {
       showAlert(response.error, 'warning');
     }
@@ -198,7 +202,7 @@ async function sales_cash_credit_payment() {
 
     if (response.status) {
       showAlert('VENTA REALIZADA - SALDO ANOTADO EN CREDITO', 'success');
-      post_sales();
+      post_sales(response.sale_id);
     } else {
       showAlert(response.error, 'warning');
     }
@@ -214,7 +218,7 @@ async function sales_digist_payment() {
     const response = await asyngAjaxSend('box/sales/sales_digist_payment', data);
     if (response.status) {
       showAlert('VENTE REGISTRADA EXITOSAMENTE', 'success');
-      await post_sales();
+      await post_sales(response.sale_id);
     } else {
       showAlert(response.error, 'warning');
     }
@@ -232,7 +236,7 @@ async function sales_credit_payment() {
     const response = await asyngAjaxSend('box/sales/sales_credit_payment', data);
     if (response.status) {
       showAlert('ANOTADO CORRECTAMENTE EN CREDITO', 'success');
-      await post_sales();
+      await post_sales(response.sale_id);
     } else {
       showAlert(response.error, 'warning');
     }
@@ -249,7 +253,7 @@ async function sales_cash_payment() {
     const response = await asyngAjaxSend('box/sales/sales_cash_payment', data);
     if (response.status) {
       showAlert('VENDIDO PAGO EN EFECTIVO', 'success');
-      post_sales();
+      post_sales(response.sale_id);
     } else {
       showAlert('ERROR - Al Procesar la Venta', 'warning');
     }
@@ -278,3 +282,39 @@ async function devolution() {
 
 }
 
+async function sales_cash_null(id) {
+  try {
+    let data = {
+      id: id
+    }
+    const response = await asyngAjaxSend('box/sales/sales_cash_null', data);
+
+    if (response.status) {
+      showAlert('VENTA ANULADA CORRECTAMENTE', 'success');
+      history_sales_panel();
+    }
+
+  } catch (err) {
+    console.error(err);
+    showAlert('Error de comunicación con el servidor sales_cash_null', 'danger');
+  }
+
+}
+async function sales_credit_null(id) {
+  try {
+    let data = {
+      id: id
+    }
+    const response = await asyngAjaxSend('box/sales/sales_credit_null', data);
+
+    if (response.status) {
+      showAlert('VENTA ANULADA CORRECTAMENTE - CREDITO DESCONTADO CORRECTAMENTE', 'success');
+      history_sales_panel();
+    }
+
+  } catch (err) {
+    console.error(err);
+    showAlert('Error de comunicación con el servidor sales_credit_null', 'danger');
+  }
+
+}

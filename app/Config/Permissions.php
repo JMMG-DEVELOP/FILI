@@ -61,10 +61,17 @@ class Permissions extends BaseConfig
             //
             'access_users', //Acceder por menu y route
 
-            //
-            //  CONFIG
-            //
+            //*********************** 
+            //  ¨¨¨¨ CONFIG
+            // Si tiene edit, no habilitar view, si no tiene view habilitado solo podra ver el datatable, si tiene, podra abrir el formulario sin poder editar
+
             'access_config', //Acceder por menu y route
+
+            // ¨¨¨¨ PRINTERS
+            // 'printer_view',
+            'printer_edit',
+            'printer_delete',
+            'printer_add'
         ],
 
         // ADMIN

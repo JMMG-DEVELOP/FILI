@@ -20,4 +20,24 @@ class CreditsSalesDetailsModel extends Model
   {
     return $this->insert($values);
   }
+
+  /**
+   * Obtener la relación entre la venta y el crédito.
+   *
+   * También obtiene el customer desde sales.
+   */
+  public function credit_sales_get($sale_id)
+  {
+    return $this
+      ->select('credits_sales_details.*, sales.customer')
+      ->join(
+        'sales',
+        'sales.id = credits_sales_details.sales'
+      )
+      ->where(
+        'credits_sales_details.sales',
+        $sale_id
+      )
+      ->findAll();
+  }
 }

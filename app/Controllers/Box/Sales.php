@@ -505,7 +505,7 @@ class Sales extends BaseController
     // ==========================================
 
     $operation = $this->SalesService->box_movements(
-      $this->InfoSales->box_movements(
+      $this->InfoSales->box_movements_credit(
         $values,
         $sale_id,
         5
@@ -523,7 +523,6 @@ class Sales extends BaseController
 
     return null;
   }
-
 
   private function payment_cash($values, $sale_id)
   {
@@ -571,6 +570,300 @@ class Sales extends BaseController
 
     return null;
   }
+
+  // *******
+  // ANULACION DE VENTA
+  //*********
+
+  public function sales_cash_null()
+  {
+    return $this->process_sales_null();
+  }
+  public function sales_credit_null()
+  {
+    return $this->process_sales_null();
+  }
+
+  // public function process_sales_null()
+  // {
+  //   $values = $this->request->getPost();
+  //   $sale_id = $values['id'];
+
+  //   $db = \Config\Database::connect();
+  //   $db->transStart();
+
+
+  //   // Obtener detalles de la venta
+  //   $details = $this->SalesService->sales_detail_get($sale_id);
+  //   //  Obtener Movimiento
+  //   $movement = $this->SalesService->box_movement_get($sale_id);
+
+  //   // Descontar stock
+  //   $devolution = $this->stock_null($details);
+  //   if ($devolution) {
+  //     return $devolution;
+  //   }
+
+  //   // Registrar Movimiento de stock
+  //   $response = $this->execute(
+  //     $this->SalesService->stock_movements(
+  //       $this->InfoSales->stock_movements_null($details, $sale_id)
+  //     )
+  //   );
+  //   if ($response) {
+  //     return $response;
+  //   }
+  //   // Registrar Movimiento de Caja
+
+  //   $response = $this->execute(
+  //     $this->SalesService->box_movement_null(
+  //       $this->InfoSales->box_movements_cash_null($movement, $sale_id)
+  //     )
+  //   );
+  //   if ($response) {
+  //     return $response;
+  //   }
+
+  //   // Verificar si sales es credito, si lo es, obtener monto del credito anotado 
+  //   $response = $this->execute(
+  //     $this->SalesService->credit_sales_get($sale_id)
+  //   );
+  //   if ($response) {
+
+
+
+  //   }
+
+
+  //   // if ($credit) {
+  //   //  $credit $this->credit_null($details, $sale_id);
+  //   // Descontar monto de customer Credits
+  //   // }
+
+
+  //   // Registrar Operacion en customer_credits_details
+
+
+  //   // Cambiar status de sales
+  //   // $response = $this->execute(
+  //   //   $this->SalesService->sales_null(
+  //   //     $this->InfoSales->sales_null(),
+  //   //     $sale_id
+  //   //   )
+  //   // );
+
+  //   // if ($response)
+  //   //   return $response;
+  //   // 
+
+  //   $db->transComplete();
+
+  //   if ($db->transStatus() === false) {
+
+  //     return $this->response->setJSON([
+  //       'status' => false,
+  //       'error' => 'Error en la transacción',
+  //       'values' => $values,
+  //       'csrfName' => csrf_token(),
+  //       'csrfHash' => csrf_hash()
+  //     ]);
+  //   }
+
+  //   return $this->response->setJSON([
+  //     'status' => true,
+  //     'sale' => $movement,
+  //     'values' => $details,
+  //     'csrfName' => csrf_token(),
+  //     'csrfHash' => csrf_hash()
+  //   ]);
+  // }
+  public function process_sales_null()
+  {
+    $values = $this->request->getPost();
+    $sale_id = $values['id'];
+
+    $db = \Config\Database::connect();
+
+    $db->transStart();
+
+    // ==========================================
+    // OBTENER DETALLES DE LA VENTA
+    // ==========================================
+
+    $details = $this->SalesService
+      ->sales_detail_get($sale_id);
+
+    // ==========================================
+    // OBTENER MOVIMIENTO DE CAJA
+    // ==========================================
+
+    $movement = $this->SalesService
+      ->box_movement_get($sale_id);
+
+    // ==========================================
+    // RESTAURAR STOCK
+    // ==========================================
+
+    $devolution = $this->stock_null($details);
+
+    if ($devolution) {
+
+      $db->transRollback();
+
+      return $devolution;
+    }
+
+    // ==========================================
+    // REGISTRAR MOVIMIENTO DE STOCK
+    // ==========================================
+
+    $response = $this->execute(
+      $this->SalesService->stock_movements(
+        $this->InfoSales->stock_movements_null(
+          $details,
+          $sale_id
+        )
+      )
+    );
+
+    if ($response) {
+
+      $db->transRollback();
+
+      return $response;
+    }
+
+    // ==========================================
+    // REGISTRAR MOVIMIENTO INVERSO DE CAJA
+    // ==========================================
+
+    $response = $this->execute(
+      $this->SalesService->box_movement_null(
+        $this->InfoSales->box_movements_cash_null(
+          $movement,
+          $sale_id
+        )
+      )
+    );
+
+    if ($response) {
+
+      $db->transRollback();
+
+      return $response;
+    }
+
+    // ==========================================
+    // VERIFICAR Y REVERTIR CRÉDITO
+    // ==========================================
+
+    /*
+     * Si la venta no está en
+     * credits_sales_details:
+     *
+     *     devuelve false
+     *     NO modifica crédito
+     *     NO registra customer_payment
+     *
+     * Si está registrada:
+     *
+     *     busca box_movement.type = 5
+     *     toma solamente ese monto
+     *     descuenta el crédito
+     *     registra customer_payment
+     */
+
+    $response = $this->SalesService
+      ->customer_credit_null($sale_id);
+
+    if ($response !== false && !$response['status']) {
+
+      $db->transRollback();
+
+      return $this->response->setJSON([
+        'status' => false,
+        'error' => $response['error'],
+        'csrfName' => csrf_token(),
+        'csrfHash' => csrf_hash()
+      ]);
+    }
+
+    // ==========================================
+    // CAMBIAR STATUS DE LA VENTA
+    // ==========================================
+
+    $response = $this->execute(
+      $this->SalesService->sales_null(
+        $this->InfoSales->sales_null(),
+        $sale_id
+      )
+    );
+
+    if ($response) {
+
+      $db->transRollback();
+
+      return $response;
+    }
+
+    // ==========================================
+    // FINALIZAR TRANSACCIÓN
+    // ==========================================
+
+    $db->transComplete();
+
+    // ==========================================
+    // VERIFICAR TRANSACCIÓN
+    // ==========================================
+
+    if ($db->transStatus() === false) {
+
+      return $this->response->setJSON([
+        'status' => false,
+        'error' => 'Error en la transacción',
+        'values' => $values,
+        'csrfName' => csrf_token(),
+        'csrfHash' => csrf_hash()
+      ]);
+    }
+
+    // ==========================================
+    // RESPUESTA
+    // ==========================================
+
+    return $this->response->setJSON([
+      'status' => true,
+      'sale' => $movement,
+      'values' => $details,
+      'csrfName' => csrf_token(),
+      'csrfHash' => csrf_hash()
+    ]);
+  }
+
+
+  public function stock_null($values)
+  {
+
+    $operation = $this->SalesService->stock_null(
+      $this->InfoSales->stock_null($values)
+    );
+
+    $response = $this->execute(
+      $operation,
+      $values
+    );
+
+
+    if ($response) {
+      return $response;
+    }
+  }
+
+  public function credit_null($values, $sale_id)
+  {
+
+  }
+
 
   private function execute($operation, $values = false)
   {

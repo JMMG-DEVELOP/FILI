@@ -18,7 +18,230 @@ class BoxMovementModel extends Model
     'sales_type',
     'sales_payment'
   ];
+  public function box_movement_totals()
+  {
+    $box = session()->get('box');
 
+    if (empty($box)) {
+
+      return [
+        'movement_cash' => 0,
+        'movement_qr' => 0,
+        'movement_transfer' => 0,
+        'movement_card' => 0,
+        'movement_credit' => 0,
+
+        'movement_devolution_cash' => 0,
+        'movement_devolution_qr' => 0,
+        'movement_devolution_transfer' => 0,
+        'movement_devolution_card' => 0,
+        'movement_devolution_credit' => 0,
+
+        'movement_null_cash' => 0,
+        'movement_null_qr' => 0,
+        'movement_null_transfer' => 0,
+        'movement_null_card' => 0,
+        'movement_null_credit' => 0,
+
+        'movement_retiro' => 0,
+        'movement_opening' => 0,
+
+        'total_cash_mount' => 0,
+      ];
+    }
+
+    $builder = $this->db->table($this->table);
+
+    $builder->select("
+        COALESCE(SUM(
+            CASE
+                WHEN type = 1
+                AND sales_payment = 1
+                THEN mount
+                ELSE 0
+            END
+        ), 0) AS movement_cash,
+
+        COALESCE(SUM(
+            CASE
+                WHEN type = 1
+                AND sales_payment = 2
+                THEN mount
+                ELSE 0
+            END
+        ), 0) AS movement_qr,
+
+        COALESCE(SUM(
+            CASE
+                WHEN type = 1
+                AND sales_payment = 3
+                THEN mount
+                ELSE 0
+            END
+        ), 0) AS movement_transfer,
+
+        COALESCE(SUM(
+            CASE
+                WHEN type = 1
+                AND sales_payment = 4
+                THEN mount
+                ELSE 0
+            END
+        ), 0) AS movement_card,
+
+        COALESCE(SUM(
+            CASE
+                WHEN type = 5
+                THEN mount
+                ELSE 0
+            END
+        ), 0) AS movement_credit,
+
+
+        COALESCE(SUM(
+            CASE
+                WHEN type = 3
+                AND sales_payment = 1
+                THEN mount
+                ELSE 0
+            END
+        ), 0) AS movement_devolution_cash,
+
+        COALESCE(SUM(
+            CASE
+                WHEN type = 3
+                AND sales_payment = 2
+                THEN mount
+                ELSE 0
+            END
+        ), 0) AS movement_devolution_qr,
+
+        COALESCE(SUM(
+            CASE
+                WHEN type = 3
+                AND sales_payment = 3
+                THEN mount
+                ELSE 0
+            END
+        ), 0) AS movement_devolution_transfer,
+
+        COALESCE(SUM(
+            CASE
+                WHEN type = 3
+                AND sales_payment = 4
+                THEN mount
+                ELSE 0
+            END
+        ), 0) AS movement_devolution_card,
+
+        COALESCE(SUM(
+            CASE
+                WHEN type = 3
+                AND sales_payment = 5
+                THEN mount
+                ELSE 0
+            END
+        ), 0) AS movement_devolution_credit,
+
+
+        COALESCE(SUM(
+            CASE
+                WHEN type = 6
+                AND sales_payment = 1
+                THEN mount
+                ELSE 0
+            END
+        ), 0) AS movement_null_cash,
+
+        COALESCE(SUM(
+            CASE
+                WHEN type = 6
+                AND sales_payment = 2
+                THEN mount
+                ELSE 0
+            END
+        ), 0) AS movement_null_qr,
+
+        COALESCE(SUM(
+            CASE
+                WHEN type = 6
+                AND sales_payment = 3
+                THEN mount
+                ELSE 0
+            END
+        ), 0) AS movement_null_transfer,
+
+        COALESCE(SUM(
+            CASE
+                WHEN type = 6
+                AND sales_payment = 4
+                THEN mount
+                ELSE 0
+            END
+        ), 0) AS movement_null_card,
+
+        COALESCE(SUM(
+            CASE
+                WHEN type = 6
+                AND sales_payment = 5
+                THEN mount
+                ELSE 0
+            END
+        ), 0) AS movement_null_credit,
+
+
+        COALESCE(SUM(
+            CASE
+                WHEN type = 2
+                THEN mount
+                ELSE 0
+            END
+        ), 0) AS movement_retiro,
+
+        COALESCE(SUM(
+            CASE
+                WHEN type = 4
+                THEN mount
+                ELSE 0
+            END
+        ), 0) AS movement_opening
+    ");
+
+    $builder->where('box', $box);
+
+    $result = $builder->get()->getRowArray();
+
+    /*
+     * Convertir todos los resultados a float
+     */
+    foreach ($result as $key => $value) {
+      $result[$key] = (float) $value;
+    }
+
+
+    /*
+     * EFECTIVO REAL GENERADO POR MOVIMIENTOS
+     *
+     * Cobros en efectivo
+     * - Devoluciones en efectivo
+     * - Anulaciones en efectivo
+     */
+    $result['total_cash_mount'] =
+      $result['movement_cash']
+      - $result['movement_devolution_cash']
+      - $result['movement_null_cash'];
+
+
+    return $result;
+  }
+  public function box_movement_null($values)
+  {
+    if (empty($values)) {
+      return false;
+    }
+
+    return $this->insertBatch($values);
+  }
   public function add_box_movement($values)
   {
     return $this->insert($values);
@@ -214,6 +437,9 @@ class BoxMovementModel extends Model
         case 'mount_max':
           $builder->where('bm.mount <=', $value);
           break;
+        case 'sales_status':
+          $builder->where('s.status', $value);
+          break;
       }
     }
 
@@ -226,7 +452,6 @@ class BoxMovementModel extends Model
     return $builder->get()->getResultArray();
   }
 
-
   public function countMovements(array $filters = [])
   {
     $builder = $this->db->table('box_movement bm');
@@ -234,6 +459,11 @@ class BoxMovementModel extends Model
     $builder->join(
       'box b',
       'b.id = bm.box',
+      'left'
+    );
+    $builder->join(
+      'sales s',
+      's.id = bm.sales',
       'left'
     );
 
@@ -295,6 +525,9 @@ class BoxMovementModel extends Model
 
         case 'mount_max':
           $builder->where('bm.mount <=', $value);
+          break;
+        case 'sales_status':
+          $builder->where('s.status', $value);
           break;
       }
     }

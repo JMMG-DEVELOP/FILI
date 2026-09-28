@@ -491,6 +491,7 @@ async function clear() {
   $('#customer_name').text('CLIENTE OCASIONAL');
   $('#all_price_two').prop('checked', false);
 
+  await customer_panel_load();
   await expedition_point_load();
   await invoice_panel_load();
   await history_sales_panel();

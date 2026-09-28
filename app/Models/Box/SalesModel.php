@@ -137,6 +137,9 @@ class SalesModel extends Model
         case 'date_to':
           $builder->where('s.date <=', $value);
           break;
+        case 'id':
+          $builder->where('s.id', $value);
+          break;
       }
     }
 
@@ -162,4 +165,23 @@ class SalesModel extends Model
       'id' => $this->insertID()
     ];
   }
+  public function edit_sales($values, $sale_id)
+  {
+    // Verificar que la venta exista
+    $sale = $this->find($sale_id);
+
+    if (!$sale) {
+      return false;
+    }
+
+    // Actualizar la venta
+    $updated = $this->update(
+      $sale_id,
+      $values
+    );
+
+    return $updated;
+  }
+
+
 }

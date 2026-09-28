@@ -74,6 +74,46 @@ class CustomersCreditsModel extends Model
       'id' => $this->insertID()
     ];
   }
+  public function customer_credit_null($customer, $amount)
+  {
+    $credit = $this
+      ->where('customer', $customer)
+      ->first();
+
+    if (!$credit) {
+      return false;
+    }
+
+    $currentAmount = (float) $credit['amount'];
+    $amount = (float) $amount;
+
+    $newAmount = $currentAmount - $amount;
+
+    // Evitar saldo negativo
+    if ($newAmount < 0) {
+      $newAmount = 0;
+    }
+
+    $updated = $this->update(
+      $credit['id'],
+      [
+        'amount' => $newAmount
+      ]
+    );
+
+    if (!$updated) {
+      return false;
+    }
+
+    return [
+      'status' => true,
+      'id' => $credit['id'],
+      'customer' => $customer,
+      'old_amount' => $currentAmount,
+      'amount' => $amount,
+      'new_amount' => $newAmount
+    ];
+  }
   // public function add_sales($data)
   // {
   //   if (!$this->insert($data)) {

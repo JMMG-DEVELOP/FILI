@@ -207,7 +207,8 @@ class Process extends BaseController
       'box' => session('box'),
       'type' => 1,
       'sales_type' => 1,
-      'payment' => 1
+      'payment' => 1,
+      'sales_status' => 1
     ];
 
     $totalCash = $BoxMovementModel->countMovements($filtersCash);
@@ -228,7 +229,8 @@ class Process extends BaseController
     // CRÉDITO
     $filtersCredit = [
       'box' => session('box'),
-      'sales_type' => 2
+      'sales_type' => 2,
+      'sales_status' => 1
     ];
 
     $totalCredit = $BoxMovementModel->countMovements($filtersCredit);
@@ -250,7 +252,8 @@ class Process extends BaseController
     $filtersOther = [
       'box' => session('box'),
       'sales_type' => 1,
-      'payment_not' => 1
+      'payment_not' => 1,
+      'sales_status' => 1
     ];
 
     $totalOther = $BoxMovementModel->countMovements($filtersOther);
