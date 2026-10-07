@@ -127,11 +127,4 @@
 <script src="<?= base_url(); ?>/asyng/box/app/sales.js"></script>
 
 
-
-
-
-<!-- <script src="<?php // base_url(); ?>/asyng/box/process.js"></script>
-<script src="<?php // base_url(); ?>/asyng/box/send.js"></script>
-<script src="<?php // base_url(); ?>/asyng/box/app.js"></script> -->
-
 <?= $this->endSection(); ?>

@@ -1,16 +1,23 @@
 async function post_sales(sale_id) {
   try {
-    // Verificar tipo de comprobante
+
+    const print_type = Number($('#print_type').val());
+
     // Ticket
-    if ($('#print_type').val() === 1) {
-      ticket();
+    if (print_type === 1) {
+      alert('ticket');
     }
 
-    // 
-    // Factura 
-    if ($('#print_type').val() === 2) {
-
+    // Factura
+    if (print_type === 2) {
+      alert('factura');
     }
+
+    // Ninguno
+    if (print_type === 0) {
+      alert('ninguno');
+    }
+
     clear();
 
   } catch (err) {

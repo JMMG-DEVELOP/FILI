@@ -1,6 +1,6 @@
 <div class="col-xl-12 col-lg-6 col-md-12 col-sm-12 col-12">
   <div class="card">
-
+    <?php $number = 1; ?>
     <div class="card-header d-flex justify-content-between align-items-center">
       <h5 class="mb-0">Lista de Impresoras</h5>
       <?php if (can('printer_add')): ?>
@@ -39,7 +39,7 @@
               <?php foreach ($values as $value) { ?>
                 <tr>
                   <th scope="row">
-                    <?= esc($value['id']) ?>
+                    <?= $number++ ?>
                   </th>
                   <td>
                     <?= esc($value['system_name']) ?>

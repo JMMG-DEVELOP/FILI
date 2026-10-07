@@ -43,7 +43,7 @@ class Printers extends BaseController
       'title' => 'Nueva Impresora',
       'values' => [],
       'paper' => $PrintersPaperModel->get_PrintersPaper(),
-      'drivers' => $PrintersDriversModel->get_PrintersDrivers(),
+      'drivers' => $PrintersDriversModel->get_All(),
       'charset' => $PrintersCharsetsModel->get_all(),
 
 
@@ -115,7 +115,7 @@ class Printers extends BaseController
       'title' => 'Editar Impresora',
       'values' => $printer,
       'paper' => $PrintersPaperModel->get_PrintersPaper(),
-      'drivers' => $PrintersDriversModel->get_PrintersDrivers(),
+      'drivers' => $PrintersDriversModel->get_All(),
       'charset' => $PrintersCharsetsModel->get_all(),
     ];
 

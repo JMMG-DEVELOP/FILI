@@ -231,7 +231,7 @@ class Login extends BaseController
                     ? 'Mobile'
                     : 'Desktop',
 
-                'enabled' => 1
+                'status' => 1
 
             ], true);
 

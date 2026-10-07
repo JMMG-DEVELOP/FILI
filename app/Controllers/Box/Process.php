@@ -3,7 +3,7 @@ namespace App\Controllers\Box;
 
 use App\Controllers\BaseController;
 use App\Models\Auth\UsersSucursals;
-use App\Models\Box\UserBoxModel;
+use App\Models\Box\PointDeviceModel;
 use App\Models\Box\PaymentTypeModel;
 use App\Models\Box\InvoiceTypeModel;
 use App\Models\Box\WaitModel;
@@ -106,15 +106,13 @@ class Process extends BaseController
   }
   public function expedition_point_load()
   {
-    // Instanciar modelos
     $userSucursal = new UsersSucursals();
-    // $userBox = new UserBoxModel();
 
     $data = [
       'sucursal' => $userSucursal->details(session()->get('id')),
       'user' => session()->get('id'),
       'session' => session()->get('session'),
-      'box' => session()->get('box')
+      'box' => session()->get('box'),
     ];
 
     $html = view('Box/controller/expedition_point', $data);
@@ -129,11 +127,14 @@ class Process extends BaseController
 
   public function expedition_point_select()
   {
-    $userBox = new UserBoxModel();
-    $user = $this->request->getPost('user');
-    $sucursal = $this->request->getPost('sucursal');
+    $PointDeviceModel = new PointDeviceModel();
 
-    $values = $userBox->getUserExpedition($user, $sucursal);
+    $device = session()->get('device');
+
+
+    $values = $PointDeviceModel->getDeviceExpedition(
+      $device
+    );
 
     return $this->response->setJSON([
       'status' => true,
@@ -142,7 +143,6 @@ class Process extends BaseController
       'csrfHash' => csrf_hash()
     ]);
   }
-
   public function invoice_multi_payment_load()
   {
     $PaymentDeviceModel = new PaymentDeviceModel();

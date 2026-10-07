@@ -2,6 +2,68 @@ const CSRF = {
   name: csrfName,
   hash: csrfHash
 };
+$(document).on('input', '.number', function () {
+
+  this.value = this.value.replace(/\D/g, '');
+
+});
+$(document).on('input', '.guaranies', function () {
+
+  let value = this.value;
+
+  value = value.replace(/\D/g, '');
+
+  value = value.replace(/^0+(?=\d)/, '');
+
+  value = value.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+
+  this.value = value;
+
+});
+$(document).on('input', '.porcent', function () {
+
+  let value = this.value;
+
+  // Permitir números, punto y signo negativo
+  value = value.replace(/[^\d.-]/g, '');
+
+  // El signo negativo solo puede estar al inicio
+  value = value.replace(/(?!^)-/g, '');
+
+  // Permitir solamente un punto decimal
+  const parts = value.split('.');
+
+  if (parts.length > 2) {
+    value = parts[0] + '.' + parts.slice(1).join('');
+  }
+
+  // Máximo 1 decimal
+  if (value.includes('.')) {
+
+    const decimal = value.split('.')[1];
+
+    value =
+      value.split('.')[0] +
+      '.' +
+      decimal.substring(0, 1);
+  }
+
+  this.value = value;
+
+});
+$(document).on('blur', '.percent', function () {
+
+  let value = this.value.replace(/\s*%$/, '').trim();
+
+  if (value !== '') {
+    this.value = value + ' %';
+  }
+
+}); $(document).on('focus', '.percent', function () {
+
+  this.value = this.value.replace(/\s*%$/, '').trim();
+
+});
 // Estilizar input para mostrar monedas 000.000
 function asyngMoneyMask(selector = ".money") {
   $(selector).inputmask({
@@ -42,7 +104,7 @@ function asyngNumericStock(selector = ".stock") {
     allowPlus: false
   });
 }
-// Estilizar input para mostrar porcentaje
+// // Estilizar input para mostrar porcentaje
 function asyngPercentMask(selector = ".percent") {
   $(selector).inputmask({
     alias: "numeric",

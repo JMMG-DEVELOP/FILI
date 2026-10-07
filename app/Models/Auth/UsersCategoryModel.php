@@ -6,7 +6,7 @@ use CodeIgniter\Model;
 
 class UsersCategoryModel extends Model
 {
-    protected $table      = 'users_category';
+    protected $table = 'users_category';
     protected $primaryKey = 'id';
     protected $returnType = 'array';
 
@@ -14,8 +14,8 @@ class UsersCategoryModel extends Model
         'name'
     ];
 
-    public function login()
+    public function get_All()
     {
-        
+        return $this->findAll();
     }
 }

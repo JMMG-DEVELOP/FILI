@@ -32,14 +32,16 @@ class Infopage
   public function redirect()
   {
     $category = session('category');
+
     return match ($category) {
 
       '1' => 'dashboard/index',
-      '2' => 'dashboard/box',
-      '3' => 'box',
-      '4' => 'box',
 
-      default => redirect()->to('/login')->with('error', 'Rol no autorizado'),
+      '2' => 'dashboard/index',
+
+      '3' => 'dashboard/index',
+
+      default => 'dashboard/index',
     };
   }
 }

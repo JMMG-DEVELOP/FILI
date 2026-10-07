@@ -25,7 +25,11 @@
       </li>
       <li class="nav-item">
         <a class="nav-link" id="contact-vertical-tab" data-toggle="tab" href="#contact-vertical" role="tab"
-          aria-controls="contact" aria-selected="false">Tab Vertical #3</a>
+          aria-controls="contact" aria-selected="false"><i class="fas fa-user"></i> </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="point-vertical-tab" data-toggle="tab" href="#point-vertical" role="tab"
+          aria-controls="point" aria-selected="false"><i class="fas fa-square"></i> </a>
       </li>
     </ul>
     <div class="tab-content" id="myTabContent3">
@@ -106,17 +110,16 @@
           </div>
         </div>
 
-
       </div>
       <div class="tab-pane fade" id="profile-vertical" role="tabpanel" aria-labelledby="profile-vertical-tab">
-
         <?= $this->include('config/panels/printers'); ?>
-
-
       </div>
 
       <div class="tab-pane fade" id="contact-vertical" role="tabpanel" aria-labelledby="contact-vertical-tab">
-
+        <?= $this->include('config/panels/users'); ?>
+      </div>
+      <div class="tab-pane fade" id="point-vertical" role="tabpanel" aria-labelledby="contact-vertical-tab">
+        <?= $this->include('config/panels/points'); ?>
       </div>
     </div>
   </div>
@@ -136,17 +139,34 @@
 
 <?= $this->section('other_script'); ?>
 
+
 <?= $this->include('interface/other/scripts/datatables'); ?>
 
 <!-- process -->
 <script src="<?= base_url(); ?>/asyng/config/process/printers/printers.js"></script>
+<script src=" <?= base_url(); ?>/asyng/config/process/printers/drivers.js"></script>
+<script src="<?= base_url(); ?>/asyng/config/process/printers/papers.js"></script>
+<script src="<?= base_url(); ?>/asyng/config/process/printers/devices.js"></script>
+<script src="<?= base_url(); ?>/asyng/config/process/printers/asignation.js"></script>
+<script src="<?= base_url(); ?>/asyng/config/process/users/category.js"></script>
+<script src="<?= base_url(); ?>/asyng/config/process/users/users.js"></script>
+<script src="<?= base_url(); ?>/asyng/config/process/points/point.js"></script>
+<script src="<?= base_url(); ?>/asyng/config/process/points/sequence.js"></script>
 
 
 <!-- app -->
 <script src="<?= base_url(); ?>/asyng/config/app/printers/printers.js"></script>
+<script src="<?= base_url(); ?>/asyng/config/app/printers/drivers.js"></script>
+<script src="<?= base_url(); ?>/asyng/config/app/printers/papers.js"></script>
+<script src="<?= base_url(); ?>/asyng/config/app/printers/devices.js"></script>
+<script src="<?= base_url(); ?>/asyng/config/app/printers/asignation.js"></script>
+<script src="<?= base_url(); ?>/asyng/config/app/users/category.js"></script>
+<script src="<?= base_url(); ?>/asyng/config/app/users/users.js"></script>
+<script src="<?= base_url(); ?>/asyng/config/app/points/point.js"></script>
+<script src="<?= base_url(); ?>/asyng/config/app/points/sequence.js"></script>
+
+
 
 <script src="<?= base_url(); ?>/asyng/config/app/app.js"></script>
-
-
 
 <?= $this->endSection(); ?>

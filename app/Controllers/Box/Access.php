@@ -196,7 +196,7 @@ class Access extends BaseController
 
         /*
          * =====================================================
-         * 8. CARGAR INFORMACIÓN DE LA CAJA
+         * 8. CARGAR INFORMACIÓN   DE LA CAJA
          * =====================================================
          */
         $info = $infobox->info();

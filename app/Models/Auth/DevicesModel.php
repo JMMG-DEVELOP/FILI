@@ -16,6 +16,61 @@ class DevicesModel extends Model
     'type',
     'enabled',
   ];
+
+  public function quit($id)
+  {
+    if (empty($id)) {
+      return false;
+    }
+
+    return $this
+      ->update($id, [
+        'enabled' => 2
+      ]);
+  }
+  public function add($values)
+  {
+    return $this->insert($values);
+  }
+  public function edit($values, $id)
+  {
+    if (empty($id)) {
+      return false;
+    }
+
+    return $this->update($id, $values);
+  }
+
+  public function get_ById($id)
+  {
+    return $this->select('
+            devices.*,
+            status.name AS status_name
+        ')
+      ->join(
+        'status',
+        'status.id = devices.enabled',
+        'left'
+      )
+      ->where(
+        'devices.id',
+        $id
+      )
+      ->first();
+  }
+  public function get_All()
+  {
+    return $this->select('
+            devices.*,
+            status.name AS status_name
+        ')
+      ->join(
+        'status',
+        'status.id = devices.enabled',
+        'left'
+      )
+      ->findAll();
+  }
   public function getDeviceSession($sessionId)
   {
     $builder = $this->db->table('users_sessions us');

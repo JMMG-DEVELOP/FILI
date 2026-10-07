@@ -36,58 +36,55 @@ function asyngLoader(show = true) {
 }
 
 
-// ===== SWEETALERT HELPERS (Opcional) =====
-function asyngSuccess(msg) {
-  if (window.Swal) {
-    Swal.fire("Éxito", msg, "success");
-  } else {
-    alert(msg);
-  }
-}
-
-function asyngError(msg) {
-  if (window.Swal) {
-    Swal.fire("Error", msg, "error");
-  } else {
-    alert(msg);
-  }
-}
-
-function asyngInfo(msg) {
-  if (window.Swal) {
-    Swal.fire("Info", msg, "info");
-  } else {
-    alert(msg);
-  }
-}
-
-
-// Preparación de formulario para envio por ajax
 // function asyngFormData(form) {
-//   let formData = $(form).serializeArray();
 
-//   formData.push({
-//     name: csrfName,
-//     value: csrfHash
+//   const data = {};
+
+//   if ($(form).length === 0) {
+//     return data;
+//   }
+
+//   $(form).serializeArray().forEach(item => {
+//     data[item.name] = item.value;
 //   });
 
-//   return formData;
+//   return data;
 // }
-function asyngFormData(form) {
+
+function asyngFormData(selector) {
 
   const data = {};
 
-  if ($(form).length === 0) {
-    return data;
-  }
+  $(selector).serializeArray().forEach(function (item) {
 
-  $(form).serializeArray().forEach(item => {
-    data[item.name] = item.value;
+    let value = item.value;
+
+    const field = $(selector)
+      .find('[name="' + item.name + '"]')
+      .first();
+
+    // MONEY
+    if (field.hasClass('money')) {
+
+      value = value
+        .replace(/\./g, '')
+        .trim();
+    }
+
+    // PERCENT
+    if (field.hasClass('percent')) {
+
+      value = value
+        .replace('%', '')
+        .trim();
+    }
+
+    data[item.name] = value;
+
   });
 
   return data;
 }
-
 // Envio de datos por ajax
 
 function asyngAjaxSend(url, data = {}, useLoader = true) {

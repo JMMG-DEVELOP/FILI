@@ -70,8 +70,52 @@ class Permissions extends BaseConfig
             // ¨¨¨¨ PRINTERS
             // 'printer_view',
             'printer_edit',
-            'printer_delete',
-            'printer_add'
+            // 'printer_delete',
+            'printer_add',
+
+            // ¨¨¨¨ DRIVERS
+            // 'driver_view',
+            'driver_edit',
+            // 'driver_delete',
+            'driver_add',
+
+            // ¨¨¨¨ PAPERS
+            // 'paper_view',
+            'paper_edit',
+            // 'paper_delete',
+            'paper_add',
+            // ¨¨¨¨ DEVICES
+            // 'device_view',
+            'device_edit',
+            // 'device_delete',
+            'device_add',
+
+            // ¨¨¨¨ USERS
+            // 'user_view',
+            'user_edit',
+            // 'user_delete',
+            'user_add',
+
+            // ¨¨¨¨ CATEGORIAS DE USUAIO
+            // 'category_view',
+            'category_edit',
+            // 'category_delete',
+            'category_add',
+            // ¨¨¨¨ ASIGNACION DE IMPRESORAS A DISPOSITIVOS
+            // 'printerAsignation_view',
+            'printerAsignation_edit',
+            'printerAsignation_delete',
+            'printerAsignation_add',
+            // ¨¨¨¨ PUNTO DE EXPEDICION
+            // 'point_point_view',
+            'point_point_edit',
+            'point_point_delete',
+            'point_point_add',
+            // ¨¨¨¨ SECUENCIAS DE PUNTO DE EXPEDICIÓN
+            // 'sequence_view',
+            'sequence_edit',
+            'sequence_delete',
+            'sequence_add',
         ],
 
         // ADMIN
@@ -85,6 +129,8 @@ class Permissions extends BaseConfig
         ],
 
         // BOX
-        4 => [],
+        4 => [
+            'access_box', //Acceder por menu y route
+        ],
     ];
 }

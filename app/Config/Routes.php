@@ -250,9 +250,8 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
 
     // ==================================================
     // CUSTOMER
-    // Permiso: customer_access
     // ==================================================
-    $routes->group('customer', ['filter' => 'permission:access_customer'], function ($routes) {
+    $routes->group('customer', function ($routes) {
 
         $routes->group('process', function ($routes) {
 
@@ -264,6 +263,10 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
         });
 
     });
+    // ==================================================
+    // CUSTOMERS
+    // Permiso: customer_access
+    // ==================================================
 
     // ==================================================
     // CONFIG
@@ -305,6 +308,242 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
             );
 
         });
+
+        $routes->group('drivers', function ($routes) {
+
+            $routes->post(
+                'panel_load',
+                'Config\Printers\Drivers::panel_load'
+            );
+            $routes->post(
+                'form_new_open',
+                'Config\Printers\Drivers::form_new_open'
+            );
+            $routes->post(
+                'form_new_save',
+                'Config\Printers\Drivers::form_new_save'
+            );
+            $routes->post(
+                'form_edit_open',
+                'Config\Printers\Drivers::form_edit_open'
+            );
+            $routes->post(
+                'form_edit_save',
+                'Config\Printers\Drivers::form_edit_save'
+            );
+            $routes->post(
+                'delete_save',
+                'Config\Printers\Drivers::delete_save'
+            );
+
+        });
+
+        $routes->group('papers', function ($routes) {
+
+            $routes->post(
+                'panel_load',
+                'Config\Printers\Papers::panel_load'
+            );
+            $routes->post(
+                'form_new_open',
+                'Config\Printers\Papers::form_new_open'
+            );
+            $routes->post(
+                'form_new_save',
+                'Config\Printers\Papers::form_new_save'
+            );
+            $routes->post(
+                'form_edit_open',
+                'Config\Printers\Papers::form_edit_open'
+            );
+            $routes->post(
+                'form_edit_save',
+                'Config\Printers\Papers::form_edit_save'
+            );
+            $routes->post(
+                'delete_save',
+                'Config\Printers\Papers::delete_save'
+            );
+
+        });
+        $routes->group('point', function ($routes) {
+
+            $routes->post(
+                'panel_load',
+                'Config\Points\Points::panel_load'
+            );
+            $routes->post(
+                'form_new_open',
+                'Config\Points\Points::form_new_open'
+            );
+            $routes->post(
+                'form_new_save',
+                'Config\Points\Points::form_new_save'
+            );
+            $routes->post(
+                'form_edit_open',
+                'Config\Points\Points::form_edit_open'
+            );
+            $routes->post(
+                'form_edit_save',
+                'Config\Points\Points::form_edit_save'
+            );
+            $routes->post(
+                'delete_save',
+                'Config\Points\Points::delete_save'
+            );
+
+        });
+        $routes->group('sequence', function ($routes) {
+
+            $routes->post(
+                'panel_load',
+                'Config\Points\Sequence::panel_load'
+            );
+            $routes->post(
+                'form_new_open',
+                'Config\Points\Sequence::form_new_open'
+            );
+            $routes->post(
+                'form_new_save',
+                'Config\Points\Sequence::form_new_save'
+            );
+            $routes->post(
+                'form_edit_open',
+                'Config\Points\Sequence::form_edit_open'
+            );
+            $routes->post(
+                'form_edit_save',
+                'Config\Points\Sequence::form_edit_save'
+            );
+            $routes->post(
+                'delete_open',
+                'Config\Points\Sequence::delete_open'
+            );
+            $routes->post(
+                'delete_save',
+                'Config\Points\Sequence::delete_save'
+            );
+
+        });
+        $routes->group('devices', function ($routes) {
+
+            $routes->post(
+                'panel_load',
+                'Config\Printers\Devices::panel_load'
+            );
+            $routes->post(
+                'form_new_open',
+                'Config\Printers\Devices::form_new_open'
+            );
+            $routes->post(
+                'form_new_save',
+                'Config\Printers\Devices::form_new_save'
+            );
+            $routes->post(
+                'form_edit_open',
+                'Config\Printers\Devices::form_edit_open'
+            );
+            $routes->post(
+                'form_edit_save',
+                'Config\Printers\Devices::form_edit_save'
+            );
+            $routes->post(
+                'delete_save',
+                'Config\Printers\Devices::delete_save'
+            );
+
+        });
+        $routes->group('category', function ($routes) {
+
+            $routes->post(
+                'panel_load',
+                'Config\Users\Category::panel_load'
+            );
+            $routes->post(
+                'form_new_open',
+                'Config\Users\Category::form_new_open'
+            );
+            $routes->post(
+                'form_new_save',
+                'Config\Users\Category::form_new_save'
+            );
+            $routes->post(
+                'form_edit_open',
+                'Config\Users\Category::form_edit_open'
+            );
+            $routes->post(
+                'form_edit_save',
+                'Config\Users\Category::form_edit_save'
+            );
+            $routes->post(
+                'delete_save',
+                'Config\Users\Category::delete_save'
+            );
+
+        });
+
+        $routes->group('asignation', function ($routes) {
+
+            $routes->post(
+                'panel_load',
+                'Config\Printers\Asignation::panel_load'
+            );
+            $routes->post(
+                'form_new_open',
+                'Config\Printers\Asignation::form_new_open'
+            );
+            $routes->post(
+                'form_new_save',
+                'Config\Printers\Asignation::form_new_save'
+            );
+            $routes->post(
+                'form_edit_open',
+                'Config\Printers\Asignation::form_edit_open'
+            );
+            $routes->post(
+                'form_edit_save',
+                'Config\Printers\Asignation::form_edit_save'
+            );
+            $routes->post(
+                'delete_save',
+                'Config\Printers\Asignation::delete_save'
+            );
+
+        });
+        $routes->group('users', function ($routes) {
+
+            $routes->post(
+                'panel_load',
+                'Config\Users\Users::panel_load'
+            );
+            $routes->post(
+                'form_new_open',
+                'Config\Users\Users::form_new_open'
+            );
+            $routes->post(
+                'form_new_save',
+                'Config\Users\Users::form_new_save'
+            );
+            $routes->post(
+                'form_edit_open',
+                'Config\Users\Users::form_edit_open'
+            );
+            $routes->post(
+                'form_edit_save',
+                'Config\Users\Users::form_edit_save'
+            );
+            $routes->post(
+                'form_edit_password_save',
+                'Config\Users\Users::form_edit_password_save'
+            );
+            $routes->post(
+                'delete_save',
+                'Config\Users\Users::delete_save'
+            );
+
+        });
+
 
     });
 

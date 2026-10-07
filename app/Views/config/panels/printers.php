@@ -15,6 +15,10 @@
           aria-selected="false">Papeles</a>
       </li>
       <li class="nav-item">
+        <a class="nav-link" id="devices-tab" data-toggle="tab" href="#devices" role="tab" aria-controls="devices"
+          aria-selected="false">Dispositivos</a>
+      </li>
+      <li class="nav-item">
         <a class="nav-link" id="asing-tab" data-toggle="tab" href="#asing" role="tab" aria-controls="asing"
           aria-selected="false">Asignaciones</a>
       </li>
@@ -24,39 +28,27 @@
 
       <div class="tab-pane fade active show" id="home" role="tabpanel" aria-labelledby="home-tab">
         <div id="panel_printers">
-
-
         </div>
       </div>
 
       <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
         <div id="panel_drivers">
-
-
+          <div id="panel_drivers">
+          </div>
         </div>
-
       </div>
-
       <div class="tab-pane fade" id="papers" role="tabpanel" aria-labelledby="papers-tab">
         <div id="panel_papers">
-
-
         </div>
-
       </div>
-
+      <div class="tab-pane fade" id="devices" role="tabpanel" aria-labelledby="devices-tab">
+        <div id="panel_devices">
+        </div>
+      </div>
       <div class="tab-pane fade" id="asing" role="tabpanel" aria-labelledby="asing-tab">
-        <div id="panel_asing">
-
-
+        <div id="panel_asignation">
         </div>
-
       </div>
-
-
-
-
-
     </div>
   </div>
 </div>
