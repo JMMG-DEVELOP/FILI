@@ -60,25 +60,20 @@ class Permissions extends BaseConfig
             //  USERS
             //
             'access_users', //Acceder por menu y route
-
             //*********************** 
             //  ¨¨¨¨ CONFIG
             // Si tiene edit, no habilitar view, si no tiene view habilitado solo podra ver el datatable, si tiene, podra abrir el formulario sin poder editar
-
             'access_config', //Acceder por menu y route
-
             // ¨¨¨¨ PRINTERS
             // 'printer_view',
             'printer_edit',
             // 'printer_delete',
             'printer_add',
-
             // ¨¨¨¨ DRIVERS
             // 'driver_view',
             'driver_edit',
             // 'driver_delete',
             'driver_add',
-
             // ¨¨¨¨ PAPERS
             // 'paper_view',
             'paper_edit',
@@ -89,13 +84,11 @@ class Permissions extends BaseConfig
             'device_edit',
             // 'device_delete',
             'device_add',
-
             // ¨¨¨¨ USERS
             // 'user_view',
             'user_edit',
             // 'user_delete',
             'user_add',
-
             // ¨¨¨¨ CATEGORIAS DE USUAIO
             // 'category_view',
             'category_edit',
@@ -116,6 +109,21 @@ class Permissions extends BaseConfig
             'sequence_edit',
             'sequence_delete',
             'sequence_add',
+            // ¨¨¨¨ ASIGNACION DE PUNTO DE EXPEDICION A DISPOSITIVOS
+            // 'point_asignation_view',
+            'point_asignation_edit',
+            'point_asignation_delete',
+            'point_asignation_add',
+            // ¨¨¨¨ ASIGNACION DE SUCURSAL A USUARIOS
+            // 'sucursal_asignation_view',
+            'sucursal_asignation_edit',
+            'sucursal_asignation_delete',
+            'sucursal_asignation_add',
+            // ¨¨¨¨ MANEJO DE SUCURSALES
+            // 'sucursal_view',
+            'sucursal_edit',
+            'sucursal_delete',
+            'sucursal_add',
         ],
 
         // ADMIN

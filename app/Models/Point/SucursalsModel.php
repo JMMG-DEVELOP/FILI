@@ -19,4 +19,29 @@ class SucursalsModel extends Model
     return $this->findAll();
   }
 
+  public function quit($id)
+  {
+    if (empty($id)) {
+      return false;
+    }
+
+    return $this->delete($id);
+  }
+  public function add($values)
+  {
+    return $this->insert($values);
+  }
+  public function edit($values, $id)
+  {
+    if (empty($id)) {
+      return false;
+    }
+
+    return $this->update($id, $values);
+  }
+
+  public function get_ById($values)
+  {
+    return $this->where('id', $values)->first();
+  }
 }

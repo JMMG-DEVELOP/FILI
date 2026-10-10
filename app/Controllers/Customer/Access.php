@@ -1,5 +1,6 @@
 <?php
 namespace App\Controllers\Customer;
+use App\Libraries\Infopage;
 
 use App\Controllers\BaseController;
 class Access extends BaseController
@@ -9,12 +10,12 @@ class Access extends BaseController
         if (session()->get('logged')) {
 
             $infopage = new Infopage();
-            $infobox = new InfoBox();
-
-            $info = $infobox->info();
-
+            $info = [
+                'title' => 'Customer',
+                // 'session' => $data
+            ];
             $page = $infopage->infopage($info);
-            return view('Box/index', $page);
+            return view('Customer/index', $page);
 
         }
     }

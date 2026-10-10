@@ -62,6 +62,7 @@
             <div class="tab-pane fade" id="time" role="tabpanel" aria-labelledby="contact-tab">
               <div id="wait_panel"></div>
             </div>
+
           </div>
         </div>
 

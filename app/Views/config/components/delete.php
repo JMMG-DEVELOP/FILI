@@ -35,8 +35,20 @@
         <a href="#" class="btn btn-outline-danger point_point_delete_close"> <i class="fas fa-times"></i>
         </a>
       <?php } ?>
+      <?php if ($type === 'point_asignation') { ?>
+        <a href="#" class="btn btn-outline-danger point_asignation_delete_close"> <i class="fas fa-times"></i>
+        </a>
+      <?php } ?>
       <?php if ($type === 'sequence') { ?>
         <a href="#" class="btn btn-outline-danger sequence_delete_close"> <i class="fas fa-times"></i>
+        </a>
+      <?php } ?>
+      <?php if ($type === 'sucursal_asignation') { ?>
+        <a href="#" class="btn btn-outline-danger sucursal_asignation_delete_close"> <i class="fas fa-times"></i>
+        </a>
+      <?php } ?>
+      <?php if ($type === 'sucursal') { ?>
+        <a href="#" class="btn btn-outline-danger sucursal_delete_close"> <i class="fas fa-times"></i>
         </a>
       <?php } ?>
     </div>
@@ -101,6 +113,30 @@
       <?php if ($type === 'sequence') { ?>
 
         <button type="button" class="btn btn-outline-warning px-5" id="delete_sequence" data-id="<?= esc($id) ?>"
+          data-sequence-type="<?= esc($sequence_type ?? '') ?>">
+          <i class="fas fa-trash"></i>
+        </button>
+
+      <?php } ?>
+      <?php if ($type === 'point_asignation') { ?>
+
+        <button type="button" class="btn btn-outline-warning px-5" id="delete_point_asignation" data-id="<?= esc($id) ?>"
+          data-sequence-type="<?= esc($sequence_type ?? '') ?>">
+          <i class="fas fa-trash"></i>
+        </button>
+
+      <?php } ?>
+      <?php if ($type === 'sucursal_asignation') { ?>
+
+        <button type="button" class="btn btn-outline-warning px-5" id="delete_sucursal_asignation"
+          data-id="<?= esc($id) ?>" data-sequence-type="<?= esc($sequence_type ?? '') ?>">
+          <i class="fas fa-trash"></i>
+        </button>
+
+      <?php } ?>
+      <?php if ($type === 'sucursal') { ?>
+
+        <button type="button" class="btn btn-outline-warning px-5" id="delete_sucursal" data-id="<?= esc($id) ?>"
           data-sequence-type="<?= esc($sequence_type ?? '') ?>">
           <i class="fas fa-trash"></i>
         </button>

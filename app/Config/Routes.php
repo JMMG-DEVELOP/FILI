@@ -253,6 +253,8 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
     // ==================================================
     $routes->group('customer', function ($routes) {
 
+        $routes->get('/', 'Customer\Access::index');
+
         $routes->group('process', function ($routes) {
 
             $routes->post(
@@ -426,6 +428,34 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
             );
 
         });
+        $routes->group('point_asignation', function ($routes) {
+
+            $routes->post(
+                'panel_load',
+                'Config\Points\Asignation::panel_load'
+            );
+            $routes->post(
+                'form_new_open',
+                'Config\Points\Asignation::form_new_open'
+            );
+            $routes->post(
+                'form_new_save',
+                'Config\Points\Asignation::form_new_save'
+            );
+            $routes->post(
+                'form_edit_open',
+                'Config\Points\Asignation::form_edit_open'
+            );
+            $routes->post(
+                'form_edit_save',
+                'Config\Points\Asignation::form_edit_save'
+            );
+            $routes->post(
+                'delete_save',
+                'Config\Points\Asignation::delete_save'
+            );
+
+        });
         $routes->group('devices', function ($routes) {
 
             $routes->post(
@@ -479,6 +509,62 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
             $routes->post(
                 'delete_save',
                 'Config\Users\Category::delete_save'
+            );
+
+        });
+        $routes->group('sucursal_asignation', function ($routes) {
+
+            $routes->post(
+                'panel_load',
+                'Config\Users\Asignation::panel_load'
+            );
+            $routes->post(
+                'form_new_open',
+                'Config\Users\Asignation::form_new_open'
+            );
+            $routes->post(
+                'form_new_save',
+                'Config\Users\Asignation::form_new_save'
+            );
+            $routes->post(
+                'form_edit_open',
+                'Config\Users\Asignation::form_edit_open'
+            );
+            $routes->post(
+                'form_edit_save',
+                'Config\Users\Asignation::form_edit_save'
+            );
+            $routes->post(
+                'delete_save',
+                'Config\Users\Asignation::delete_save'
+            );
+
+        });
+        $routes->group('sucursal', function ($routes) {
+
+            $routes->post(
+                'panel_load',
+                'Config\Sucursals\Sucursal::panel_load'
+            );
+            $routes->post(
+                'form_new_open',
+                'Config\Sucursals\Sucursal::form_new_open'
+            );
+            $routes->post(
+                'form_new_save',
+                'Config\Sucursals\Sucursal::form_new_save'
+            );
+            $routes->post(
+                'form_edit_open',
+                'Config\Sucursals\Sucursal::form_edit_open'
+            );
+            $routes->post(
+                'form_edit_save',
+                'Config\Sucursals\Sucursal::form_edit_save'
+            );
+            $routes->post(
+                'delete_save',
+                'Config\Sucursals\Sucursal::delete_save'
             );
 
         });

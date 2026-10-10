@@ -362,6 +362,24 @@ class InfoSales
     ];
   }
 
+  public function invoices($values)
+  {
+    $point = $values['point'] ?? [];
+    $customer = $values['customer'] ?? [];
+
+    return [
+      'number' => $point['invoice_number'] ?? null,
+      'mount' => $values['cart']['totals']['total_price'] ?? 0,
+      'date' => date('Y-m-d'),
+      'time' => date('H:i:s'),
+      'user' => $point['user_id'] ?? session('id'),
+      'customer' => $customer['customer_id'] ?? null
+    ];
+  }
+  public function invoices_sales($invoice, $sales)
+  {
+
+  }
 
 
 

@@ -176,6 +176,20 @@ class Sales extends BaseController
     if ($response)
       return $response;
 
+    // INVOICES
+    if ((int) ($values['receipt'] ?? 0) === 2) {
+
+      $response = $this->execute(
+        $this->SalesService->invoices(
+          $this->InfoSales->invoices($values),
+          $sale_id
+        )
+      );
+
+      if ($response) {
+        return $response;
+      }
+    }
 
     $db->transComplete();
 

@@ -12,6 +12,7 @@
               src="<?= base_url(); ?>/assets/images/github.png" alt=""> <span> Productos</span></a>
         </div>
       <?php endif; ?>
+
       <?php if (can('access_box')): ?>
         <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12 ">
           <a href="<?= base_url('box'); ?>" class="connection-item"><img src="<?= base_url(); ?>/assets/images/github.png"
@@ -20,12 +21,22 @@
         </div>
       <?php endif; ?>
 
+      <?php if (can('access_customer')): ?>
+        <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12 ">
+          <a href="<?= base_url('customer'); ?>" class="connection-item"><img
+              src="<?= base_url(); ?>/assets/images/github.png" alt=""> <span>
+              Clientes</span></a>
+        </div>
+      <?php endif; ?>
+
+
 
     </div>
     <div class="row">
 
 
       <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12 ">
+
         <?php if (can('access_config')): ?>
           <a href="<?= base_url('config'); ?>" class="connection-item"><img
               src="<?= base_url(); ?>/assets/images/github.png" alt=""> <span>

@@ -19,7 +19,10 @@ async function panels_load() {
     users_panel_load(),
     asignation_panel_load(),
     point_panel_load(),
-    sequence_panel_load()
+    sequence_panel_load(),
+    point_asignation_panel_load(),
+    sucursal_asignation_panel_load(),
+    sucursal_panel_load()
 
   ]);
 

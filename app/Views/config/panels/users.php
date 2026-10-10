@@ -13,6 +13,10 @@
           aria-selected="false">Categorias</a>
       </li>
 
+      <li class="nav-item">
+        <a class="nav-link" id="sucursal_asignation-tab" data-toggle="tab" href="#sucursal_asignation" role="tab"
+          aria-controls="sucursal_asignation" aria-selected="false">Asignación de Sucursal</a>
+      </li>
     </ul>
     <div class="tab-content" id="myTabContent2">
 
@@ -22,6 +26,10 @@
 
       <div class="tab-pane fade" id="category" role="tabpanel" aria-labelledby="category-tab">
         <div id="panel_category"> </div>
+      </div>
+
+      <div class="tab-pane fade" id="sucursal_asignation" role="tabpanel" aria-labelledby="sucursal_asignation-tab">
+        <div id="panel_sucursal_asignation"> </div>
       </div>
 
     </div>

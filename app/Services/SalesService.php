@@ -10,6 +10,9 @@ use App\Models\Box\InvoiceSequenceModel;
 use App\Models\Box\StockMovmentsModel;
 use App\Models\Box\SalesPaymentsModel;
 use App\Models\Box\SalesIvaModel;
+use App\Models\Box\InvoicesModel;
+use App\Models\Box\InvoicesSalesModel;
+
 use App\Models\Products\Products\StockModel;
 
 use App\Models\Customer\CustomersCreditsModel;
@@ -598,6 +601,89 @@ class SalesService
     ];
   }
 
+
+  public function invoices($values, $saleId)
+  {
+    $InvoiceModel = new InvoicesModel();
+    $InvoiceSalesModel = new InvoicesSalesModel();
+
+    if (empty($saleId)) {
+      return [
+        'status' => false,
+        'error' => 'NO SE RECIBIÓ EL ID DE LA VENTA'
+      ];
+    }
+
+    // ==========================================
+    // GUARDAR FACTURA
+    // ==========================================
+
+    $invoiceId = $InvoiceModel->add($values);
+
+    if (!$invoiceId) {
+
+      $dbError = $InvoiceModel->db->error();
+
+      $modelErrors = $InvoiceModel->errors();
+
+      $lastQuery = (string) $InvoiceModel->db->getLastQuery();
+
+      log_message(
+        'error',
+        'ERROR AL GUARDAR FACTURA: ' . json_encode([
+          'data' => $values,
+          'model_errors' => $modelErrors,
+          'db_error' => $dbError,
+          'last_query' => $lastQuery
+        ], JSON_UNESCAPED_UNICODE)
+      );
+
+      return [
+        'status' => false,
+        'error' => 'ERROR AL GUARDAR LA FACTURA',
+        'model_errors' => $modelErrors,
+        'db_error' => $dbError,
+        'last_query' => $lastQuery,
+        'data' => $values
+      ];
+    }
+
+    // ==========================================
+    // RELACIONAR FACTURA CON VENTA
+    // ==========================================
+
+    $relation = $InvoiceSalesModel->add([
+      'invoice' => $invoiceId,
+      'sales' => $saleId
+    ]);
+
+    if (!$relation) {
+
+      log_message(
+        'error',
+        'ERROR AL RELACIONAR FACTURA: ' . json_encode([
+          'invoice_id' => $invoiceId,
+          'sale_id' => $saleId,
+          'model_errors' => $InvoiceSalesModel->errors(),
+          'db_error' => $InvoiceSalesModel->db->error(),
+          'last_query' => (string) $InvoiceSalesModel->db->getLastQuery()
+        ], JSON_UNESCAPED_UNICODE)
+      );
+
+      return [
+        'status' => false,
+        'error' => 'ERROR AL RELACIONAR LA FACTURA CON LA VENTA',
+        'model_errors' => $InvoiceSalesModel->errors(),
+        'db_error' => $InvoiceSalesModel->db->error()
+      ];
+    }
+
+    return [
+      'status' => true,
+      'invoice_id' => $invoiceId,
+      'sale_id' => $saleId
+    ];
+  }
 
 
 
