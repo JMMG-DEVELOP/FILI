@@ -55,6 +55,19 @@ class Permissions extends BaseConfig
             //  CUSTOMER
             //
             'access_customer', //Acceder por menu y route
+            'customer_view',
+            'customer_add',
+            'customer_edit',
+            'customer_delete',
+
+            'customer_credit_payment',
+            'customer_credit_add',
+
+            'customer_sales_view',
+
+            'customer_credit_cost_view',
+            'customer_credit_margin_view',
+
 
             //
             //  USERS
@@ -124,6 +137,11 @@ class Permissions extends BaseConfig
             'sucursal_edit',
             'sucursal_delete',
             'sucursal_add',
+
+            // **********************
+            //  INVOICEE
+            'access_invoice',
+            'invoice_create',
         ],
 
         // ADMIN

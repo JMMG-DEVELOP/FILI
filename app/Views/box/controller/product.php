@@ -1,31 +1,62 @@
 <div class="row">
   <!-- Descripción -->
-  <div class="col-md-12 mb-2">
+  <div class="col-md-8 mb-2">
     <label>Descripción</label>
     <input type="text" class="form-control" name="description" id="description" value=" <?= $result['description'] ?>">
   </div>
-
-  <div class="col-md-4 mb-2">
+  <div class="col-md-2 mb-2">
+    <label>FILI</label>
+    <input type="text" class="form-control money" name="stock_one" id="stock_one"
+      value=" <?= $result['stock']['1'] ?> ">
+  </div>
+  <div class="col-md-2 mb-2">
+    <label>FILI 2</label>
+    <input type="text" class="form-control money" name="stock_two" id="stock_two"
+      value=" <?= $result['stock']['2'] ?> ">
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-3 mb-2">
     <label>Precio 1</label>
     <input type="text" class="form-control money" name="price_one" id="price_one"
       value=" <?= $result['prices']['price_one'] ?> ">
   </div>
+  <!-- <div class="col-md-2 mb-2">
+    <label>Costo</label>
+    <input type="text" class="form-control money" name="cost" id="cost" value=" <?= $result['cost'] ?> ">
+  </div> -->
 
   <!-- Precio 2 -->
+
   <div class="col-md-3 mb-2">
     <label>Precio 2</label>
     <input type="text" class="form-control money" name="precio_two" id="price_two"
       value=" <?= $result['prices']['price_two'] ?>">
   </div>
   <!-- Cant -->
-  <div class="col-md-2 mb-2">
-    <label>Cant </label>
+  <!-- <div class="col-md-2 mb-2 mt-2">
+    <label></label>
     <input type="text" class="form-control" name="cant_price_two" id="cant_price_two"
-      value=" <?= $result['cant_two'] ?>">
+      value=" <?php // $result['cant_two'] ?>">
+  </div> -->
+
+  <!-- Precio 3 -->
+  <div class="col-md-3 mb-2">
+    <label>Precio 3</label>
+    <input type="text" class="form-control money" name="precio_three" id="precio_three"
+      value=" <?= $result['cant_three'] ?>">
   </div>
+  <!-- Cant -->
+  <!-- <div class="col-md-2 mb-2 mt-2">
+    <label> </label>
+    <input type="text" class="form-control" name="cant_price_three" id="cant_price_three"
+      value=" <?php // $result['cant_three'] ?>">
+  </div> -->
+
+
   <!-- Precio Card -->
   <div class="col-md-3 mb-2">
-    <label>Precio Card</label>
+    <label>Precio 5%</label>
     <input type="text" class="form-control money" name="precio_card" id="price_card"
       value=" <?= $result['prices']['price_card'] ?>">
   </div>

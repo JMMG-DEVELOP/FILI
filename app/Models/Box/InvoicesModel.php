@@ -16,7 +16,9 @@ class InvoicesModel extends Model
     'date',
     'time',
     'user',
-    'customer'
+    'customer',
+    'sucursal',
+    'status'
   ];
 
 

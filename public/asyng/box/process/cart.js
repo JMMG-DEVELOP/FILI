@@ -15,7 +15,10 @@ function saveCart() {
 
       price_one: row.attr('data-price-one'),
       price_two: row.attr('data-price-two'),
+      price_card: row.attr('data-price-card'),
+      price_three: row.attr('data-price-three'),
       cant_two: row.attr('data-cant-two'),
+      cant_three: row.attr('data-cant-three'),
 
       cost: row.attr('data-cost'),
       iva: row.attr('data-iva'),
@@ -41,9 +44,13 @@ function loadCart() {
       description: item.description,
       stock: 0,
 
-      price_one: parseFloat(item.price_one) || 0,
-      price_two: parseFloat(item.price_two) || 0,
-      cant_two: parseFloat(item.cant_two) || 0,
+      price_one: Number(item.price_one) || 0,
+      price_two: Number(item.price_two) || 0,
+      price_card: Number(item.price_card) || 0,
+      price_three: Number(item.price_three) || 0,
+
+      cant_two: Number(item.cant_two) || 0,
+      cant_three: Number(item.cant_three) || 0,
 
       cost: parseFloat(item.cost) || 0,
       iva: parseFloat(item.iva) || 0
@@ -89,22 +96,44 @@ function getCode(code) {
       };
     }
 }
-
 function getProductData(data) {
+  const sucursal = $('#select_sucursal').val();
 
   return {
     id: data.id,
     code: data.code,
     description: data.description,
-    cost: data.cost,
-    price_one: parseFloat(data.prices.price_one),
-    price_two: parseFloat(data.prices.price_two),
-    cant_two: parseFloat(data.cant_two),
-    price_card: parseFloat(data.prices?.price_card ?? 0),
-    stock: parseFloat(data.stock[1] ?? 0),
-    iva: parseFloat(data.iva)
+
+    cost: Number(data.cost) || 0,
+
+    price_one: Number(data.prices?.price_one) || 0,
+    price_two: Number(data.prices?.price_two) || 0,
+    price_card: Number(data.prices?.price_card) || 0,
+    price_three: Number(data.prices?.price_three) || 0,
+
+    cant_two: Number(data.prices?.cant_two) || 0,
+    cant_three: Number(data.prices?.cant_three) || 0,
+
+    stock: Number(data.stock?.[sucursal]) || 0,
+
+    iva: Number(data.iva_id ?? data.iva) || 0
   };
 }
+// function getProductData(data) {
+
+//   return {
+//     id: data.id,
+//     code: data.code,
+//     description: data.description,
+//     cost: data.cost,
+//     price_one: parseFloat(data.prices.price_one),
+//     price_two: parseFloat(data.prices.price_two),
+//     cant_two: parseFloat(data.cant_two),
+//     price_card: parseFloat(data.prices?.price_card ?? 0),
+//     stock: parseFloat(data.stock[1] ?? 0),
+//     iva: parseFloat(data.iva)
+//   };
+// }
 
 // Suma del total del Carrito en Guaranies
 function updateGrandTotal() {
@@ -173,72 +202,75 @@ function getCant(value = '') {
   }
 }
 // Seleccionar Precio
-function getPrice(product, cant, percent) {
+function getPrice(product, cant, percent = 0) {
+
+  const quantity = Number(cant) || 0;
+
+  const priceOne = Number(product.price_one) || 0;
+  const priceTwo = Number(product.price_two) || 0;
+  const priceThree = Number(product.price_three) || 0;
+
+  const cantTwo = Number(product.cant_two) || 0;
+  const cantThree = Number(product.cant_three) || 0;
+
+  // Precio seleccionado manualmente.
+  const selectedTier = $('input[name="price_tier"]:checked').val();
 
   let price;
 
-  // Precio ingresado manualmente
-  let price_input = Number($('#product_price_input').val());
+  if (selectedTier === '1') {
 
-  // 1. Precio manual tiene prioridad
-  if (!isNaN(price_input) && price_input > 1) {
+    price = priceOne;
 
-    return price_input;
+  } else if (selectedTier === '2') {
 
-  }
+    price = priceTwo;
 
-  // 2. Si está activo "Precio 2", usar Precio 2 para todo
-  if ($('#all_price_two').is(':checked')) {
+  } else if (selectedTier === '3') {
 
-    price = product.price_two;
+    price = priceThree;
 
   } else {
 
-    // 3. Lógica normal según cantidad
-    if (cant < product.cant_two || product.cant_two <= 0) {
+    // Selección automática por cantidad.
+    // Los umbrales en cero no activan ese precio.
 
-      price = product.price_one;
+    if (cantThree > 0 && quantity >= cantThree) {
+
+      price = priceThree;
+
+    } else if (cantTwo > 0 && quantity >= cantTwo) {
+
+      price = priceTwo;
 
     } else {
 
-      price = product.price_two;
-
+      price = priceOne;
     }
-
   }
 
-  // 4. Aplicar porcentaje
-  if (percent === 0) {
+  // Precio manual personalizado, si se ingresó.
+  // La selección de los radios tiene prioridad.
+  const customPrice = Number(
+    String($('#product_price_input').val() || '')
+      .replace(/\./g, '')
+      .replace(',', '.')
+  );
 
-    return price;
-
-  } else {
-
-    return price + (price * percent / 100);
-
+  if (!selectedTier && customPrice > 1) {
+    price = customPrice;
   }
 
+  // Aplicar porcentaje.
+  percent = Number(percent) || 0;
+
+  if (percent !== 0) {
+    price += price * percent / 100;
+  }
+
+  return Math.round(price);
 }
 
-// function getPrice(product, cant, percent) {
-//   let price;
-//   let price_input = Number($('#product_price_input').val());
-
-//   if (!isNaN(price_input) && price_input > 1) {
-//     return price_input;
-//   }
-
-//   if (cant < product.cant_two || product.cant_two <= 0) {
-//     price = product.price_one;
-//   } else {
-//     price = product.price_two;
-//   }
-//   if (percent === 0) {
-//     return price;
-//   } else {
-//     return price + (price * percent / 100);
-//   }
-// }
 // Crear Nueva Fila
 function createRow(product, cant, price, save = true) {
 
@@ -246,13 +278,15 @@ function createRow(product, cant, price, save = true) {
 
   let row = `
     <tr data-id="${product.id}"
-        data-code="${product.code}"
-       
-        data-price-one="${product.price_one}"
-        data-price-two="${product.price_two ?? 0}"
-        data-cant-two="${product.cant_two ?? 0}"
-        data-cost="${product.cost ?? 0}"
-        data-iva="${product.iva ?? 0}">
+    data-code="${product.code}"
+    data-price-one="${product.price_one}"
+    data-price-two="${product.price_two ?? 0}"
+    data-price-card="${product.price_card ?? 0}"
+    data-price-three="${product.price_three ?? 0}"
+    data-cant-two="${product.cant_two ?? 0}"
+    data-cant-three="${product.cant_three ?? 0}"
+    data-cost="${product.cost ?? 0}"
+    data-iva="${product.iva ?? 0}">
       <td>${product.code}</td>
 
       <td>
@@ -266,12 +300,15 @@ function createRow(product, cant, price, save = true) {
       <td>${product.description}</td>
 
       <td class="row-price"
-          data-base-price="${product.price_one}"
-          data-price-two="${product.price_two ?? 0}"
-          data-cant-two="${product.cant_two ?? 0}"
-          data-price="${price}">
-          ${formatMoney(price)}
-      </td>
+    data-base-price="${product.price_one}"
+    data-price-two="${product.price_two ?? 0}"
+    data-price-three="${product.price_three ?? 0}"
+    data-price-card="${product.price_card ?? 0}"
+    data-cant-two="${product.cant_two ?? 0}"
+    data-cant-three="${product.cant_three ?? 0}"
+    data-price="${price}">
+    ${formatMoney(price)}
+</td>
 
       <td class="row-total" data-total="${total}">
         ${formatMoney(total)}
@@ -335,32 +372,39 @@ function addOrUpdateRowCart(product, cant, price, percent) {
 
 // Actualizar carrito por porcenjaje seleccionado
 function updateCartPercent() {
-
   const percent = getPercent();
 
   $('#cart_invoice tbody tr').each(function () {
+    const row = $(this);
 
-    let row = $(this);
+    const cant = Number(row.find('.row-cant').val()) || 0;
 
-    let cant = parseFloat(row.find('.row-cant').val()) || 0;
+    const product = {
+      price_one: Number(row.attr('data-price-one')) || 0,
+      price_two: Number(row.attr('data-price-two')) || 0,
+      price_card: Number(row.attr('data-price-card')) || 0,
+      price_three: Number(row.attr('data-price-three')) || 0,
 
-    let basePrice = parseFloat(row.find('.row-price').data('base-price')) || 0;
+      cant_two: Number(row.attr('data-cant-two')) || 0,
+      cant_three: Number(row.attr('data-cant-three')) || 0
+    };
 
-    let finalPrice = basePrice + (basePrice * percent / 100);
-
-    let total = cant * finalPrice;
+    const price = getPrice(product, cant, percent);
+    const total = cant * price;
 
     row.find('.row-price')
-      .text(formatMoney(finalPrice))
-      .data('price', finalPrice);
+      .text(formatMoney(price))
+      .attr('data-price', price)
+      .data('price', price);
 
     row.find('.row-total')
       .text(formatMoney(total))
+      .attr('data-total', total)
       .data('total', total);
-
   });
 
   updateGrandTotal();
+  saveCart();
 }
 
 // Verificado
@@ -382,6 +426,7 @@ async function handleVerifySales(code) {
       effect: 'fade',
       callback: function () {
         $('#product_panel').data('product', response.product);
+        $('#add_cart_type').prop('checked', false);
       }
     });
 
@@ -401,9 +446,13 @@ function cant_row_validate(row, input, value, cant) {
 
   // Obtenemos el producto y precio base de la fila
   let product = {
-    price_one: parseFloat(row.find('.row-price').data('base-price')) || 0,
-    price_two: parseFloat(row.find('.row-price').data('price-two')) || 0,
-    cant_two: parseFloat(row.find('.row-price').data('cant-two')) || 0
+    price_one: Number(row.attr('data-price-one')) || 0,
+    price_two: Number(row.attr('data-price-two')) || 0,
+    price_card: Number(row.attr('data-price-card')) || 0,
+    price_three: Number(row.attr('data-price-three')) || 0,
+
+    cant_two: Number(row.attr('data-cant-two')) || 0,
+    cant_three: Number(row.attr('data-cant-three')) || 0
   };
 
   // recalculamos precio y total para esta fila
@@ -467,6 +516,15 @@ async function update_panel_description(product) {
     // Cantidad precio 2
     $('#panel_cant_two').text(
       product.cant_two
+    );
+    // Precio 3
+    $('#panel_price_three').text(
+      formatMoney(product.price_three)
+    );
+
+    // Cantidad precio 3
+    $('#panel_cant_three').text(
+      product.cant_three
     );
 
     // Stock

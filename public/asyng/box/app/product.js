@@ -185,3 +185,21 @@ $(document).on('click', '#btn_add_orders', async function () {
 
 });
 
+$(document).on('click', 'input[name="price_tier"]', function () {
+
+  const radio = $(this);
+
+  if (radio.data('selected')) {
+
+    radio.prop('checked', false);
+    radio.data('selected', false);
+
+    $('search').focus();
+
+  } else {
+
+    $('input[name="price_tier"]').data('selected', false);
+    radio.data('selected', true);
+    $('search').focus();
+  }
+});

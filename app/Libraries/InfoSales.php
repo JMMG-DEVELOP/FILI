@@ -236,6 +236,7 @@ class InfoSales
       'mount' => abs($values['cash_credit_payment']['cash_credit_mount']) ?? 0,
       'date' => date('Y-m-d'),
       'time' => date('H:i:s'),
+      'user' => session()->get('id'),
     ];
   }
   public function multi_payment_digist($values, $sale_id)
@@ -291,6 +292,7 @@ class InfoSales
       'mount' => abs($values['cart']['totals']['total_price'] ?? 0),
       'date' => date('Y-m-d'),
       'time' => date('H:i:s'),
+      'user' => session()->get('id'),
     ];
   }
 
@@ -358,7 +360,8 @@ class InfoSales
   public function sales_null()
   {
     return [
-      'status' => 2
+      'status' => 2,
+      'type' => 5,
     ];
   }
 
@@ -373,7 +376,9 @@ class InfoSales
       'date' => date('Y-m-d'),
       'time' => date('H:i:s'),
       'user' => $point['user_id'] ?? session('id'),
-      'customer' => $customer['customer_id'] ?? null
+      'customer' => $customer['customer_id'] ?? null,
+      'sucursal' => $point['select_sucursal'] ?? null,
+      'status' => 1
     ];
   }
   public function invoices_sales($invoice, $sales)

@@ -28,7 +28,13 @@
               Clientes</span></a>
         </div>
       <?php endif; ?>
-
+      <?php if (can('access_invoice')): ?>
+        <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12 ">
+          <a href="<?= base_url('invoice'); ?>" class="connection-item"><img
+              src="<?= base_url(); ?>/assets/images/github.png" alt=""> <span>
+              Factura</span></a>
+        </div>
+      <?php endif; ?>
 
 
     </div>

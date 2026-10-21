@@ -254,7 +254,10 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
     $routes->group('customer', function ($routes) {
 
         $routes->get('/', 'Customer\Access::index');
-
+        $routes->post(
+            'delete_open',
+            'Customer\Access::delete_open'
+        );
         $routes->group('process', function ($routes) {
 
             $routes->post(
@@ -263,7 +266,119 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
             );
 
         });
+        $routes->group('home', function ($routes) {
+            $routes->post(
+                'panel_load',
+                'Customer\Home\Home::panel_load'
+            );
+        });
+        $routes->group('home', function ($routes) {
+            $routes->post(
+                'datatable',
+                'Customer\Home\Home::datatable'
+            );
+        });
+        $routes->group('home', function ($routes) {
+            $routes->post(
+                'form_new_open',
+                'Customer\Home\Home::form_new_open'
+            );
+        });
+        $routes->group('home', function ($routes) {
+            $routes->post(
+                'form_new_save',
+                'Customer\Home\Home::form_new_save'
+            );
+        });
+        $routes->group('home', function ($routes) {
+            $routes->post(
+                'form_edit_open',
+                'Customer\Home\Home::form_edit_open'
+            );
+        });
+        $routes->group('home', function ($routes) {
+            $routes->post(
+                'form_edit_save',
+                'Customer\Home\Home::form_edit_save'
+            );
+        });
+        $routes->group('home', function ($routes) {
+            $routes->post(
+                'delete_save',
+                'Customer\Home\Home::delete_save'
+            );
+        });
+        // VIEWS
+        $routes->group('view', function ($routes) {
+            $routes->post(
+                'view_panel_load',
+                'Customer\View\View::view_panel_load'
+            );
+            $routes->post(
+                'home_view_load',
+                'Customer\View\View::home_view_load'
+            );
+            $routes->post(
+                'credit_payment_form_open',
+                'Customer\View\View::credit_payment_form_open'
+            );
+            $routes->post(
+                'credit_payment_form_save',
+                'Customer\View\View::credit_payment_form_save'
+            );
+            $routes->post(
+                'credit_add_form_open',
+                'Customer\View\View::credit_add_form_open'
+            );
+            $routes->post(
+                'credit_add_form_save',
+                'Customer\View\View::credit_add_form_save'
+            );
 
+        });
+        // CUSTOMER SALES
+        $routes->group('sales', function ($routes) {
+            $routes->post(
+                'panel_load',
+                'Customer\Sales\Sales::panel_load'
+            );
+            $routes->post(
+                'sales_datatable',
+                'Customer\Sales\Sales::sales_datatable'
+            );
+            $routes->post(
+                'sales_card',
+                'Customer\Sales\Sales::sales_card'
+            );
+
+
+        });
+        // CUSTOMER SALES
+        $routes->group('details', function ($routes) {
+            $routes->post(
+                'panel_load',
+                'Customer\Sales\Details::panel_load'
+            );
+            $routes->post(
+                'anoter_panel_load',
+                'Customer\Sales\Details::anoter_panel_load'
+            );
+            $routes->post(
+                'anoter_datatable',
+                'Customer\Sales\Details::anoter_datatable'
+            );
+        });
+        $routes->group('payment', function ($routes) {
+            $routes->post(
+                'panel_load',
+                'Customer\Payment\Home::panel_load'
+            );
+            $routes->post(
+                'payment_datatable',
+                'Customer\Payment\Home::payment_datatable'
+            );
+
+        });
     });
     // ==================================================
     // CUSTOMERS
@@ -634,21 +749,67 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
     });
 
     // ==================================================
-    // BOX CLOSE - CIERRE DE CAJA
+    // INVOICE - CONTROL DE FACTURA LEGAL
     // 
     // ==================================================
-    // $routes->group('box', function ($routes) {
+    $routes->group('invoice', ['filter' => 'permission:access_invoice'], function ($routes) {
+        $routes->get('/', 'Invoices\Access::index');
 
+        $routes->group('home', function ($routes) {
 
-    //     $routes->group('close', function ($routes) {
+            $routes->post(
+                'panel_load',
+                'Invoices\Home::panel_load'
+            );
 
-    //         $routes->post(
-    //             'box_close_save',
-    //             'Box\Close::box_close_save'
-    //         );
+            $routes->post(
+                'home_datatable',
+                'Invoices\Home::home_datatable'
+            );
+            $routes->post(
+                'cancel_invoice',
+                'Invoices\Home::cancel_invoice'
+            );
+            $routes->post(
+                'card_load',
+                'Invoices\Home::card_load'
+            );
+        });
+        $routes->group('create', function ($routes) {
 
-    //     });
+            $routes->post(
+                'form_open',
+                'Invoices\Create::form_open'
+            );
+            $routes->post(
+                'sales_datatable',
+                'Invoices\Create::sales_datatable'
+            );
+            $routes->post(
+                'sales_panel',
+                'Invoices\Create::sales_panel'
+            );
+            $routes->post(
+                'sales_detail_panel',
+                'Invoices\Create::sales_detail_panel'
+            );
+            $routes->post(
+                'save_invoice',
+                'Invoices\Create::save_invoice'
+            );
+            $routes->post(
+                'sales_add_invoice',
+                'Invoices\Create::sales_add_invoice'
+            );
+        });
 
-    // });
+        $routes->group('', function ($routes) {
+
+            $routes->post(
+                'panel_load',
+                'Invoices\Home::panel_load'
+            );
+        });
+    });
 
 });

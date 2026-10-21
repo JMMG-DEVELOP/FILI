@@ -5,7 +5,7 @@
       Punto de Expedición
     </legend>
 
-    <div class="row col-md-12 mb-3">
+    <div class="row">
 
       <div class="col-md-12">
         <label>Facturar en</label>
@@ -22,7 +22,7 @@
       <br>
 
       <div class="col-md-12">
-        <input type="text" name="invoice_number" class="form-control" id="invoice_number">
+        <input type="text" name="invoice_number" class="form-control" id="invoice_number" readonly>
       </div>
 
     </div>

@@ -16,7 +16,37 @@ class CustomersCreditsModel extends Model
     'amount',
     'customer',
   ];
+  /**
+   * Obtener el crédito de un cliente por su ID.
+   */
+  public function get_ByCustomer($customerId)
+  {
+    if (empty($customerId) || !is_numeric($customerId)) {
+      return null;
+    }
 
+    return $this->select([
+      'id',
+      'amount',
+      'customer',
+    ])
+      ->where('customer', (int) $customerId)
+      ->first();
+  }
+  public function get_ById($customerId)
+  {
+    if (empty($customerId) || !is_numeric($customerId)) {
+      return null;
+    }
+
+    return $this->select([
+      'id',
+      'amount',
+      'customer',
+    ])
+      ->where('id', (int) $customerId)
+      ->first();
+  }
   public function verify_customer_credit_status($customer)
   {
     $result = $this->db->table('customers')
@@ -114,21 +144,42 @@ class CustomersCreditsModel extends Model
       'new_amount' => $newAmount
     ];
   }
-  // public function add_sales($data)
-  // {
-  //   if (!$this->insert($data)) {
 
-  //     return [
-  //       'status' => false,
-  //       'errors' => $this->errors(),
-  //       'db' => $this->db->error(),
-  //       'data' => $data
-  //     ];
-  //   }
+  public function getSalesCard(int $customerId): array
+  {
+    $builder = $this->db->table('sales s');
 
-  //   return [
-  //     'status' => true,
-  //     'id' => $this->insertID()
-  //   ];
-  // }
+    $builder->select("
+        COALESCE(SUM(s.total_price), 0) AS total_sales,
+
+        COALESCE(SUM(s.total_cost), 0) AS total_cost,
+
+        COALESCE(SUM(s.total_margin), 0) AS total_margin,
+
+        COUNT(s.id) AS total_purchases,
+
+        COALESCE(
+            SUM(
+                CASE
+                    WHEN s.type = 2 THEN s.total_price
+                    ELSE 0
+                END
+            ),
+            0
+        ) AS total_credit,
+
+        COUNT(
+            CASE
+                WHEN s.type = 2 THEN s.id
+                ELSE NULL
+            END
+        ) AS total_credit_purchases
+    ", false);
+
+    $builder->where('s.customer', $customerId);
+    $builder->where('s.status', 1);
+
+    return $builder->get()->getRowArray() ?? [];
+  }
+
 }

@@ -7,6 +7,9 @@ $(document).on('input', '.number', function () {
   this.value = this.value.replace(/\D/g, '');
 
 });
+$(document).on('input', '.ruc', function () {
+  this.value = this.value.replace(/[^0-9-]/g, '');
+});
 $(document).on('input', '.guaranies', function () {
 
   let value = this.value;
@@ -157,15 +160,37 @@ function cancel_open(hide, panelToOpen) {
 }
 
 // Validacion de Formulario
+
 function validateForm(formSelector) {
   let valid = true;
 
   $(formSelector + ' [required]').each(function () {
-    if ($.trim($(this).val()) === '') {
+    const value = $.trim($(this).val());
+
+    if (value === '') {
       $(this).addClass('is-invalid');
-      setTimeout(function () {
-        $(this).removeClass('is-invalid');
-      }, 10000);
+
+      valid = false;
+
+      return;
+    }
+
+    $(this).removeClass('is-invalid');
+  });
+
+  // Validar formato del correo electrónico
+  $(formSelector + ' input[type="email"], ' + formSelector + ' input[name="correo"]').each(function () {
+    const email = $.trim($(this).val());
+
+    // Si está vacío y es obligatorio, ya se validó arriba
+    if (email === '') {
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(email)) {
+      $(this).addClass('is-invalid');
       valid = false;
     } else {
       $(this).removeClass('is-invalid');
@@ -173,11 +198,36 @@ function validateForm(formSelector) {
   });
 
   if (!valid) {
-    showAlert('Complete los campos obligatorios.', 'warning');
+    showAlert(
+      'Complete los campos obligatorios y verifique que el correo electrónico sea válido.',
+      'warning'
+    );
   }
 
   return valid;
 }
+
+// function validateForm(formSelector) {
+//   let valid = true;
+
+//   $(formSelector + ' [required]').each(function () {
+//     if ($.trim($(this).val()) === '') {
+//       $(this).addClass('is-invalid');
+//       setTimeout(function () {
+//         $(this).removeClass('is-invalid');
+//       }, 10000);
+//       valid = false;
+//     } else {
+//       $(this).removeClass('is-invalid');
+//     }
+//   });
+
+//   if (!valid) {
+//     showAlert('Complete los campos obligatorios.', 'warning');
+//   }
+
+//   return valid;
+// }
 
 /**
  * Convierte texto con separadores a número

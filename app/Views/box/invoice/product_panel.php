@@ -48,14 +48,10 @@
                 <small class="text-muted d-block">
                   PRECIO 2
                 </small>
-
                 <div class="fw-normal" id="panel_price_two">
                   0
                 </div>
               </div>
-
-
-              <!-- PRECIO -->
               <div class="text-center">
                 <small class="text-muted d-block">
                   CANT 2
@@ -66,13 +62,30 @@
                 </div>
               </div>
 
+              <div class="text-center">
+                <small class="text-muted d-block">
+                  PRECIO 3
+                </small>
+                <div class="fw-normal" id="panel_price_three">
+                  0
+                </div>
+              </div>
+              <div class="text-center">
+                <small class="text-muted d-block">
+                  CANT 3
+                </small>
+
+                <div class="fw-normal moneyText" id="panel_cant_three">
+                  0
+                </div>
+              </div>
+
 
               <!-- STOCK -->
               <div class="text-center">
                 <small class="text-muted d-block">
                   STOCK
                 </small>
-
                 <div class="fw-normal" id="panel_product_stock">
                   0
                 </div>

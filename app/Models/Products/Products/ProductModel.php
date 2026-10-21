@@ -65,11 +65,11 @@ class ProductModel extends Model
                 'COALESCE(pr.price_one, 0) AS price_one',
                 'COALESCE(pr.price_two, 0) AS price_two',
                 'COALESCE(pr.price_card, 0) AS price_card',
+                'COALESCE(pr.price_three, 0) AS price_three',
 
                 // CANTIDADES
-                // 'COALESCE(pr.cant_one, 0) AS cant_one',
                 'COALESCE(pr.cant_two, 0) AS cant_two',
-                // 'COALESCE(pr.cant_three, 0) AS cant_three'
+                'COALESCE(pr.cant_three, 0) AS cant_three',
             ])
             ->join('products_section s', 's.id = p.section', 'left')
             ->join('products_brands b', 'b.id = p.brand', 'left')
@@ -109,21 +109,29 @@ class ProductModel extends Model
             $stock[$row['sucursal']] = (float) $row['stock'];
         }
 
-        // 4️⃣ Reestructurar precios
+        // 4. Reestructurar precios y cantidades
         $product['prices'] = [
-            'price_one' => (int) $product['price_one'],
-            'price_two' => (int) $product['price_two'],
-            'price_card' => (int) $product['price_card'],
+            'price_one' => (float) $product['price_one'],
+            'price_two' => (float) $product['price_two'],
+            'price_card' => (float) $product['price_card'],
+            'price_three' => (float) $product['price_three'],
+            'cant_two' => (float) $product['cant_two'],
+            'cant_three' => (float) $product['cant_three'],
         ];
 
         unset(
             $product['price_one'],
             $product['price_two'],
-            $product['price_card']
+            $product['price_card'],
+            $product['price_three'],
+            $product['cant_two'],
+            $product['cant_three']
         );
 
-        // 5️⃣ Agregar stock completo y limpio
+        // 5. Agregar stock completo
         $product['stock'] = $stock;
+
+        return $product;
 
         return $product;
     }

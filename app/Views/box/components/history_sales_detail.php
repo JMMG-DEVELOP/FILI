@@ -25,11 +25,11 @@
 
           <tr>
 
-            <th>Codigo</th>
-            <th>Cant</th>
-            <th>Descripción</th>
-            <th>Precio</th>
-            <th>Total</th>
+            <th>CODIGO</th>
+            <th>CANT</th>
+            <th>DESCRIPCIÓN</th>
+            <th>PRECIO</th>
+            <th>TOTAL</th>
 
           </tr>
 

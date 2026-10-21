@@ -8,6 +8,31 @@ $(document).ready(function () {
 
 });
 
+$(document).on('keydown', function (e) {
+  if (e.key !== 'Enter') {
+    return;
+  }
+
+  // No interferir si hay un elemento editable enfocado.
+  const active = document.activeElement;
+
+  if (
+    active &&
+    (
+      $(active).is('input, textarea, select') ||
+      active.isContentEditable
+    )
+  ) {
+    return;
+  }
+
+  const search = $('#search');
+
+  if (search.length && search.is(':visible') && !search.prop('disabled')) {
+    e.preventDefault();
+    search.trigger('focus');
+  }
+});
 
 $(document).on('keydown', '#product_cant', async function (e) {
   if (e.key === 'Enter' && !e.repeat) {

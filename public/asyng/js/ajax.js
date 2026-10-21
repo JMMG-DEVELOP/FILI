@@ -64,7 +64,7 @@ function asyngFormData(selector) {
       .first();
 
     // MONEY
-    if (field.hasClass('money')) {
+    if (field.hasClass('guaranies')) {
 
       value = value
         .replace(/\./g, '')

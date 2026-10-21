@@ -15,14 +15,30 @@ class CustomerPaymentsModel extends Model
     'date',
     'time',
     'amount',
-    'user'
+    'user',
+    'detail'
   ];
+  public function get_ById()
+  {
 
+  }
   /**
    * Registrar pago / movimiento de crédito.
    */
   public function add_payment($values)
   {
+    if (!$this->insert($values)) {
+      return false;
+    }
+
+    return $this->getInsertID();
+  }
+  public function payment(array $values)
+  {
+    if (empty($values['customer_credit']) || !isset($values['amount'])) {
+      return false;
+    }
+
     if (!$this->insert($values)) {
       return false;
     }

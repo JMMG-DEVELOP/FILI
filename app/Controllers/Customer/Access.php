@@ -20,4 +20,26 @@ class Access extends BaseController
         }
     }
 
+    public function delete_open()
+    {
+        $values = $this->request->getPost();
+
+        $data = [
+            'id' => $values['id'],
+            'name' => $values['name'],
+            'type' => $values['type']
+        ];
+        $html = view('Customer/components/delete', $data);
+
+        return $this->response->setJSON([
+            'status' => true,
+            'html' => $html,
+            'csrfName' => csrf_token(),
+            'csrfHash' => csrf_hash()
+        ]);
+
+    }
+
+
+
 }

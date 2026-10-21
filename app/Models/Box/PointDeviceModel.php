@@ -274,16 +274,16 @@ class PointDeviceModel extends Model
 
     $rows = $this->db->table('point_device pd')
       ->select('
-      ep.sucursal,
-      ep.id as expedition_point,
-      ep.code,
+            ep.sucursal,
+            ep.id AS expedition_point,
+            ep.code,
 
-      ds.id as document_sequence_id,
-      ds.last_number as document_last_number,
+            ds.id AS document_sequence_id,
+            ds.last_number AS document_last_number,
 
-      isq.id as invoice_sequence_id,
-      isq.last_number as invoice_last_number
-    ')
+            isq.id AS invoice_sequence_id,
+            isq.last_number AS invoice_last_number
+        ')
       ->join(
         'expedition_point ep',
         'ep.id = pd.expedition_point'
@@ -311,6 +311,15 @@ class PointDeviceModel extends Model
     $values = [];
 
     foreach ($rows as $row) {
+
+      // Último número registrado en la base de datos.
+      $documentLastNumber = (int) ($row['document_last_number'] ?? 0);
+      $invoiceLastNumber = (int) ($row['invoice_last_number'] ?? 0);
+
+      // Siguiente número disponible.
+      $documentNextNumber = $documentLastNumber + 1;
+      $invoiceNextNumber = $invoiceLastNumber + 1;
+
       $values[] = [
         'sucursal' => $row['sucursal'],
 
@@ -320,56 +329,134 @@ class PointDeviceModel extends Model
 
         'document_sequence_id' => $row['document_sequence_id'],
 
-        'document_last_number' => $row['document_last_number'],
+        'document_last_number' => $documentLastNumber,
+
+        'document_next_number' => $documentNextNumber,
 
         'invoice_sequence_id' => $row['invoice_sequence_id'],
 
-        'invoice_last_number' => $row['invoice_last_number'],
+        'invoice_last_number' => $invoiceLastNumber,
+
+        'invoice_next_number' => $invoiceNextNumber,
 
         'document_number' =>
-          str_pad(
-            $row['sucursal'],
-            3,
-            '0',
-            STR_PAD_LEFT
-          ) . ' ' .
-          str_pad(
-            $row['code'],
-            3,
-            '0',
-            STR_PAD_LEFT
-          ) . ' ' .
-          str_pad(
-            $row['document_last_number'],
-            7,
-            '0',
-            STR_PAD_LEFT
-          ),
+          str_pad((string) $row['sucursal'], 3, '0', STR_PAD_LEFT) . ' ' .
+          str_pad((string) $row['code'], 3, '0', STR_PAD_LEFT) . ' ' .
+          str_pad((string) $documentNextNumber, 7, '0', STR_PAD_LEFT),
 
         'invoice_number' =>
-          str_pad(
-            $row['sucursal'],
-            3,
-            '0',
-            STR_PAD_LEFT
-          ) . ' ' .
-          str_pad(
-            $row['code'],
-            3,
-            '0',
-            STR_PAD_LEFT
-          ) . ' ' .
-          str_pad(
-            $row['invoice_last_number'],
-            7,
-            '0',
-            STR_PAD_LEFT
-          )
+          str_pad((string) $row['sucursal'], 3, '0', STR_PAD_LEFT) . ' ' .
+          str_pad((string) $row['code'], 3, '0', STR_PAD_LEFT) . ' ' .
+          str_pad((string) $invoiceNextNumber, 7, '0', STR_PAD_LEFT)
       ];
     }
 
     return $values;
   }
+  // public function getDeviceExpedition($deviceId)
+  // {
+  //   if (empty($deviceId)) {
+  //     return [];
+  //   }
+
+  //   $rows = $this->db->table('point_device pd')
+  //     ->select('
+  //     ep.sucursal,
+  //     ep.id as expedition_point,
+  //     ep.code,
+
+  //     ds.id as document_sequence_id,
+  //     ds.last_number as document_last_number,
+
+  //     isq.id as invoice_sequence_id,
+  //     isq.last_number as invoice_last_number
+  //   ')
+  //     ->join(
+  //       'expedition_point ep',
+  //       'ep.id = pd.expedition_point'
+  //     )
+  //     ->join(
+  //       'document_sequence ds',
+  //       'ds.expedition_point = ep.id',
+  //       'left'
+  //     )
+  //     ->join(
+  //       'invoice_sequence isq',
+  //       'isq.expedition_point = ep.id',
+  //       'left'
+  //     )
+  //     ->where('pd.device', $deviceId)
+  //     ->orderBy('ep.sucursal', 'ASC')
+  //     ->orderBy('ep.code', 'ASC')
+  //     ->get()
+  //     ->getResultArray();
+
+  //   if (empty($rows)) {
+  //     return [];
+  //   }
+
+  //   $values = [];
+
+  //   foreach ($rows as $row) {
+  //     $values[] = [
+  //       'sucursal' => $row['sucursal'],
+
+  //       'expedition_point' => $row['expedition_point'],
+
+  //       'expedition_code' => $row['code'],
+
+  //       'document_sequence_id' => $row['document_sequence_id'],
+
+  //       'document_last_number' => $row['document_last_number'],
+
+  //       'invoice_sequence_id' => $row['invoice_sequence_id'],
+
+  //       'invoice_last_number' => $row['invoice_last_number'],
+
+  //       'document_number' =>
+  //         str_pad(
+  //           $row['sucursal'],
+  //           3,
+  //           '0',
+  //           STR_PAD_LEFT
+  //         ) . ' ' .
+  //         str_pad(
+  //           $row['code'],
+  //           3,
+  //           '0',
+  //           STR_PAD_LEFT
+  //         ) . ' ' .
+  //         str_pad(
+  //           $row['document_last_number'],
+  //           7,
+  //           '0',
+  //           STR_PAD_LEFT
+  //         ),
+
+  //       'invoice_number' =>
+  //         str_pad(
+  //           $row['sucursal'],
+  //           3,
+  //           '0',
+  //           STR_PAD_LEFT
+  //         ) . ' ' .
+  //         str_pad(
+  //           $row['code'],
+  //           3,
+  //           '0',
+  //           STR_PAD_LEFT
+  //         ) . ' ' .
+  //         str_pad(
+  //           $row['invoice_last_number'],
+  //           7,
+  //           '0',
+  //           STR_PAD_LEFT
+  //         )
+  //     ];
+  //   }
+
+  //   return $values;
+  // }
 
 
 }

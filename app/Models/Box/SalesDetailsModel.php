@@ -40,7 +40,8 @@ class SalesDetailsModel extends Model
             sales_details.unit_price AS price,
             sales_details.total_price AS total,
             products.description AS descripcion,
-            sales.sucursal AS sucursal
+            sales.sucursal AS sucursal,
+               sales.customer AS customer_id
         ')
       ->join(
         'products',
@@ -55,5 +56,30 @@ class SalesDetailsModel extends Model
       ->where('sales_details.sales', $id)
       ->orderBy('sales_details.id', 'ASC')
       ->findAll();
+  }
+
+  public function getInvoiceDetails(int $saleId): array
+  {
+    return $this->db->table('sales_details sd')
+      ->select([
+        'sd.id',
+        'sd.product',
+        'sd.cant',
+        'sd.unit_price',
+        'sd.total_price',
+        'sd.type_iva',
+        'sd.unit_iva',
+        'sd.base_imponible',
+        'p.description AS descripcion'
+      ])
+      ->join(
+        'products p',
+        'p.code = sd.product',
+        'left'
+      )
+      ->where('sd.sales', $saleId)
+      ->orderBy('sd.id', 'ASC')
+      ->get()
+      ->getResultArray();
   }
 }

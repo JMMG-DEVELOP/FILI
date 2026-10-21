@@ -14,6 +14,8 @@ class PricesModel extends Model
         'price_two',
         'price_card',
         'cant_two',
+        'price_three',
+        'cant_three',
         'product'
     ];
 
