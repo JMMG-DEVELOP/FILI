@@ -102,6 +102,8 @@
 
 <?= $this->section('other_head'); ?>
 
+<script src=" <?= base_url(); ?>/assets/libs/js/qz-tray.js"></script>
+
 <?= $this->endSection(); ?>
 
 <?= $this->section('other_script'); ?>

@@ -1,27 +1,27 @@
 async function post_sales(sale_id) {
-  try {
+  async function post_sales(sale_id) {
+    const printType = Number($('#print_type').val());
 
-    const print_type = Number($('#print_type').val());
+    try {
+      if (printType === 1) {
+        await ticket(sale_id);
+      } else if (printType === 2) {
+        await factura(sale_id);
+      } else if (printType === 0) {
+        console.log('Impresión desactivada');
+      }
 
-    // Ticket
-    if (print_type === 1) {
-      alert('ticket');
+    } catch (err) {
+      console.error('Error al imprimir:', err);
+      showAlert(
+        'La venta fue procesada, pero hubo un problema con la impresión.',
+        'warning'
+      );
+    } finally {
+      // La venta ya fue guardada por el backend.
+      // No dejar el carrito anterior preparado para otra venta.
+      clear();
     }
-
-    // Factura
-    if (print_type === 2) {
-      alert('factura');
-    }
-
-    // Ninguno
-    if (print_type === 0) {
-      alert('ninguno');
-    }
-
-    clear();
-
-  } catch (err) {
-    showAlert('Error loading panels', err);
   }
 }
 

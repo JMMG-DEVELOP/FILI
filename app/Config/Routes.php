@@ -99,6 +99,19 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
         $routes->get('close', 'Box\Close::index');
         $routes->get('open', 'Box\Access::open');
 
+        // ------------------------------------------
+        // IMPRESION
+        // ------------------------------------------
+
+        $routes->group('prints', function ($routes) {
+
+            $routes->post(
+                'box_close_save',
+                'Box\Close::box_close_save'
+            );
+
+
+        });
 
         // ------------------------------------------
         // CIERE DE CAJA
