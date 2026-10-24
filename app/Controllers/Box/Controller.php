@@ -266,10 +266,14 @@ class Controller extends BaseController
 
     $data = [
       'ci' => trim($this->request->getPost('ruc_ci')),
-      'name' => trim($this->request->getPost('customer_name')),
-      'cel' => trim($this->request->getPost('customer_cel')),
-      'correo' => trim($this->request->getPost('customer_correo')),
-      'user' => $userId // 🔥 ID NUMÉRICO REAL
+      'name' => trim($this->request->getPost('name')),
+      'cel' => trim($this->request->getPost('cel')),
+      'correo' => trim($this->request->getPost('correo')),
+      'user' => $userId,
+      'address' => $this->request->getPost('address'),
+      'date' => date('Y-m-d'),
+      'time' => date('H:i:s'),
+      'credit_status' => 1
     ];
 
     $result = $customerModel->createCustomer($data);

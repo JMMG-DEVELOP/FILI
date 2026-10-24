@@ -20,9 +20,6 @@ use App\Models\Customer\CustomersCreditsDetailsModel;
 use App\Models\Customer\CreditsSalesDetailsModel;
 use App\Models\Customer\CustomerPaymentsModel;
 
-
-
-
 class SalesService
 {
   protected $InfoSales;

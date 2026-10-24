@@ -40,6 +40,15 @@
             <input name="cel" type="text" class="form-control number" value="<?= esc($values['cel'] ?? '') ?>" required>
           </div>
         </div>
+        <div class="form-group row">
+          <label class="col-12 col-sm-3 col-form-label text-sm-right">
+            DIRECCIÓN
+          </label>
+          <div class="col-12 col-sm-8 col-lg-6">
+            <input name="address" type="text" class="form-control" value="<?= esc($values['address'] ?? '') ?>"
+              required>
+          </div>
+        </div>
 
         <div class="form-group row">
           <label class="col-12 col-sm-3 col-form-label text-sm-right">

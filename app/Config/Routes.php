@@ -106,10 +106,17 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
         $routes->group('prints', function ($routes) {
 
             $routes->post(
-                'box_close_save',
-                'Box\Close::box_close_save'
+                'print_data',
+                'Box\Prints::print_data'
             );
-
+            $routes->post(
+                'print_pdf',
+                'Box\Prints::print_pdf'
+            );
+            $routes->post(
+                'print_invoice_two',
+                'Box\Prints::print_invoice_two'
+            );
 
         });
 

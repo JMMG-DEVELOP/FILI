@@ -226,8 +226,6 @@ class SalesModel extends Model
 
     return $updated;
   }
-
-
   public function getInvoiceDatatable(array $post): array
   {
     $draw = (int) ($post['draw'] ?? 1);
@@ -324,6 +322,103 @@ class SalesModel extends Model
       'recordsFiltered' => $recordsFiltered,
       'data' => $rows
     ];
+  }
+
+  public function getPrintSale(int $saleId): ?array
+  {
+    if ($saleId <= 0) {
+      return null;
+    }
+
+    $sale = $this->db->table('sales s')
+      ->select([
+        's.id',
+        's.type',
+        's.date',
+        's.time',
+        's.number',
+        's.total_price',
+        's.cash_received',
+        's.cash_change',
+        's.customer',
+        's.invoice_type',
+        's.sucursal',
+        's.user',
+        's.expedition_point',
+        'c.name AS customer_name',
+        'c.ci AS customer_ci',
+        'u.name AS user_name',
+        'su.name AS sucursal_name',
+        'st.name AS sale_type_name',
+        'ep.code AS expedition_point_code'
+      ])
+      ->join('customers c', 'c.id = s.customer', 'left')
+      ->join('users u', 'u.id = s.user', 'left')
+      ->join('sucursals su', 'su.id = s.sucursal', 'left')
+      ->join('sales_type st', 'st.id = s.type', 'left')
+      ->join(
+        'expedition_point ep',
+        'ep.id = s.expedition_point',
+        'left'
+      )
+      ->where('s.id', $saleId)
+      ->get()
+      ->getRowArray();
+
+    if (!$sale) {
+      return null;
+    }
+
+    $sale['details'] = $this->db->table('sales_details sd')
+      ->select([
+        'sd.id',
+        'sd.product',
+        'sd.cant',
+        'sd.unit_price',
+        'sd.total_price',
+        'sd.total_iva',
+        'sd.type_iva',
+        'sd.unit_iva',
+        'sd.base_imponible',
+        'p.description AS descripcion'
+      ])
+      ->join(
+        'products p',
+        'p.code = sd.product',
+        'left'
+      )
+      ->where('sd.sales', $saleId)
+      ->orderBy('sd.id', 'ASC')
+      ->get()
+      ->getResultArray();
+
+    $sale['iva'] = $this->db->table('sales_iva')
+      ->select('type, mount')
+      ->where('sales', $saleId)
+      ->orderBy('type', 'ASC')
+      ->get()
+      ->getResultArray();
+
+    $sale['payments'] = $this->db->table('sales_payments sp')
+      ->select([
+        'sp.id',
+        'sp.type',
+        'sp.amount',
+        'sp.number',
+        'sp.device',
+        'pt.name AS payment_name'
+      ])
+      ->join(
+        'payment_type pt',
+        'pt.id = sp.type',
+        'left'
+      )
+      ->where('sp.sales', $saleId)
+      ->orderBy('sp.id', 'ASC')
+      ->get()
+      ->getResultArray();
+
+    return $sale;
   }
 
 }

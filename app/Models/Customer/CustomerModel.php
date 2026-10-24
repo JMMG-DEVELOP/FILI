@@ -19,7 +19,8 @@ class CustomerModel extends Model
     'user',
     'credit_status',
     'date',
-    'time'
+    'time',
+    'address'
   ];
 
   public function quit($id): array
@@ -95,7 +96,9 @@ class CustomerModel extends Model
       'customers.user',
       'users.name AS created_by',
       'customers.date',
-      'customers.time'
+      'customers.time',
+      'customers.address'
+
     ])
       ->join(
         'users',
@@ -139,7 +142,7 @@ class CustomerModel extends Model
     $cel = trim((string) ($values['cel'] ?? ''));
     $correo = strtolower(trim((string) ($values['correo'] ?? '')));
     $creditStatus = $values['credit_status'] ?? null;
-
+    $address = $values['address'] ?? null;
     if ($ci === '' || $name === '' || $cel === '' || $correo === '') {
       $this->errors = ['TODOS LOS CAMPOS SON OBLIGATORIOS'];
       return false;
@@ -185,7 +188,9 @@ class CustomerModel extends Model
       'name' => $name,
       'cel' => $cel,
       'correo' => $correo,
-      'credit_status' => $creditStatus
+      'credit_status' => $creditStatus,
+      'address' => $address
+
     ];
 
     try {
@@ -209,6 +214,8 @@ class CustomerModel extends Model
     $cel = trim((string) ($values['cel'] ?? ''));
     $correo = strtolower(trim((string) ($values['correo'] ?? '')));
     $creditStatus = $values['credit_status'] ?? null;
+    $address = $values['address'] ?? null;
+
     $user = $values['user'] ?? null;
 
     // Validar campos obligatorios.
@@ -244,7 +251,8 @@ class CustomerModel extends Model
       'credit_status' => $creditStatus,
       'user' => $user,
       'date' => $values['date'],
-      'time' => $values['time']
+      'time' => $values['time'],
+      'address' => $address
 
     ];
 

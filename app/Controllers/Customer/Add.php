@@ -38,7 +38,12 @@ class Add extends BaseController
       'name' => trim($post['name'] ?? ''),
       'cel' => trim($post['cel'] ?? ''),
       'correo' => trim($post['correo'] ?? ''),
-      'user' => $userId
+      'user' => $userId,
+      'credit_status' => 1,
+      'address' => trim($post['address'] ?? ''),
+      'date' => date('Y-m-d'),
+      'time' => date('H:i:s'),
+
     ];
 
     $customerModel = new CustomerModel();

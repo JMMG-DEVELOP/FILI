@@ -192,9 +192,9 @@ $(document).on('keydown', function (e) {
   if (e.altKey && e.key.toLowerCase() === 'c') {
     e.preventDefault();
     $('#sales').val('2').trigger('change');
+    $('#receipt_type').val('1').trigger('change');
     $('#ruc_ci').select().focus();
-    borderFlash('#sales', 'green')
-
+    borderFlash('#sales', 'green');
   }
   // Detectar ALT + Z cambiar a CONTADO
   if (e.altKey && e.key.toLowerCase() === 'z') {

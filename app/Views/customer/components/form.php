@@ -10,7 +10,7 @@
       <!-- RUC / CI -->
       <div class="col-md-4 mb-2">
         <label>RUC / CI</label>
-        <input type="text" class="form-control" name="ci" id="ci" placeholder="C.I. o RUC" required>
+        <input type="text" class="form-control ruc" name="ci" id="ci" placeholder="C.I. o RUC" required>
       </div>
 
       <!-- Nombre / Denominación -->
@@ -22,16 +22,24 @@
       <!-- Celular -->
       <div class="col-md-4 mb-2">
         <label>Celular</label>
-        <input type="text" class="form-control" name="cel" id="cel" placeholder="Celular" required>
+        <input type="text" class="form-control number" name="cel" id="cel" placeholder="Celular" required>
       </div>
 
       <!-- Correo-->
       <div class="col-md-8 mb-2">
         <label>Correo</label>
-        <input type="text" class="form-control" name="correo" id="correo" required placeholder="Correo Electronico">
+        <input type="text" class="form-control email" name="correo" id="correo" required
+          placeholder="Correo Electronico">
       </div>
 
     </div>
+    <div class="row">
+      <div class="col-md-12 mb-2">
+        <label>Dirección</label>
+        <input type="text" class="form-control" name="address" id="address" placeholder="Dirección" required>
+      </div>
+    </div>
+
     <div class="border-top pt-4 text-right">
       <button type="submit" class="btn btn-primary customer_send">
         <i class="fas fa-check"></i>

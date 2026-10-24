@@ -41,29 +41,30 @@ class InfoSales
       $cost = (float) $item['unit_cost'];
       $margin = $price - $cost;
       // 🔹 MAP IVA
-      $iva = (int) $item['iva'];
-      $ivaType = $this->ivaMap[$iva] ?? 3;
-      // 🔥 BASE IMPONIBLE + IVA UNITARIO
-      if ($iva === 10) {
-        $base = $price / 1.1;
-        $unit_iva = $price - $base;
-      } elseif ($iva === 5) {
-        $base = $price / 1.05;
-        $unit_iva = $price - $base;
-      } else {
-        $base = $price;
-        $unit_iva = 0;
+      // $iva = (int) $item['iva'];
+      $ivaType = (int) $item['iva'];
+      // tOTAL IVA
+      if ($ivaType === 1) {
+        $total_iva = $price / 11;
+      } else if ($ivaType === 2) {
+        $total_iva = $price / 21;
+      } else if ($ivaType === 3) {
+        $total_iva = 0;
       }
+
+
+      // 🔥 BASE IMPONIBLE + IVA UNITARIO
+
       $details[] = [
         'product' => $item['code'],
         'cant' => $cant,
         'unit_price' => $price,
         'unit_cost' => $cost,
-        'base_imponible' => round($base, 2),
-        'unit_iva' => round($unit_iva, 2),
+        // 'base_imponible' => round($base, 2),
+        // 'unit_iva' => round($unit_iva, 2),
         'total_price' => (float) $item['total_price'],
         'total_cost' => (float) $item['total_cost'],
-        'total_iva' => round($unit_iva * $cant, 2),
+        'total_iva' => $total_iva,
         'type_iva' => $ivaType,
         'margin' => $margin,
         'total_margin' => $margin * $cant,

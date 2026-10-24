@@ -107,7 +107,7 @@
 <?= $this->endSection(); ?>
 
 <?= $this->section('other_script'); ?>
-<script src="<?= base_url(); ?>/asyng/box/process/print.js"></script>
+<script src="<?= base_url(); ?>/asyng/box/process/prints.js"></script>
 <!-- Process -->
 <script src="<?= base_url(); ?>/asyng/box/process/sales.js"></script>
 <script src="<?= base_url(); ?>/asyng/box/process/app.js"></script>

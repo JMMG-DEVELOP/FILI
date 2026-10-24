@@ -12,7 +12,7 @@ class PrintersPaperModel extends Model
 
   protected $allowedFields = [
     'name',
-
+    'printable'
 
   ];
   public function quit($id)
