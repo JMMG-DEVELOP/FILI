@@ -119,21 +119,6 @@ function getProductData(data) {
     iva: Number(data.iva_id ?? data.iva) || 0
   };
 }
-// function getProductData(data) {
-
-//   return {
-//     id: data.id,
-//     code: data.code,
-//     description: data.description,
-//     cost: data.cost,
-//     price_one: parseFloat(data.prices.price_one),
-//     price_two: parseFloat(data.prices.price_two),
-//     cant_two: parseFloat(data.cant_two),
-//     price_card: parseFloat(data.prices?.price_card ?? 0),
-//     stock: parseFloat(data.stock[1] ?? 0),
-//     iva: parseFloat(data.iva)
-//   };
-// }
 
 // Suma del total del Carrito en Guaranies
 function updateGrandTotal() {

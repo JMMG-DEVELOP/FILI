@@ -12,7 +12,6 @@ class CostModel extends Model
 
     protected $allowedFields = [
         'cost',
-        'other_cost',
         'product'
     ];
 

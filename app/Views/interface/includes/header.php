@@ -17,6 +17,12 @@
 
       <!-- 🔹 Menús a la derecha -->
       <ul class="navbar-nav ml-auto navbar-right-top">
+        <li>
+          <div id="fili_connection_status" class="badge badge-secondary" data-server-url="<?= base_url('health') ?>">
+            <i class="fas fa-sync-alt"></i>
+            Verificando conexión...
+          </div>
+        </li>
 
         <li class="nav-item dropdown connection">
           <?= $this->include('interface/components/nav'); ?>

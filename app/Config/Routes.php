@@ -13,7 +13,7 @@ $routes->get('/', 'Auth\Login::index');
 $routes->post('login', 'Auth\Login::auth');
 $routes->post('auth', 'Auth\Login::auth');
 $routes->get('logout', 'Auth\Logout::index');
-
+$routes->get('health', 'Health::index');
 
 // ======================================================
 // RUTAS PROTEGIDAS (AUTH)
@@ -35,27 +35,95 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
         // ------------------------------------------
         // ACCESS
         // ------------------------------------------
-        $routes->get('/', 'Products\Products\Access::index');
-        $routes->post('panel', 'Products\Products\Access::panel');
+        $routes->get('/', 'Products\Access::index');
 
+        $routes->group('panels', function ($routes) {
+            $routes->post('products', 'Products\Access::products_panel');
+        });
 
         // ------------------------------------------
         // PRODUCTS
         // ------------------------------------------
         $routes->group('products', function ($routes) {
 
-            // Datatable
-            $routes->post('datatable', 'Products\Products\Datatable::datatable');
+            $routes->group('home', function ($routes) {
 
-            // Add
-            $routes->post('product_open', 'Products\Products\Add::open', ['filter' => 'ajax']);
-            $routes->post('product_save', 'Products\Products\Add::save', ['filter' => 'ajax']);
-            $routes->post('product_save_verify', 'Products\Products\Add::code_verify');
+                $routes->group('home', function ($routes) {
+                    $routes->post('panel_load', 'Products\Products\Home\Home::panel_load');
+                    $routes->post('datatable', 'Products\Products\Home\Home::datatable');
+                    $routes->post('updateInlineField', 'Products\Products\Home\Home::updateInlineField');
 
-            // Edit
-            $routes->post('product_edit_open', 'Products\Products\Edit::open', ['filter' => 'ajax']);
-            $routes->post('product_edit_save', 'Products\Products\Edit::save', ['filter' => 'ajax']);
+
+                });
+                $routes->group('view', function ($routes) {
+
+                    $routes->post('panel_load', 'Products\Products\Home\View::panel_load');
+
+                });
+                $routes->group('print', function ($routes) {
+
+                    $routes->post('panel_load', 'Products\Products\Home\Prints::panel_load');
+
+                });
+            });
+
+            $routes->group('form', function ($routes) {
+                $routes->group('product', function ($routes) {
+                    $routes->post('open', 'Products\Products\Form\Product::open');
+                    $routes->post('code_validation', 'Products\Products\Form\Product::code_validation', ['filter' => 'ajax']);
+                    $routes->post('confirm_open', 'Products\Products\Form\Product::confirm_open', ['filter' => 'ajax']);
+                    $routes->post('create', 'Products\Products\Form\ProductCrud::create', ['filter' => 'ajax']);
+                    $routes->post('update', 'Products\Products\Form\ProductCrud::update', ['filter' => 'ajax']);
+
+
+                });
+
+            });
+            $routes->group('shopp', function ($routes) {
+
+                $routes->post('shopp', 'Products\Products\Shopp\Shopp::panel_load');
+                $routes->post('shopp_search', 'Products\Products\Shopp\Shopp::shopp_search');
+                $routes->post('shopp_win', 'Products\Products\Shopp\Shopp::shopp_win');
+
+
+            });
+
+
         });
+        // ------------------------------------------
+        // PROVIDER
+        // ------------------------------------------
+
+        $routes->group('provider', function ($routes) {
+
+            $routes->post(
+                'panel_load',
+                'Products\Provider\Home::panel_load'
+            );
+            $routes->post(
+                'form_new_open',
+                'Products\Provider\Home::form_new_open'
+            );
+            $routes->post(
+                'form_new_save',
+                'Products\Provider\Home::form_new_save'
+            );
+            $routes->post(
+                'form_edit_open',
+                'Products\Provider\Home::form_edit_open'
+            );
+            $routes->post(
+                'form_edit_save',
+                'Products\Provider\Home::form_edit_save'
+            );
+            $routes->post(
+                'delete_save',
+                'Products\Provider\Home::delete_save'
+            );
+
+        });
+
+
 
 
         // ------------------------------------------
@@ -99,26 +167,7 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
         $routes->get('close', 'Box\Close::index');
         $routes->get('open', 'Box\Access::open');
 
-        // ------------------------------------------
-        // IMPRESION
-        // ------------------------------------------
 
-        $routes->group('prints', function ($routes) {
-
-            $routes->post(
-                'print_data',
-                'Box\Prints::print_data'
-            );
-            $routes->post(
-                'print_pdf',
-                'Box\Prints::print_pdf'
-            );
-            $routes->post(
-                'print_invoice_two',
-                'Box\Prints::print_invoice_two'
-            );
-
-        });
 
         // ------------------------------------------
         // CIERE DE CAJA
@@ -262,11 +311,42 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
                 ['filter' => 'ajax']
             );
 
-
         });
 
-    });
 
+    });
+    // ------------------------------------------
+    // IMPRESION
+    // ------------------------------------------
+
+    $routes->group('prints', function ($routes) {
+
+        $routes->post(
+            'ticket',
+            'Prints\Ticket::print'
+        );
+        $routes->post(
+            'ticket_pdf',
+            'Prints\Ticket::pdf'
+        );
+        $routes->post(
+            'invoice',
+            'Prints\Invoice::print'
+        );
+        $routes->post(
+            'invoice_pdf',
+            'Prints\Invoice::pdf'
+        );
+        $routes->post(
+            'generate_invoice_print',
+            'Prints\GenerateInvoice::print'
+        );
+        $routes->post(
+            'generate_invoice_pdf',
+            'Prints\GenerateInvoice::pdf'
+        );
+
+    });
 
     // ==================================================
     // CUSTOMER
@@ -794,6 +874,10 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
                 'card_load',
                 'Invoices\Home::card_load'
             );
+            $routes->post(
+                'reprint',
+                'Invoices\Home::reprint'
+            );
         });
         $routes->group('create', function ($routes) {
 
@@ -820,6 +904,10 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
             $routes->post(
                 'sales_add_invoice',
                 'Invoices\Create::sales_add_invoice'
+            );
+            $routes->post(
+                'invoice_detail_panel',
+                'Invoices\Create::invoice_detail_panel'
             );
         });
 

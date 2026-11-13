@@ -56,7 +56,7 @@ class CustomersCreditsDetailsModel extends Model
           'left'
         )
         ->where('cc.customer', $customerId)
-        ->where('ccd.credit_type', 3);
+        ->whereIn('ccd.credit_type', [2, 3]);
     };
 
     // Total de registros sin búsqueda.

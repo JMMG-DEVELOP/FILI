@@ -363,7 +363,6 @@ async function history_sales_detail_panel(id) {
     );
 
   }
-
 }
 async function history_movements_panel() {
 

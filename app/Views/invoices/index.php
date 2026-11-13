@@ -54,6 +54,9 @@
 <!-- Other Head -->
 <?= $this->section('other_head'); ?>
 <?= $this->include('interface/other/head/datatables'); ?>
+<!-- QZ TRAY IMPRESION -->
+<script src=" <?= base_url(); ?>/assets/libs/js/qz-tray.js"></script>
+<!-- ----------------- -->
 
 <?= $this->endSection(); ?>
 
@@ -62,6 +65,11 @@
 <?= $this->section('other_script'); ?>
 <?= $this->include('interface/other/scripts/datatables'); ?>
 
+<!-- IMPRESION -->
+<script src="<?= base_url(); ?>/asyng/prints/ticket.js"></script>
+<script src="<?= base_url(); ?>/asyng/prints/invoice.js"></script>
+<!-- --------- -->
+
 <script src="<?= base_url(); ?>/asyng/box/process/customer.js"></script>
 <script src="<?= base_url(); ?>/asyng/box/process/point.js"></script>
 <script src="<?= base_url(); ?>/asyng/box/app/customer.js"></script>
@@ -69,6 +77,8 @@
 <script src="<?= base_url(); ?>/asyng/invoices/home.js"></script>
 <script src="<?= base_url(); ?>/asyng/invoices/save.js"></script>
 <script src="<?= base_url(); ?>/asyng/invoices/plus.js"></script>
+<script src="<?= base_url(); ?>/asyng/invoices/reprint.js"></script>
+
 <script src="<?= base_url(); ?>/asyng/invoices/detail.js"></script>
 <script src="<?= base_url(); ?>/asyng/invoices/list.js"></script>
 <script src="<?= base_url(); ?>/asyng/invoices/new.js"></script>

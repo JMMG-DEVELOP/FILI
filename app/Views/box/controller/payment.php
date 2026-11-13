@@ -23,7 +23,7 @@
 
         <div class="mb-2">
           <select class="form-control select" name="sales_percent" id="sales_percent">
-            <option value="10"> 10% </option>
+            <option value="5"> 5% </option>
             <?php foreach ($percent as $p): ?>
               <option value="<?= esc($p['cant']) ?>">
                 <?= esc($p['cant']) ?> %
@@ -50,7 +50,7 @@
 
         <div class="mb-2">
           <select class="form-control select" name="payment_percent" id="payment_percent">
-            <option value="5">5%</option>
+            <option value="3">3%</option>
             <?php foreach ($percent as $p): ?>
               <option value="<?= esc($p['cant']) ?>">
                 <?= esc($p['cant']) ?> %

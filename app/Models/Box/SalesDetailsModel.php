@@ -22,8 +22,6 @@ class SalesDetailsModel extends Model
     'margin',
     'total_margin',
     'sales',
-    'unit_iva',
-    'base_imponible'
   ];
 
   public function add_sales_details($data)
@@ -68,8 +66,7 @@ class SalesDetailsModel extends Model
         'sd.unit_price',
         'sd.total_price',
         'sd.type_iva',
-        'sd.unit_iva',
-        'sd.base_imponible',
+        'sd.total_iva',
         'p.description AS descripcion'
       ])
       ->join(
@@ -82,4 +79,5 @@ class SalesDetailsModel extends Model
       ->get()
       ->getResultArray();
   }
+
 }

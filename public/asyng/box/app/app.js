@@ -138,7 +138,7 @@ $(document).on('keydown', '#other_name', function (e) {
     product_add_cart_direct();
 
     $('#search').val('').focus().select();
-    input.hide();
+    input.slideUp();
 
   }
 
@@ -304,8 +304,8 @@ $(document).on('keydown', '#product_price_input', function (e) {
 });
 // *********
 // BOTONES DE CERRAR
-$(document).on('click', '.product_form_cancel', function () {
-
+$(document).on('click', '.product_form_cancel', function (e) {
+  e.preventDefault();
   asyng_hide_view({
     id: 'product_panel',
     effect: 'fade',
@@ -315,8 +315,9 @@ $(document).on('click', '.product_form_cancel', function () {
 
   return;
 });
-$(document).on('click', '.box_movement_hide', function () {
+$(document).on('click', '.box_movement_hide', function (e) {
 
+  e.preventDefault();
   asyng_hide_view({
     id: 'box_movement_panel',
     effect: 'fade',
@@ -325,6 +326,9 @@ $(document).on('click', '.box_movement_hide', function () {
   $("#search").focus().select();
 
   return;
+});
+$(document).on('click', '#add_cart_type, input[name="price_tier"]', function () {
+  $('#search').trigger('focus');
 });
 
 

@@ -101,19 +101,25 @@
 <?= $this->endSection(); ?>
 
 <?= $this->section('other_head'); ?>
-
+<!-- QZ TRAY IMPRESION -->
 <script src=" <?= base_url(); ?>/assets/libs/js/qz-tray.js"></script>
+<!-- ----------------- -->
 
 <?= $this->endSection(); ?>
 
 <?= $this->section('other_script'); ?>
-<script src="<?= base_url(); ?>/asyng/box/process/prints.js"></script>
+<!-- IMPRESION -->
+<script src="<?= base_url(); ?>/asyng/prints/ticket.js"></script>
+<script src="<?= base_url(); ?>/asyng/prints/invoice.js"></script>
+<!-- --------- -->
+
 <!-- Process -->
 <script src="<?= base_url(); ?>/asyng/box/process/sales.js"></script>
 <script src="<?= base_url(); ?>/asyng/box/process/app.js"></script>
 <script src="<?= base_url(); ?>/asyng/box/process/cart.js"></script>
 <script src="<?= base_url(); ?>/asyng/box/process/wait.js"></script>
 <script src="<?= base_url(); ?>/asyng/box/process/product.js"></script>
+<script src="<?= base_url(); ?>/asyng/box/process/prints.js"></script>
 <script src="<?= base_url(); ?>/asyng/box/process/customer.js"></script>
 <script src="<?= base_url(); ?>/asyng/box/process/point.js"></script>
 <script src="<?= base_url(); ?>/asyng/box/process/invoice_display.js"></script>

@@ -59,7 +59,7 @@ class ProductModel extends Model
 
                 // COSTOS
                 'COALESCE(pc.cost, 0) AS cost',
-                'COALESCE(pc.other_cost, 0) AS other_cost',
+
 
                 // PRECIOS
                 'COALESCE(pr.price_one, 0) AS price_one',
@@ -231,5 +231,313 @@ class ProductModel extends Model
         }
 
         return $products;
+    }
+
+    public function updateInlineField(
+        int $productId,
+        string $field,
+        $value
+    ): array {
+
+        $db = $this->db;
+
+        // ============================================================
+        // 1. VALIDAR CAMPOS PERMITIDOS
+        // ============================================================
+
+        $allowedFields = [
+            'description',
+            'cost',
+            'price_1',
+            'price_2',
+            'price_three',
+            'stock_s1',
+            'stock_s2'
+        ];
+
+        if (!in_array($field, $allowedFields, true)) {
+            return [
+                'status' => false,
+                'error' => 'Campo no permitido.'
+            ];
+        }
+
+        // ============================================================
+        // 2. BUSCAR PRODUCTO POR ID
+        // ============================================================
+
+        $product = $db->table('products')
+            ->select('id, code, description')
+            ->where('id', $productId)
+            ->get()
+            ->getRowArray();
+
+        if (!$product) {
+            return [
+                'status' => false,
+                'error' => 'El producto no existe.'
+            ];
+        }
+
+        $productCode = $product['code'];
+
+        // ============================================================
+        // 3. VALIDAR Y PREPARAR VALOR
+        // ============================================================
+
+        if ($field === 'description') {
+
+            $value = trim((string) $value);
+
+            if ($value === '') {
+                return [
+                    'status' => false,
+                    'error' => 'La descripción no puede estar vacía.'
+                ];
+            }
+
+            if (mb_strlen($value) > 200) {
+                return [
+                    'status' => false,
+                    'error' => 'La descripción no puede superar los 200 caracteres.'
+                ];
+            }
+
+        } elseif (
+            in_array($field, [
+                'cost',
+                'price_1',
+                'price_2',
+                'price_three'
+            ], true)
+        ) {
+
+            // Eliminar separadores de miles de Guaraníes.
+            // Ejemplo: 1.500.000 => 1500000
+
+            $value = preg_replace('/[^\d-]/', '', (string) $value);
+
+            if ($value === '' || !is_numeric($value)) {
+                return [
+                    'status' => false,
+                    'error' => 'El importe ingresado no es válido.'
+                ];
+            }
+
+            $value = (int) $value;
+
+            if ($value < 0) {
+                return [
+                    'status' => false,
+                    'error' => 'El importe no puede ser negativo.'
+                ];
+            }
+
+        } else {
+
+            // STOCK: permite decimales.
+            // Ejemplo: 10,500 => 10.500
+
+            $value = str_replace(',', '.', trim((string) $value));
+
+            if ($value === '' || !is_numeric($value)) {
+                return [
+                    'status' => false,
+                    'error' => 'La cantidad ingresada no es válida.'
+                ];
+            }
+
+            $value = (float) $value;
+
+            if ($value < 0) {
+                return [
+                    'status' => false,
+                    'error' => 'El stock no puede ser negativo.'
+                ];
+            }
+        }
+
+        // ============================================================
+        // 4. INICIAR TRANSACCIÓN
+        // ============================================================
+
+        $db->transBegin();
+
+        try {
+
+            // ========================================================
+            // DESCRIPCIÓN
+            // ========================================================
+
+            if ($field === 'description') {
+
+                $db->table('products')
+                    ->where('id', $productId)
+                    ->update([
+                        'description' => $value
+                    ]);
+
+            }
+
+            // ========================================================
+            // COSTO
+            // ========================================================
+            elseif ($field === 'cost') {
+
+                $costExists = $db->table('products_cost')
+                    ->where('product', $productCode)
+                    ->countAllResults();
+
+                if ($costExists > 0) {
+
+                    $db->table('products_cost')
+                        ->where('product', $productCode)
+                        ->update([
+                            'cost' => $value
+                        ]);
+
+                } else {
+
+                    $db->table('products_cost')
+                        ->insert([
+                            'product' => $productCode,
+                            'cost' => $value
+                        ]);
+                }
+
+            }
+
+            // ========================================================
+            // PRECIOS
+            // ========================================================
+            elseif (
+                in_array($field, [
+                    'price_1',
+                    'price_2',
+                    'price_three'
+                ], true)
+            ) {
+
+                $priceColumns = [
+                    'price_1' => 'price_one',
+                    'price_2' => 'price_two',
+                    'price_three' => 'price_three'
+                ];
+
+                $column = $priceColumns[$field];
+
+                $priceExists = $db->table('products_prices')
+                    ->where('product', $productCode)
+                    ->countAllResults();
+
+                if ($priceExists > 0) {
+
+                    $db->table('products_prices')
+                        ->where('product', $productCode)
+                        ->update([
+                            $column => $value
+                        ]);
+
+                } else {
+
+                    $db->table('products_prices')
+                        ->insert([
+                            'product' => $productCode,
+                            $column => $value
+                        ]);
+                }
+
+            }
+
+            // ========================================================
+            // STOCK POR SUCURSAL
+            // ========================================================
+            elseif (
+                in_array($field, [
+                    'stock_s1',
+                    'stock_s2'
+                ], true)
+            ) {
+
+                $branches = [
+                    'stock_s1' => 1,
+                    'stock_s2' => 2
+                ];
+
+                $sucursal = $branches[$field];
+
+                // Obtener los registros de stock existentes.
+                $stockRows = $db->table('products_stock')
+                    ->select('id, stock')
+                    ->where('product', $productCode)
+                    ->where('sucursal', $sucursal)
+                    ->orderBy('id', 'ASC')
+                    ->get()
+                    ->getResultArray();
+
+                if (!empty($stockRows)) {
+
+                    // El modelo suma todos los registros de stock.
+                    // Calculamos el total actual.
+
+                    $currentStock = 0;
+
+                    foreach ($stockRows as $stockRow) {
+                        $currentStock += (float) $stockRow['stock'];
+                    }
+
+                    // Ajustar solamente el primer registro para que
+                    // la suma total coincida con el nuevo valor.
+
+                    $difference = $value - $currentStock;
+
+                    $firstStock = (float) $stockRows[0]['stock'];
+
+                    $db->table('products_stock')
+                        ->where('id', $stockRows[0]['id'])
+                        ->update([
+                            'stock' => $firstStock + $difference
+                        ]);
+
+                } else {
+
+                    // Si no existe stock, crear el registro.
+
+                    $db->table('products_stock')
+                        ->insert([
+                            'product' => $productCode,
+                            'sucursal' => $sucursal,
+                            'stock' => $value
+                        ]);
+                }
+            }
+
+            // ========================================================
+            // 5. VERIFICAR TRANSACCIÓN
+            // ========================================================
+
+            if ($db->transStatus() === false) {
+                throw new \RuntimeException('No se pudo actualizar el producto.');
+            }
+
+            $db->transCommit();
+
+            return [
+                'status' => true,
+                'value' => $value,
+                'field' => $field
+            ];
+
+        } catch (\Throwable $e) {
+
+            $db->transRollback();
+
+            log_message('error', 'Error updateInlineField: ' . $e->getMessage());
+
+            return [
+                'status' => false,
+                'error' => 'No se pudo guardar el cambio.'
+            ];
+        }
     }
 }

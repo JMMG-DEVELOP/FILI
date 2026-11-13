@@ -1,33 +1,6 @@
-
-// async function post_sales(sale_id) {
-//   const printType = Number($('#print_type').val());
-
-//   try {
-//     if (printType === 1) {
-//       await ticket(sale_id);
-
-//     } else if (printType === 2) {
-//       await factura(sale_id);
-
-//     } else if (printType === 0) {
-//       console.log('Impresión desactivada');
-//     }
-
-//   } catch (err) {
-//     console.error('Error al imprimir:', err);
-//     showAlert(
-//       'La venta fue procesada, pero hubo un problema con la impresión.',
-//       'warning'
-//     );
-//   } finally {
-//     // La venta ya fue guardada por el backend.
-//     // No dejar el carrito anterior preparado para otra venta.
-//     clear();
-//   }
-// }
-
 async function post_sales(sale_id) {
   const printType = Number($('#print_type').val());
+  const receiptType = Number($('#receipt_type').val() || 2);
 
   try {
     if (printType === 0) {
@@ -38,22 +11,21 @@ async function post_sales(sale_id) {
       await ticket(sale_id);
 
     } else if (printType === 2) {
-      await factura(sale_id);
+      await factura(sale_id, receiptType);
 
     } else {
       throw new Error('Tipo de impresión no válido');
     }
 
   } catch (err) {
-    // console.error('Error al imprimir:', err);
-
     showAlert(
       'No se pudo imprimir con QZ Tray. Se abrirá el PDF de respaldo.',
       'warning'
     );
 
     try {
-      await imprimirPDF(sale_id, printType);
+      await imprimirPDF(sale_id, printType, receiptType);
+
     } catch (pdfError) {
       console.error('Error al generar el PDF:', pdfError);
 
@@ -64,7 +36,6 @@ async function post_sales(sale_id) {
     }
 
   } finally {
-    // La venta ya fue guardada en el backend.
     clear();
   }
 }

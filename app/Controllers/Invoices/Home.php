@@ -3,6 +3,8 @@ namespace App\Controllers\Invoices;
 
 use App\Controllers\BaseController;
 use App\Models\Invoices\InvoicesDatatableModel;
+use App\Services\ReprintInvoiceService;
+use Throwable;
 class Home extends BaseController
 {
   protected $Model;
@@ -156,7 +158,49 @@ class Home extends BaseController
     }
   }
 
+  public function reprint(bool $requirePrinter = true)
+  {
+    $invoiceId = (int) $this->request->getPost('invoice_id');
 
+    if ($invoiceId <= 0) {
+      return $this->response
+        ->setStatusCode(400)
+        ->setJSON([
+          'status' => false,
+          'error' => 'ID DE FACTURA NO VÁLIDO',
+        ]);
+    }
+
+    try {
+      $service = new ReprintInvoiceService();
+
+      $result = $service->reprint(
+        $invoiceId,
+        $requirePrinter
+      );
+
+      if (empty($result['status'])) {
+        return $this->response
+          ->setStatusCode(400)
+          ->setJSON($result);
+      }
+
+      return $this->response->setJSON($result);
+    } catch (Throwable $e) {
+      log_message(
+        'error',
+        'Reimpresión de factura | ID: ' .
+        $invoiceId . ' | ' . $e->getMessage()
+      );
+
+      return $this->response
+        ->setStatusCode(500)
+        ->setJSON([
+          'status' => false,
+          'error' => 'NO SE PUDO REIMPRIMIR LA FACTURA',
+        ]);
+    }
+  }
 
   public function finish($status, $msg, $html = '', $data = '')
   {

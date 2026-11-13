@@ -15,7 +15,7 @@ class Permissions extends BaseConfig
             //  Productos
             'access_product', //Acceder por menu y route
 
-            'product_products_view',
+            'product_product_view',
             'product_product_add',
             'product_product_edit',
             'product_product_delete',
@@ -23,6 +23,8 @@ class Permissions extends BaseConfig
             // Costos de Productos
             'product_cost_view',
             'product_cost_edit',
+
+            'product_price_edit',
 
             // Margen de Productos
             'product_margin_view',
@@ -45,7 +47,15 @@ class Permissions extends BaseConfig
 
             // Imprimir Codigos de Barra
             'product_code_print',
+            'product_label_print',
 
+            // COMPRAS
+            'product_shopp_add',
+            // PROVEEDORES
+            // 'provider_view',
+            'provider_add',
+            'provider_edit',
+            'provider_delete',
             //
             //  BOX
             //

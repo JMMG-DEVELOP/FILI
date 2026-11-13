@@ -244,6 +244,10 @@ class InvoicesModel extends Model
     }
   }
 
+  function get_detail()
+  {
+
+  }
 
 
 }

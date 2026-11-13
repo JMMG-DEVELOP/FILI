@@ -17,7 +17,7 @@
         <div class="col-md-8 mb-2">
           <label> Cliente </label>
           <input type="text" class="form-control" name="cash_credit_customer" id="cash_credit_customer"
-            placeholder="Cliente">
+            placeholder="Cliente" readonly>
         </div>
         <div class="col-md-2 mb-2">
           <label> </label>

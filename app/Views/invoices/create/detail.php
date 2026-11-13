@@ -6,10 +6,18 @@
       Detalles de la venta #<?= esc($sale_id) ?>
     </h5>
 
-    <button type="button" class="btn btn-outline-danger" id="sales_detail_close" title="Cerrar detalles">
-      <i class="fas fa-times"></i>
-    </button>
-
+    <?php if ($type === 'create') { ?>
+      <button type="button" class="btn btn-outline-danger" id="sales_detail_close" title="Cerrar detalles">
+        <i class="fas fa-times"></i>
+      </button>
+      <?php
+    } ?>
+    <?php if ($type === 'home') { ?>
+      <button type="button" class="btn btn-outline-danger" id="sales_detail_home_close" title="Cerrar detalles">
+        <i class="fas fa-times"></i>
+      </button>
+      <?php
+    } ?>
   </div>
 
   <div class="card-body">

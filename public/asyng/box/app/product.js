@@ -107,6 +107,9 @@ $(document).on('keydown', '#search', async function (e) {
     $(this).val(formatted)
 
     product_add_cart(formatted)
+    if ($('#product_panel').length && $('#product_panel').is(':visible')) {
+      $('#product_panel').slideUp();
+    }
   }
 
   // Operacion al Precionar , COMA

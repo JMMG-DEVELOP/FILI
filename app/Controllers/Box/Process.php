@@ -296,17 +296,25 @@ class Process extends BaseController
   public function history_sales_details_panel_load()
   {
     try {
+      $saleId = (int) $this->request->getPost('id');
+
+      if ($saleId <= 0) {
+        return $this->response->setJSON([
+          'status' => false,
+          'message' => 'ID DE VENTA NO VÁLIDO',
+          'csrfName' => csrf_token(),
+          'csrfHash' => csrf_hash()
+        ]);
+      }
 
       $SalesDetailsModel = new SalesDetailsModel();
 
-      $values = $SalesDetailsModel->get_id($this->request->getPost('id'));
+      $values = $SalesDetailsModel->get_id($saleId);
 
-      $html = view(
-        'box/components/history_sales_detail',
-        [
-          'sales' => $values
-        ]
-      );
+      $html = view('box/components/history_sales_detail', [
+        'sales' => $values,
+        'saleId' => $saleId
+      ]);
 
       return $this->response->setJSON([
         'status' => true,
@@ -314,14 +322,21 @@ class Process extends BaseController
         'csrfName' => csrf_token(),
         'csrfHash' => csrf_hash()
       ]);
-
     } catch (\Throwable $th) {
+      log_message(
+        'error',
+        'Error al cargar detalles de venta: ' .
+        $th->getMessage() .
+        ' | Archivo: ' . $th->getFile() .
+        ' | Línea: ' . $th->getLine()
+      );
 
       return $this->response->setJSON([
         'status' => false,
-        'message' => $th->getMessage()
+        'message' => $th->getMessage(),
+        'csrfName' => csrf_token(),
+        'csrfHash' => csrf_hash()
       ]);
-
     }
   }
 

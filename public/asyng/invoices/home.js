@@ -100,6 +100,27 @@ function home_init_table() {
       defaultContent: 'SIN USUARIO',
       render: textRenderer
     },
+    {
+      data: null,
+      orderable: false,
+      searchable: false,
+      className: 'text-center',
+      render: function (data, type, row) {
+        if (type !== 'display') {
+          return '';
+        }
+
+        return `
+      <button
+        type="button"
+        class="btn btn-sm btn-outline-info btn-detail-view"
+        data-id="${Number(row.id)}"
+        title="Ver detalles de la factura">
+        <i class="fas fa-eye"></i> 
+      </button>
+    `;
+      }
+    },
 
     {
       data: 'status_name',
@@ -125,6 +146,27 @@ function home_init_table() {
         return '<span class="badge ' + badgeClass + '">' +
           label +
           '</span>';
+      }
+    },
+    {
+      data: null,
+      orderable: false,
+      searchable: false,
+      className: 'text-center',
+      render: function (data, type, row) {
+        if (type !== 'display') {
+          return '';
+        }
+
+        return `
+      <button
+        type="button"
+        class="btn btn-sm btn-outline-primary btn-invoice-reprint"
+        data-id="${Number(row.id)}"
+        title="Reimprimir factura">
+        <i class="fas fa-print"></i>
+      </button>
+    `;
       }
     },
     {

@@ -11,69 +11,82 @@ use CodeIgniter\Database\Exceptions\DatabaseException;
 
 class ProductService
 {
+
   public function add(array $data): array
   {
     $db = db_connect();
-    $db->transBegin();
 
     try {
 
-      // ================= PRODUCT =================
+      $db->transBegin();
+
+      // ============================================================
+      // 1. PRODUCTO
+      // ============================================================
+
       $productModel = new ProductModel();
 
       if (!$productModel->insert($data['products'])) {
-        return [
-          'status' => false,
-          'message' => $productModel->errors()
-            ? implode(', ', $productModel->errors())
-            : 'Error al insertar producto'
-        ];
+
+        throw new \RuntimeException(
+          implode(', ', $productModel->errors())
+          ?: 'Error al insertar producto'
+        );
       }
 
-      // ================= PRICES =================
+      // ============================================================
+      // 2. PRECIOS
+      // ============================================================
+
       $priceModel = new PricesModel();
 
       if (!$priceModel->insert($data['prices'])) {
-        return [
-          'status' => false,
-          'message' => $priceModel->errors()
-            ? implode(', ', $priceModel->errors())
-            : 'Error al insertar precios'
-        ];
+
+        throw new \RuntimeException(
+          implode(', ', $priceModel->errors())
+          ?: 'Error al insertar precios'
+        );
       }
 
-      // ================= COSTS =================
+      // ============================================================
+      // 3. COSTOS
+      // ============================================================
+
       $costModel = new CostModel();
 
       if (!$costModel->insert($data['costs'])) {
-        return [
-          'status' => false,
-          'message' => $costModel->errors()
-            ? implode(', ', $costModel->errors())
-            : 'Error al insertar costos'
-        ];
+
+        throw new \RuntimeException(
+          implode(', ', $costModel->errors())
+          ?: 'Error al insertar costos'
+        );
       }
 
-      // ================= STOCK =================
+      // ============================================================
+      // 4. STOCK POR SUCURSAL
+      // ============================================================
+
       if (!empty($data['stock'])) {
+
         $stockModel = new StockModel();
 
         if (!$stockModel->insertBatch($data['stock'])) {
-          return [
-            'status' => false,
-            'message' => 'Error al insertar stock'
-          ];
+
+          throw new \RuntimeException(
+            'Error al insertar stock por sucursal'
+          );
         }
       }
 
-      // ================= COMMIT =================
-      if ($db->transStatus() === false) {
-        $db->transRollback();
+      // ============================================================
+      // 5. VALIDAR TRANSACCIÓN
+      // ============================================================
 
-        return [
-          'status' => false,
-          'message' => 'Error en la transacción'
-        ];
+      if ($db->transStatus() === false) {
+
+        throw new \RuntimeException(
+          'Error al procesar la transacción'
+        );
       }
 
       $db->transCommit();
@@ -87,15 +100,17 @@ class ProductService
 
       $db->transRollback();
 
-      log_message('error', $e->getMessage());
+      log_message(
+        'error',
+        'ProductService::add(): ' . $e->getMessage()
+      );
 
       return [
         'status' => false,
-        'message' => 'Exception: ' . $e->getMessage()
+        'message' => $e->getMessage()
       ];
     }
   }
-
 
   public function edit(array $data): bool
   {
@@ -126,55 +141,104 @@ class ProductService
         $priceModel->insert($data['prices']);
       }
 
-      // 3️⃣ COSTS
-      $costModel = new CostModel();
-      $existsCost = $costModel->where('product', $code)->first();
 
-      if ($existsCost) {
-        $costModel
+      // 3. COSTOS
+      if (isset($data['costs'])) {
+
+        $costModel = new CostModel();
+
+        $existsCost = $costModel
           ->where('product', $code)
-          ->set($data['costs'])
-          ->update();
-      } else {
-        $costModel->insert($data['costs']);
+          ->first();
+
+        if ($existsCost) {
+
+          $costModel
+            ->where('product', $code)
+            ->set($data['costs'])
+            ->update();
+
+        } else {
+
+          $costModel->insert($data['costs']);
+
+        }
       }
 
-      // 4️⃣ STOCK (por sucursal)
+
+
+      // ==========================================
+// 4. STOCK POR SUCURSAL (AJUSTE)
+// ==========================================
+
       if (!empty($data['stock'])) {
+
         $stockModel = new StockModel();
 
         foreach ($data['stock'] as $row) {
 
+          $branchId = (int) $row['sucursal'];
+          $adjustment = (float) $row['stock'];
+
+          // No hacer nada si el ajuste es cero
+          if ($adjustment == 0) {
+            continue;
+          }
+
+          // Buscar stock actual
           $existsStock = $stockModel
             ->where('product', $code)
-            ->where('sucursal', $row['sucursal'])
+            ->where('sucursal', $branchId)
             ->first();
 
           if ($existsStock) {
 
-            $newStock = (int) $row['stock'];
+            $currentStock = (float) $existsStock['stock'];
 
-            if ($newStock !== 0) {
+            // Sumar o restar según el signo
+            $newStock = $currentStock + $adjustment;
 
-              $currentStock = (int) $existsStock['stock'];
-              $totalStock = $currentStock + $newStock;
+            // No permitir stock negativo
+            if ($newStock < 0) {
+              throw new \RuntimeException(
+                "Stock insuficiente en la sucursal {$branchId}. " .
+                "Stock actual: {$currentStock}. " .
+                "Ajuste solicitado: {$adjustment}."
+              );
+            }
 
-              // 👉 evitar stock negativo
-              if ($totalStock < 0) {
-                $totalStock = 0;
-              }
+            $updated = $stockModel
+              ->where('product', $code)
+              ->where('sucursal', $branchId)
+              ->set('stock', $newStock)
+              ->update();
 
-              $stockModel
-                ->where('product', $code)
-                ->where('sucursal', $row['sucursal'])
-                ->set(['stock' => $totalStock])
-                ->update();
+            if (!$updated) {
+              throw new \RuntimeException(
+                "No se pudo actualizar el stock de la sucursal {$branchId}"
+              );
             }
 
           } else {
 
-            // 👉 si no existe registro, se inserta tal cual
-            $stockModel->insert($row);
+            // Si no existe registro, solo permitir ajuste positivo
+            if ($adjustment < 0) {
+              throw new \RuntimeException(
+                "No existe stock registrado en la sucursal {$branchId}"
+              );
+            }
+
+            $inserted = $stockModel->insert([
+              'product' => $code,
+              'sucursal' => $branchId,
+              'stock' => $adjustment,
+            ]);
+
+            if (!$inserted) {
+              throw new \RuntimeException(
+                "No se pudo registrar el stock de la sucursal {$branchId}"
+              );
+            }
           }
         }
       }
@@ -216,7 +280,7 @@ class ProductService
     return [
       'status' => true,
       'error' => 'false',
-      'message' => 'Código NO Registrado',
+      'message' => 'CODIGO NO ESTA REGISTRADO',
     ];
   }
 }

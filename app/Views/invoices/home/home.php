@@ -22,7 +22,9 @@
             <th>RUC</th>
             <th>MONTO</th>
             <th>USUARIO</th>
+            <th>VER</th>
             <th>ESTATUS</th>
+            <th>REIMPRIMIR</th>
             <th>ANULAR</th>
           </tr>
         </thead>

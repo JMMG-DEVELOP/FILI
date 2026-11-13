@@ -44,7 +44,7 @@
   <div class="col-md-3 mb-2">
     <label>Precio 3</label>
     <input type="text" class="form-control money" name="precio_three" id="precio_three"
-      value=" <?= $result['cant_three'] ?>">
+      value=" <?= $result['prices']['price_three'] ?>">
   </div>
   <!-- Cant -->
   <!-- <div class="col-md-2 mb-2 mt-2">

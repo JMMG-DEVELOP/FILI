@@ -51,6 +51,10 @@
         <a href="#" class="btn btn-outline-danger sucursal_delete_close"> <i class="fas fa-times"></i>
         </a>
       <?php } ?>
+      <?php if ($type === 'provider') { ?>
+        <a href="#" class="btn btn-outline-danger provider_delete_close"> <i class="fas fa-times"></i>
+        </a>
+      <?php } ?>
     </div>
     <div class="card-body">
       <h5>Seguro que desea eliminar?</h5>
@@ -59,7 +63,12 @@
       </h1>
     </div>
     <div class="card-footer d-flex justify-content-end align-items-center">
+      <?php if ($type === 'provider') { ?>
 
+        <button type="button" class="btn btn-outline-warning px-5" id="delete_provider" data-id="<?= $id ?>">
+          <i class="fas fa-trash"></i>
+        </button>
+      <?php } ?>
 
       <?php if ($type === 'printer') { ?>
 
