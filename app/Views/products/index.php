@@ -76,6 +76,8 @@
 <?= $this->include('interface/other/head/datatables'); ?>
 <!-- QZ TRAY IMPRESION -->
 <script src=" <?= base_url(); ?>/assets/libs/js/qz-tray.js"></script>
+<script src=" <?= base_url(); ?>/assets/libs/js/JsBarcode.all.min.js"></script>
+
 <!-- ----------------- -->
 <?= $this->endSection(); ?>
 
@@ -86,6 +88,10 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.9/jquery.inputmask.min.js"></script>
 <script src="<?= base_url(); ?>/asyng/products/products/process.js"></script>
 <!-- IMPRESION -->
+<script src="<?= base_url(); ?>/asyng/prints/barcode.js"></script>
+<script src="<?= base_url(); ?>/asyng/prints/name.js"></script>
+<script src="<?= base_url(); ?>/asyng/prints/label.js"></script>
+
 <script src="<?= base_url(); ?>/asyng/prints/ticket.js"></script>
 <script src="<?= base_url(); ?>/asyng/prints/invoice.js"></script>
 <!-- --------- -->
@@ -98,6 +104,12 @@
 <script src="<?= base_url(); ?>/asyng/products/products/form/product_process.js"></script>
 
 <script src="<?= base_url(); ?>/asyng/products/products/form/product.js"></script>
+<!-- Brand -->
+<script src="<?= base_url(); ?>/asyng/products/brand/process.js"></script>
+<script src="<?= base_url(); ?>/asyng/products/brand/domm.js"></script>
+<!-- Section -->
+<script src="<?= base_url(); ?>/asyng/products/section/process.js"></script>
+<script src="<?= base_url(); ?>/asyng/products/section/domm.js"></script>
 
 <!-- Provider -->
 <script src="<?= base_url(); ?>/asyng/products/provider/process.js"></script>
@@ -105,6 +117,8 @@
 
 
 <!-- Shopp -->
+<script src="<?= base_url(); ?>/asyng/products/products/shopp/shopp_save.js"></script>
+
 <script src="<?= base_url(); ?>/asyng/products/products/shopp/shopp_win.js"></script>
 <script src="<?= base_url(); ?>/asyng/products/products/shopp/shopp.js"></script>
 

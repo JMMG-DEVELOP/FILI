@@ -1,6 +1,6 @@
 $(document).on('click', '.shopp_winup', function (e) {
   e.preventDefault();
-  shopp_panel_load();
+  $('#shopp_code').focus();
 });
 async function shopp_panel_load() {
 

@@ -199,7 +199,7 @@ function validateForm(formSelector) {
 
   if (!valid) {
     showAlert(
-      'Complete los campos obligatorios y verifique que el correo electrónico sea válido.',
+      'COMPLETE TODOS LOS DATOS OBLIGATORIOS, Y VERIFIQUE QUE LOS DATOS SEAN VALIDOS',
       'warning'
     );
   }

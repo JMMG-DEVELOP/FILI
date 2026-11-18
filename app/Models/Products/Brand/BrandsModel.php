@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Models\Products\Brands;
+namespace App\Models\Products\Brand;
 
 use CodeIgniter\Model;
 
 class BrandsModel extends Model
 {
-    protected $table      = 'products_brands';
+    protected $table = 'products_brands';
     protected $primaryKey = 'id';
     protected $returnType = 'array';
 
@@ -14,5 +14,5 @@ class BrandsModel extends Model
         'name'
     ];
 
-    
+
 }

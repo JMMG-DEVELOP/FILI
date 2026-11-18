@@ -36,21 +36,6 @@ function asyngLoader(show = true) {
 }
 
 
-// function asyngFormData(form) {
-
-//   const data = {};
-
-//   if ($(form).length === 0) {
-//     return data;
-//   }
-
-//   $(form).serializeArray().forEach(item => {
-//     data[item.name] = item.value;
-//   });
-
-//   return data;
-// }
-
 function asyngFormData(selector) {
 
   const data = {};

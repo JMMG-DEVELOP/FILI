@@ -2,7 +2,7 @@
 namespace App\Controllers\Products\Products\Form;
 
 use App\Controllers\BaseController;
-use App\Models\Products\Brands\BrandsModel;
+use App\Models\Products\Brand\BrandsModel;
 use App\Models\Products\Products\IvaModel;
 use App\Models\Products\Products\PercentModel;
 use App\Models\Products\Products\ProductSales;

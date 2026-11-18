@@ -6,7 +6,9 @@ $(document).ready(async function () {
 async function panels_load() {
 
   await products_panel_load();
-  await provider_panel_load()
+  await provider_panel_load();
+  await section_panel_load();
+  await brand_panel_load();
 }
 
 async function products_panel_load() {

@@ -21,6 +21,7 @@
               <th scope="col">DRIVER</th>
               <th scope="col">PAPER</th>
               <th scope="col">CHARSET</th>
+              <th scope="col">DPI</th>
               <?php if (can('printer_view') or can('printer_edit')): ?>
                 <?php if (can('printer_view')): ?>
                   <th scope="col">Ver</th>
@@ -55,6 +56,9 @@
                   </td>
                   <td>
                     <?= esc($value['charset_code']) ?>
+                  </td>
+                  <td>
+                    <?= esc($value['dpi']) ?>
                   </td>
                   <?php if (can('printer_view') or can('printer_edit')): ?>
                     <td>

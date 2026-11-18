@@ -84,10 +84,10 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
                 $routes->post('shopp', 'Products\Products\Shopp\Shopp::panel_load');
                 $routes->post('shopp_search', 'Products\Products\Shopp\Shopp::shopp_search');
                 $routes->post('shopp_win', 'Products\Products\Shopp\Shopp::shopp_win');
-
+                $routes->post('update_stock', 'Products\Products\Shopp\Shopp::update_stock');
+                $routes->post('save', 'Products\Products\Shopp\Shopp::save');
 
             });
-
 
         });
         // ------------------------------------------
@@ -123,19 +123,34 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
 
         });
 
-
-
-
         // ------------------------------------------
         // BRANDS
         // ------------------------------------------
-        $routes->group('brands', function ($routes) {
-
-            // Datatable
-            $routes->post('datatable', 'Products\Brands\Datatable::datatable');
-
-            // Add
-            $routes->post('brand_open', 'Products\Brands\Add::open', ['filter' => 'ajax']);
+        $routes->group('brand', function ($routes) {
+            $routes->post(
+                'panel_load',
+                'Products\Brand\Brand::panel_load'
+            );
+            $routes->post(
+                'form_new_open',
+                'Products\Brand\Brand::form_new_open'
+            );
+            $routes->post(
+                'form_new_save',
+                'Products\Brand\Brand::form_new_save'
+            );
+            $routes->post(
+                'form_edit_open',
+                'Products\Brand\Brand::form_edit_open'
+            );
+            $routes->post(
+                'form_edit_save',
+                'Products\Brand\Brand::form_edit_save'
+            );
+            $routes->post(
+                'delete_save',
+                'Products\Brand\Brand::delete_save'
+            );
         });
 
 
@@ -143,12 +158,30 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
         // SECTION
         // ------------------------------------------
         $routes->group('section', function ($routes) {
-
-            // Datatable
-            $routes->post('datatable', 'Products\Section\Datatable::datatable');
-
-            // Add
-            $routes->post('section_open', 'Products\Section\Add::open', ['filter' => 'ajax']);
+            $routes->post(
+                'panel_load',
+                'Products\Section\Section::panel_load'
+            );
+            $routes->post(
+                'form_new_open',
+                'Products\Section\Section::form_new_open'
+            );
+            $routes->post(
+                'form_new_save',
+                'Products\Section\Section::form_new_save'
+            );
+            $routes->post(
+                'form_edit_open',
+                'Products\Section\Section::form_edit_open'
+            );
+            $routes->post(
+                'form_edit_save',
+                'Products\Section\Section::form_edit_save'
+            );
+            $routes->post(
+                'delete_save',
+                'Products\Section\Section::delete_save'
+            );
         });
 
     });
@@ -344,6 +377,18 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
         $routes->post(
             'generate_invoice_pdf',
             'Prints\GenerateInvoice::pdf'
+        );
+        $routes->post(
+            'barcode',
+            'Prints\Code::barcode'
+        );
+        $routes->post(
+            'name',
+            'Prints\Name::print'
+        );
+        $routes->post(
+            'label',
+            'Prints\Label::print'
         );
 
     });

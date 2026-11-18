@@ -1,51 +1,34 @@
-<div class="row justify-content-center mt-4">
-  <div class="col-xl-6 col-lg-7 col-md-8 col-sm-12">
-
-    <div class="card shadow-sm border-0">
-
-      <!-- HEADER -->
-      <div class="card-header bg-light text-center border-0">
-        <h4 id="brand_title" class="mb-0 font-weight-bold">
-          <?= esc($title) ?>
-        </h4>
-      </div>
-
-      <!-- BODY -->
-      <div class="card-body px-4 py-4">
-        <form action="" id="section_form">
-
-          <input type="text" class="form-control" name="id" hidden>
-
-          <div class="form-group text-center">
-            <label class="font-weight-bold mb-2">
-              Descripción de la sección
-            </label>
-
-            <div class="input-group input-group-lg">
-              <input type="text" class="form-control text-center col-xl-12" name="name" autofocus
-                placeholder="Ingrese la descripción">
-
-              <div class="input-group-append">
-                <button type="button" class="btn btn-primary px-4 section_save" title="Guardar">
-                  <i class="fas fa-check"></i>
-                </button>
-
-                <button type="button" class="btn btn-outline-danger px-4 section_cancel" title="Cancelar">
-                  <i class="fas fa-times"></i>
-                </button>
-              </div>
-            </div>
-          </div>
-
-        </form>
-      </div>
-
-      <!-- FOOTER -->
-      <div class="card-footer bg-white border-0 text-muted text-center small">
-        Complete la descripción y presione guardar
-      </div>
-
+<div class="col-xl-12 col-lg-6 col-md-6 col-sm-12 col-12">
+  <div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <h5 class="mb-0"><?= $title ?> </h5>
+      <a href="#" class="btn btn-outline-danger" id="section_form_close"> <i class="fas fa-times"></i>
+      </a>
     </div>
-
+    <div class="card-body">
+      <form id="form_section">
+        <input type="hidden" id="section_id" name="id" value="<?= esc($values['id'] ?? '') ?>">
+        <div class="form-group row">
+          <label class="col-12 col-sm-3 col-form-label text-sm-right">
+            DESCRIPCIÓN
+          </label>
+          <div class="col-12 col-sm-8 col-lg-6">
+            <input name="name" type="text" class="form-control" value="<?= esc($values['name'] ?? '') ?>" required>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="card-footer d-flex justify-content-end align-items-center">
+      <?php if ($type === 'new') { ?>
+        <a href="#" class="btn btn-outline-primary px-5" id="section_form_new_save"> <i class="fas fa-save"></i>
+        </a>
+      <?php } ?>
+      <?php if (can('section_edit')): ?>
+        <?php if ($type === 'edit') { ?>
+          <a href="#" class="btn btn-outline-primary px-5" id="section_form_edit_save"> <i class="fas fa-save"></i>
+          </a>
+        <?php } ?>
+      <?php endif; ?>
+    </div>
   </div>
 </div>

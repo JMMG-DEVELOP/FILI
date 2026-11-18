@@ -197,7 +197,18 @@ class ProductCrud extends BaseController
 
       $service = new ProductService();
 
-      $service->edit($data);
+      $userId = (int) session('id');
+
+      if ($userId <= 0) {
+        return $this->finish(
+          false,
+          'NO SE PUDO IDENTIFICAR AL USUARIO'
+        );
+      }
+
+      $service = new ProductService();
+
+      $service->edit($data, $userId);
 
       return $this->finish(
         true,

@@ -13,7 +13,8 @@ class DevicesPrintersModel extends Model
   protected $allowedFields = [
     'device',
     'printer',
-    'type'
+    'type',
+    'heigth'
 
   ];
   public function quit($id)
@@ -82,6 +83,7 @@ class DevicesPrintersModel extends Model
 
     return $this->db->table('devices_printers dp')
       ->select([
+        'p.dpi AS printer_dpi',
         'dp.id AS device_printer_id',
         'dp.device',
         'dp.type AS document_type',
@@ -99,7 +101,9 @@ class DevicesPrintersModel extends Model
         'pc.name AS charset_name',
         'pc.code AS charset_code',
         'pc.description AS charset_description',
-        'pp.printable AS printable'
+        'pp.printable AS printable',
+        'pp.heigth AS height'
+
       ])
       ->join('devices d', 'd.id = dp.device')
       ->join('printers p', 'p.id = dp.printer')

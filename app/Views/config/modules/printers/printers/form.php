@@ -28,6 +28,15 @@
         </div>
         <div class="form-group row">
           <label class="col-12 col-sm-3 col-form-label text-sm-right">
+            DPI
+          </label>
+          <div class="col-12 col-sm-8 col-lg-6">
+            <input id="dpi" name="dpi" type="text" class="form-control minusc" value="<?= esc($values['dpi'] ?? '') ?>"
+              required>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-12 col-sm-3 col-form-label text-sm-right">
             AUTO-CORTE
           </label>
           <div class="col-12 col-sm-8 col-lg-6">

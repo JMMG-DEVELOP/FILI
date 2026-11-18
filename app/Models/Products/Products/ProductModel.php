@@ -3,7 +3,7 @@
 namespace App\Models\Products\Products;
 
 use CodeIgniter\Model;
-
+use App\Services\StockService;
 class ProductModel extends Model
 {
     protected $table = 'products';
@@ -132,8 +132,6 @@ class ProductModel extends Model
         $product['stock'] = $stock;
 
         return $product;
-
-        return $product;
     }
 
     public function getBySearch(string $search)
@@ -233,6 +231,7 @@ class ProductModel extends Model
         return $products;
     }
 
+
     public function updateInlineField(
         int $productId,
         string $field,
@@ -263,7 +262,7 @@ class ProductModel extends Model
         }
 
         // ============================================================
-        // 2. BUSCAR PRODUCTO POR ID
+        // 2. BUSCAR PRODUCTO
         // ============================================================
 
         $product = $db->table('products')
@@ -312,9 +311,6 @@ class ProductModel extends Model
             ], true)
         ) {
 
-            // Eliminar separadores de miles de Guaraníes.
-            // Ejemplo: 1.500.000 => 1500000
-
             $value = preg_replace('/[^\d-]/', '', (string) $value);
 
             if ($value === '' || !is_numeric($value)) {
@@ -334,9 +330,6 @@ class ProductModel extends Model
             }
 
         } else {
-
-            // STOCK: permite decimales.
-            // Ejemplo: 10,500 => 10.500
 
             $value = str_replace(',', '.', trim((string) $value));
 
@@ -450,7 +443,7 @@ class ProductModel extends Model
             }
 
             // ========================================================
-            // STOCK POR SUCURSAL
+            // STOCK POR SUCURSAL + HISTORIAL
             // ========================================================
             elseif (
                 in_array($field, [
@@ -466,49 +459,104 @@ class ProductModel extends Model
 
                 $sucursal = $branches[$field];
 
-                // Obtener los registros de stock existentes.
-                $stockRows = $db->table('products_stock')
-                    ->select('id, stock')
-                    ->where('product', $productCode)
-                    ->where('sucursal', $sucursal)
-                    ->orderBy('id', 'ASC')
-                    ->get()
-                    ->getResultArray();
+                // ----------------------------------------------------
+                // OBTENER STOCK ACTUAL BLOQUEANDO LOS REGISTROS
+                // ----------------------------------------------------
 
-                if (!empty($stockRows)) {
+                $stockRows = $db->query(
+                    "SELECT id, stock
+                 FROM products_stock
+                 WHERE product = ? AND sucursal = ?
+                 ORDER BY id ASC
+                 FOR UPDATE",
+                    [$productCode, $sucursal]
+                )->getResultArray();
 
-                    // El modelo suma todos los registros de stock.
-                    // Calculamos el total actual.
+                $currentStock = 0;
 
-                    $currentStock = 0;
+                foreach ($stockRows as $stockRow) {
+                    $currentStock += (float) $stockRow['stock'];
+                }
 
-                    foreach ($stockRows as $stockRow) {
-                        $currentStock += (float) $stockRow['stock'];
+                // ----------------------------------------------------
+                // CALCULAR DIFERENCIA
+                // ----------------------------------------------------
+
+                $adjustment = round($value - $currentStock, 3);
+
+                // ----------------------------------------------------
+                // ACTUALIZAR STOCK SOLAMENTE SI HAY DIFERENCIA
+                // ----------------------------------------------------
+
+                if ($adjustment != 0.0) {
+
+                    if (!empty($stockRows)) {
+
+                        // Ajustar solamente la primera fila.
+                        // Las demás filas permanecen intactas.
+
+                        $firstStock = (float) $stockRows[0]['stock'];
+
+                        $updated = $db->table('products_stock')
+                            ->where('id', $stockRows[0]['id'])
+                            ->update([
+                                'stock' => round(
+                                    $firstStock + $adjustment,
+                                    3
+                                )
+                            ]);
+
+                        if (!$updated) {
+                            throw new \RuntimeException(
+                                'No se pudo actualizar el stock.'
+                            );
+                        }
+
+                    } else {
+
+                        // Crear registro si todavía no existe.
+
+                        $inserted = $db->table('products_stock')
+                            ->insert([
+                                'product' => $productCode,
+                                'sucursal' => $sucursal,
+                                'stock' => $value
+                            ]);
+
+                        if (!$inserted) {
+                            throw new \RuntimeException(
+                                'No se pudo crear el registro de stock.'
+                            );
+                        }
                     }
 
-                    // Ajustar solamente el primer registro para que
-                    // la suma total coincida con el nuevo valor.
+                    // // ------------------------------------------------
+// REGISTRAR MOVIMIENTO TIPO 6
+// ------------------------------------------------
 
-                    $difference = $value - $currentStock;
+                    $userId = (int) session('id');
 
-                    $firstStock = (float) $stockRows[0]['stock'];
+                    if ($userId <= 0) {
+                        throw new \RuntimeException(
+                            'No se pudo identificar al usuario que modifica el stock.'
+                        );
+                    }
 
-                    $db->table('products_stock')
-                        ->where('id', $stockRows[0]['id'])
-                        ->update([
-                            'stock' => $firstStock + $difference
-                        ]);
+                    $stockService = new StockService();
 
-                } else {
+                    $movementId = $stockService->history_movements_register([
+                        'product' => $productCode,
+                        'movement' => 6,
+                        'quantity' => $value, // STOCK FINAL
+                        'user' => $userId,
+                        'sucursal' => $sucursal
+                    ], $db);
 
-                    // Si no existe stock, crear el registro.
-
-                    $db->table('products_stock')
-                        ->insert([
-                            'product' => $productCode,
-                            'sucursal' => $sucursal,
-                            'stock' => $value
-                        ]);
+                    if (!$movementId) {
+                        throw new \RuntimeException(
+                            'No se pudo registrar el historial del movimiento.'
+                        );
+                    }
                 }
             }
 
@@ -517,7 +565,9 @@ class ProductModel extends Model
             // ========================================================
 
             if ($db->transStatus() === false) {
-                throw new \RuntimeException('No se pudo actualizar el producto.');
+                throw new \RuntimeException(
+                    'No se pudo completar la transacción.'
+                );
             }
 
             $db->transCommit();
@@ -532,7 +582,13 @@ class ProductModel extends Model
 
             $db->transRollback();
 
-            log_message('error', 'Error updateInlineField: ' . $e->getMessage());
+            log_message(
+                'error',
+                'Error updateInlineField: ' .
+                $e->getMessage() .
+                ' | Archivo: ' . $e->getFile() .
+                ' | Línea: ' . $e->getLine()
+            );
 
             return [
                 'status' => false,
@@ -540,4 +596,201 @@ class ProductModel extends Model
             ];
         }
     }
+
+    public function adjustStock(
+        string $productCode,
+        int $sucursalId,
+        float $adjustment,
+        int $userId,
+        int $movementType = 3
+    ): array {
+
+        $db = $this->db;
+
+        // =====================================================
+        // 1. INICIAR TRANSACCIÓN
+        // =====================================================
+
+        $db->transBegin();
+
+        try {
+
+            // =====================================================
+            // 2. BUSCAR STOCK ACTUAL Y BLOQUEAR REGISTROS
+            // =====================================================
+
+            $builder = $db->table('products_stock')
+                ->select('id, stock')
+                ->where('product', $productCode)
+                ->where('sucursal', $sucursalId)
+                ->orderBy('id', 'ASC');
+
+            $sql = $builder->getCompiledSelect();
+
+            $rows = $db->query($sql . ' FOR UPDATE')->getResultArray();
+
+            // =====================================================
+            // 3. CALCULAR STOCK ACTUAL
+            // =====================================================
+
+            $currentStock = 0;
+
+            foreach ($rows as $row) {
+                $currentStock += (float) $row['stock'];
+            }
+
+            // =====================================================
+            // 4. CALCULAR NUEVO STOCK
+            // =====================================================
+
+            $newStock = $currentStock + $adjustment;
+
+            if ($newStock < 0) {
+
+                $db->transRollback();
+
+                return [
+                    'success' => false,
+                    'message' => 'STOCK INSUFICIENTE',
+                    'stock' => $currentStock
+                ];
+            }
+
+            // =====================================================
+            // 5. ACTUALIZAR O INSERTAR STOCK
+            // =====================================================
+
+            if (!empty($rows)) {
+
+                $updated = $db->table('products_stock')
+                    ->where('id', $rows[0]['id'])
+                    ->update([
+                        'stock' => (float) $rows[0]['stock'] + $adjustment
+                    ]);
+
+                if (!$updated) {
+                    throw new \RuntimeException(
+                        'No se pudo actualizar el stock.'
+                    );
+                }
+
+            } else {
+
+                if ($adjustment > 0) {
+
+                    $inserted = $db->table('products_stock')
+                        ->insert([
+                            'product' => $productCode,
+                            'sucursal' => $sucursalId,
+                            'stock' => $adjustment
+                        ]);
+
+                    if (!$inserted) {
+                        throw new \RuntimeException(
+                            'No se pudo insertar el stock.'
+                        );
+                    }
+                }
+            }
+
+            // =====================================================
+            // 6. REGISTRAR MOVIMIENTO DE STOCK
+            // =====================================================
+
+            $stockService = new StockService();
+
+            $movementId = $stockService->history_movements_register([
+                'product' => $productCode,
+                'movement' => $movementType,
+                'quantity' => $adjustment,
+                'user' => $userId,
+                'sucursal' => $sucursalId
+            ], $db);
+
+            if ($movementId === false) {
+                throw new \RuntimeException(
+                    'No se pudo registrar el historial de stock.'
+                );
+            }
+
+            // =====================================================
+            // 7. VERIFICAR TRANSACCIÓN
+            // =====================================================
+
+            if ($db->transStatus() === false) {
+                throw new \RuntimeException(
+                    'Error en la transacción de stock.'
+                );
+            }
+
+            // =====================================================
+            // 8. CONFIRMAR TRANSACCIÓN
+            // =====================================================
+
+            $db->transCommit();
+
+            return [
+                'success' => true,
+                'message' => 'STOCK ACTUALIZADO',
+                'stock' => $newStock,
+                'movement_id' => $movementId
+            ];
+
+        } catch (\Throwable $e) {
+
+            $db->transRollback();
+
+            log_message(
+                'error',
+                'ERROR AJUSTANDO STOCK: ' . $e->getMessage()
+            );
+
+            log_message(
+                'error',
+                'ARCHIVO: ' . $e->getFile() .
+                ' | LINEA: ' . $e->getLine()
+            );
+
+            return [
+                'success' => false,
+                'message' => 'ERROR AL ACTUALIZAR STOCK'
+            ];
+        }
+    }
+    public function getLastPurchaseHistory($code)
+    {
+        return $this->db->table('products_cost pc')
+            ->select([
+                'csh.id',
+                'csh.price',
+                'csh.date',
+                'csh.quantity',
+                'csh.cost',
+                'csh.provider',
+                'p.name AS provider_name',
+                'u.name AS user_name'
+            ])
+            ->join(
+                'cost_shop_history csh',
+                'csh.cost = pc.id',
+                'inner'
+            )
+            ->join(
+                'provider p',
+                'p.id = csh.provider',
+                'left'
+            )
+            ->join(
+                'users u',
+                'u.id = csh.user',
+                'left'
+            )
+            ->where('pc.product', $code)
+            ->orderBy('csh.date', 'DESC')
+            ->orderBy('csh.id', 'DESC')
+            ->limit(1)
+            ->get()
+            ->getRowArray();
+    }
+
 }

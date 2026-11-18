@@ -55,6 +55,14 @@
         <a href="#" class="btn btn-outline-danger provider_delete_close"> <i class="fas fa-times"></i>
         </a>
       <?php } ?>
+      <?php if ($type === 'section') { ?>
+        <a href="#" class="btn btn-outline-danger section_delete_close"> <i class="fas fa-times"></i>
+        </a>
+      <?php } ?>
+      <?php if ($type === 'brand') { ?>
+        <a href="#" class="btn btn-outline-danger brand_delete_close"> <i class="fas fa-times"></i>
+        </a>
+      <?php } ?>
     </div>
     <div class="card-body">
       <h5>Seguro que desea eliminar?</h5>
@@ -63,6 +71,18 @@
       </h1>
     </div>
     <div class="card-footer d-flex justify-content-end align-items-center">
+      <?php if ($type === 'brand') { ?>
+
+        <button type="button" class="btn btn-outline-warning px-5" id="delete_section" data-id="<?= $id ?>">
+          <i class="fas fa-trash"></i>
+        </button>
+      <?php } ?>
+      <?php if ($type === 'section') { ?>
+
+        <button type="button" class="btn btn-outline-warning px-5" id="delete_section" data-id="<?= $id ?>">
+          <i class="fas fa-trash"></i>
+        </button>
+      <?php } ?>
       <?php if ($type === 'provider') { ?>
 
         <button type="button" class="btn btn-outline-warning px-5" id="delete_provider" data-id="<?= $id ?>">

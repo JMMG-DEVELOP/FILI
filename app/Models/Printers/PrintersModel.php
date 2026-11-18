@@ -17,6 +17,7 @@ class PrintersModel extends Model
     'charset',
     'driver',
     'paper',
+    'dpi'
 
   ];
   public function quit($id)
@@ -86,7 +87,7 @@ class PrintersModel extends Model
         p.name,
         p.system_name,
         p.auto_cut,
-
+        p.dpi,
         p.driver,
         pd.name AS driver_name,
 

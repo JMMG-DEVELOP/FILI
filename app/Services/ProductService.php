@@ -112,7 +112,8 @@ class ProductService
     }
   }
 
-  public function edit(array $data): bool
+
+  public function edit(array $data, int $userId): bool
   {
     $db = db_connect();
     $db->transBegin();
@@ -121,28 +122,56 @@ class ProductService
 
       $code = $data['products']['code'];
 
-      // 1️⃣ PRODUCT
+      // ==========================================
+      // 1. PRODUCTO
+      // ==========================================
+
       $productModel = new ProductModel();
+
       $productModel
         ->where('code', $code)
         ->set($data['products'])
         ->update();
 
-      // 2️⃣ PRICES
+      if ($db->transStatus() === false) {
+        throw new \RuntimeException(
+          'No se pudo actualizar el producto'
+        );
+      }
+
+      // ==========================================
+      // 2. PRECIOS
+      // ==========================================
+
       $priceModel = new PricesModel();
-      $existsPrice = $priceModel->where('product', $code)->first();
+
+      $existsPrice = $priceModel
+        ->where('product', $code)
+        ->first();
 
       if ($existsPrice) {
+
         $priceModel
           ->where('product', $code)
           ->set($data['prices'])
           ->update();
+
       } else {
+
         $priceModel->insert($data['prices']);
+
       }
 
+      if ($db->transStatus() === false) {
+        throw new \RuntimeException(
+          'No se pudieron actualizar los precios'
+        );
+      }
 
+      // ==========================================
       // 3. COSTOS
+      // ==========================================
+
       if (isset($data['costs'])) {
 
         $costModel = new CostModel();
@@ -163,24 +192,30 @@ class ProductService
           $costModel->insert($data['costs']);
 
         }
+
+        if ($db->transStatus() === false) {
+          throw new \RuntimeException(
+            'No se pudieron actualizar los costos'
+          );
+        }
       }
 
-
-
       // ==========================================
-// 4. STOCK POR SUCURSAL (AJUSTE)
-// ==========================================
+      // 4. STOCK POR SUCURSAL
+      // ==========================================
 
       if (!empty($data['stock'])) {
 
         $stockModel = new StockModel();
+
+        $stockService = new \App\Services\StockService();
 
         foreach ($data['stock'] as $row) {
 
           $branchId = (int) $row['sucursal'];
           $adjustment = (float) $row['stock'];
 
-          // No hacer nada si el ajuste es cero
+          // No registrar ajustes en cero
           if ($adjustment == 0) {
             continue;
           }
@@ -195,7 +230,6 @@ class ProductService
 
             $currentStock = (float) $existsStock['stock'];
 
-            // Sumar o restar según el signo
             $newStock = $currentStock + $adjustment;
 
             // No permitir stock negativo
@@ -231,7 +265,7 @@ class ProductService
             $inserted = $stockModel->insert([
               'product' => $code,
               'sucursal' => $branchId,
-              'stock' => $adjustment,
+              'stock' => $adjustment
             ]);
 
             if (!$inserted) {
@@ -240,22 +274,65 @@ class ProductService
               );
             }
           }
+
+          // ==========================================
+          // 5. REGISTRAR HISTORIAL DE STOCK
+          // ==========================================
+
+          $movementId = $stockService->history_movements_register([
+            'product' => $code,
+            'movement' => 3, // Corrección
+            'quantity' => $adjustment,
+            'user' => $userId,
+            'sucursal' => $branchId
+          ], $db);
+
+          if ($movementId === false) {
+            throw new \RuntimeException(
+              "No se pudo registrar el historial de stock de la sucursal {$branchId}"
+            );
+          }
         }
       }
 
+      // ==========================================
+      // 6. VERIFICAR TRANSACCIÓN
+      // ==========================================
+
+      if ($db->transStatus() === false) {
+        throw new \RuntimeException(
+          'Error en la transacción al editar el producto'
+        );
+      }
+
+      // ==========================================
+      // 7. CONFIRMAR TRANSACCIÓN
+      // ==========================================
 
       $db->transCommit();
+
       return true;
 
     } catch (\Throwable $e) {
 
       $db->transRollback();
-      log_message('error', $e->getMessage());
-      throw new \CodeIgniter\Database\Exceptions\DatabaseException(
-        'Error al editar producto'
+
+      log_message(
+        'error',
+        'PRODUCT SERVICE EDIT ERROR: ' .
+        $e->getMessage() .
+        ' | Archivo: ' . $e->getFile() .
+        ' | Línea: ' . $e->getLine()
+      );
+
+      throw new \RuntimeException(
+        'Error al editar producto: ' . $e->getMessage(),
+        0,
+        $e
       );
     }
   }
+
 
   public function validate_code($code)
   {

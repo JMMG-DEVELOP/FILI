@@ -15,16 +15,16 @@
       </li>
 
       <!-- VENTAS -->
-      <li class="nav-item">
+      <li class="nav-item shopp_winup">
         <a class="nav-link" id="product-sales-tab" data-toggle="tab" href="#product-sales" role="tab"
           aria-controls="product-sales" aria-selected="false">
 
-          <i class="fas fa-shopping-bag shopp_winup"></i>
+          <i class="fas fa-shopping-bag "></i>
 
         </a>
       </li>
 
-      <!-- HISTORIAL -->
+      <!-- SECCION -->
       <li class="nav-item">
         <a class="nav-link" id="product-history-tab" data-toggle="tab" href="#product-history" role="tab"
           aria-controls="product-history" aria-selected="false">
@@ -61,13 +61,14 @@
 
       </div>
 
-      <!-- HISTORIAL -->
+      <!-- SECCION -->
       <div class="tab-pane fade" id="product-history" role="tabpanel" aria-labelledby="product-history-tab">
-
+        <div id="panel_section"></div>
       </div>
 
       <!-- MARCAS -->
       <div class="tab-pane fade" id="product-brand" role="tabpanel" aria-labelledby="product-brand-tab">
+        <div id="panel_brand"></div>
 
       </div>
 

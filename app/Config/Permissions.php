@@ -30,16 +30,16 @@ class Permissions extends BaseConfig
             'product_margin_view',
 
             // Marcas de Productos
-            'product_brands_view',
-            'product_brand_add',
-            'product_brand_edit',
-            'product_brand_delete',
+            // 'brand_view',
+            'brand_add',
+            'brand_edit',
+            'brand_delete',
 
             // Seccion de Productos
-            'product_sections_view',
-            'product_section_add',
-            'product_section_edit',
-            'product_section_delete',
+            // 'section_view',
+            'section_add',
+            'section_edit',
+            'section_delete',
 
             // Stock de Productos
             'product_stock_view',
